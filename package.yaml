@@ -1,15 +1,11 @@
-name: haskell-library-template
+name: yesod-sql-session
 version: 0.0.0.0
 maintainer: Freckle Education
-category: Utils
-github: freckle/haskell-library-template
-synopsis: Short synopsis here
+category: Web
+github: freckle/yesod-sql-session
+synopsis: SQL session backend for Yesod
 description: |
-  Longer description here
-
-  Haddocks are more valuable if you reproduce the main README example here, but
-  you can also just direct users to the README if you prefer not to take on that
-  duplication burden.
+  Use Persistent to store Yesod sessions
 
 extra-doc-files:
   - README.md
@@ -18,57 +14,70 @@ extra-doc-files:
 extra-source-files:
   - package.yaml
 
+language: GHC2021
+
 ghc-options:
   - -Weverything
   - -Wno-all-missed-specialisations
   - -Wno-missed-specialisations
   - -Wno-missing-exported-signatures # re-enables missing-signatures
   - -Wno-missing-import-lists
+  - -Wno-missing-kind-signatures
   - -Wno-missing-local-signatures
+  - -Wno-missing-safe-haskell-mode
   - -Wno-monomorphism-restriction
+  - -Wno-partial-fields
+  - -Wno-prepositive-qualified-module
   - -Wno-safe
   - -Wno-unsafe
-
-when:
-  - condition: "impl(ghc >= 9.2)"
-    ghc-options:
-      - -Wno-missing-kind-signatures
-  - condition: "impl(ghc >= 8.10)"
-    ghc-options:
-      - -Wno-missing-safe-haskell-mode
-      - -Wno-prepositive-qualified-module
+  - -fwrite-ide-info
 
 dependencies:
   - base < 5
 
 default-extensions:
-  - BangPatterns
-  - DataKinds
+  - AllowAmbiguousTypes
   - DeriveAnyClass
-  - DeriveFoldable
-  - DeriveFunctor
-  - DeriveGeneric
-  - DeriveLift
-  - DeriveTraversable
   - DerivingStrategies
-  - FlexibleContexts
-  - FlexibleInstances
+  - DuplicateRecordFields
+  - FunctionalDependencies
   - GADTs
-  - GeneralizedNewtypeDeriving
+  - ImpredicativeTypes
   - LambdaCase
-  - MultiParamTypeClasses
+  - NoFieldSelectors
   - NoImplicitPrelude
-  - NoMonomorphismRestriction
+  - OverloadedRecordDot
   - OverloadedStrings
-  - RankNTypes
+  - QuantifiedConstraints
   - RecordWildCards
-  - ScopedTypeVariables
-  - StandaloneDeriving
-  - TypeApplications
   - TypeFamilies
+  - UndecidableInstances
 
 library:
   source-dirs: library
+  dependencies:
+    - internal
+
+internal-libraries:
+  internal:
+    source-dirs: internal
+    dependencies:
+      - annotated-exception
+      - base64
+      - bytestring
+      - containers
+      - cookie
+      - exceptions
+      - http-types
+      - mtl
+      - persistent
+      - stm
+      - text
+      - time
+      - transformers
+      - unliftio-core
+      - wai
+      - yesod-core
 
 tests:
   spec:
@@ -76,11 +85,19 @@ tests:
     source-dirs: tests
     ghc-options: -threaded -rtsopts "-with-rtsopts=-N"
     dependencies:
-      #- haskell-library-template
+      - aeson
+      - containers
+      - cookie
+      - hedgehog
+      - hspec-hedgehog
       - hspec
-
-  readme:
-    main: README.lhs
-    ghc-options: -pgmL markdown-unlit
-    dependencies:
-      - markdown-unlit
+      - internal
+      - QuickCheck
+      - random
+      - text
+      - time
+      - wai
+      - wai-extra
+      - yesod
+      - yesod-sql-session
+      - yesod-test

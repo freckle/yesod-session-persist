@@ -1,3 +1,5 @@
 .stack-work
 *.hie
 .hiedb
+dist
+dist-newstyle
