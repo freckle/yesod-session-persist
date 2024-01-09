@@ -56,6 +56,7 @@ module Web.Session
 
     -- * Comparison
   , Comparison (..)
+  , differsOn
   ) where
 
 import Web.Session.Freeze.Action
