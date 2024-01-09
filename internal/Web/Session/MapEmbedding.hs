@@ -16,7 +16,7 @@ import Data.Text qualified as T
 
 -- | Specifies how we represent some value within a 'SessionMap'
 --
--- We use this to sort of abuse the session; invalidation and freezing are
+-- We use this to sort of abuse the session; key rotation and freezing are
 -- done by embedding special values among the session data. These special
 -- values are extracted from the map before persisting to storage and are
 -- never actually saved.

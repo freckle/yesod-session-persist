@@ -33,9 +33,9 @@ module Web.Session
   , SessionPersistence (..)
   , StorageException (..)
 
-    -- * Invalidation
-  , assignSessionInvalidation
-  , SessionInvalidation (..)
+    -- * Key rotation
+  , assignSessionKeyRotation
+  , KeyRotation (..)
 
     -- * Freezing
   , assignSessionFreeze
@@ -52,8 +52,8 @@ module Web.Session
 
 import Web.Session.Freeze.Action
 import Web.Session.Freeze.Type
-import Web.Session.Invalidation.Action
-import Web.Session.Invalidation.Type
+import Web.Session.KeyRotation.Action
+import Web.Session.KeyRotation.Type
 import Web.Session.MapEmbedding
 import Web.Session.Options
 import Web.Session.Prelude

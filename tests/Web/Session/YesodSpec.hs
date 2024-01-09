@@ -92,7 +92,7 @@ spec =
           request $ do setUrl UserR; setMethod "GET"
           bodyEquals "-"
 
-      specify @(YesodExample App ()) "Invalidates on auth changes"
+      specify @(YesodExample App ()) "rotates the key on auth changes"
         $ do
           app <- getTestYesod
 

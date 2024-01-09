@@ -64,8 +64,8 @@ library internal
       Web.Session.Cookie.SetCookie
       Web.Session.Freeze.Action
       Web.Session.Freeze.Type
-      Web.Session.Invalidation.Action
-      Web.Session.Invalidation.Type
+      Web.Session.KeyRotation.Action
+      Web.Session.KeyRotation.Type
       Web.Session.Load
       Web.Session.MapEmbedding
       Web.Session.Options

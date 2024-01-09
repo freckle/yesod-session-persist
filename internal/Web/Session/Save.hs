@@ -6,7 +6,7 @@ module Web.Session.Save
 import Web.Session.Prelude
 
 import Web.Session.Freeze.Type
-import Web.Session.Invalidation.Type
+import Web.Session.KeyRotation.Type
 import Web.Session.Load
 import Web.Session.Options
 import Web.Session.Session
@@ -37,16 +37,16 @@ data Save a
 --
 -- Returns 'Nothing' if the session was empty and didn't need to be saved.
 -- Note that this does /not/ necessarily means that nothing was done.
--- If you ask for a session to be invalidated and clear every other sesssion
--- variable, then 'saveSession' will invalidate the older session but will
+-- If you ask for a session key to be rotated and clear every other sesssion
+-- variable, then 'saveSession' will delete the older session but will
 -- avoid creating a new, empty one.
 saveSession
   :: SessionManager m -> Load Session -> SessionMap -> m (Save Session)
 saveSession SessionManager {options, storage, keyManager, runTransaction} load outputData =
-  let ((invalidation, freeze), newInfo) =
+  let ((rotation, freeze), newInfo) =
         flip State.runState outputData
           $ (,)
-          <$> extractIgnoringError options.invalidationEmbedding
+          <$> extractIgnoringError options.keyRotationEmbedding
           <*> extractIgnoringError options.freezeEmbedding
   in  runTransaction
         $ case freeze of
@@ -62,8 +62,8 @@ saveSession SessionManager {options, storage, keyManager, runTransaction} load o
                     oldSessionMaybe
             in  case load.got of
                   Nothing -> save Nothing
-                  Just s -> case invalidation of
-                    Just InvalidateCurrentSession -> do
+                  Just s -> case rotation of
+                    Just RotateSessionKey -> do
                       storage $ DeleteSession s.key
                       saveResult <- save Nothing
                       pure $ case saveResult of

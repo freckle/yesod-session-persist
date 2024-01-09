@@ -61,7 +61,7 @@ spec = context "saveSession" $ do
         , StorageOperation' $ ReplaceSession session
         ]
 
-  specify "changes the session key when we invalidate" $ hedgehog $ do
+  specify "changes the session key when we rotate" $ hedgehog $ do
     mock <- newMock $ defaultMockOptions & noTimeoutResolution
     sessionKey1 <- do
       load <- loadNothing mock.sessionManager
@@ -75,9 +75,9 @@ spec = context "saveSession" $ do
       void $ takeTranscript mock.mockStorage
       let sessionMap2 =
             loadedData load
-              & setSessionInvalidation
+              & setSessionKeyRotation
                 mock.sessionManager.options
-                (Just InvalidateCurrentSession)
+                (Just RotateSessionKey)
               & Map.insert "c" "d"
       save <- saveSession mock.sessionManager load sessionMap2
       annotateShow save
@@ -96,10 +96,10 @@ spec = context "saveSession" $ do
     load <- loadSession mock.sessionManager sessionKey2
     loadedData load === Map.fromList [("a", "b"), ("c", "d")]
 
-setSessionInvalidation
-  :: Options m -> Maybe SessionInvalidation -> SessionMap -> SessionMap
-setSessionInvalidation options =
-  execState . embed options.invalidationEmbedding
+setSessionKeyRotation
+  :: Options m -> Maybe KeyRotation -> SessionMap -> SessionMap
+setSessionKeyRotation options =
+  execState . embed options.keyRotationEmbedding
 
 assertSaved :: Show a => Save a -> PropertyT IO a
 assertSaved = \case

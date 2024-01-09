@@ -7,7 +7,7 @@ module Web.Session.Options
 import Web.Session.Prelude
 
 import Web.Session.Freeze.Type
-import Web.Session.Invalidation.Type
+import Web.Session.KeyRotation.Type
 import Web.Session.MapEmbedding
 import Web.Session.Timing.Options
 import Web.Session.TransportSecurity
@@ -20,9 +20,9 @@ import Data.Time qualified as Time
 data Options m = Options
   { cookieName :: Text
   -- ^ The name of cookie where the session key will be saved
-  , invalidationEmbedding :: SessionMapEmbedding SessionInvalidation
-  -- ^ How to represent an invalidation instruction in the session data;
-  --   see 'Web.Session.assignSessionInvalidation'
+  , keyRotationEmbedding :: SessionMapEmbedding KeyRotation
+  -- ^ How to represent a key rotation instruction in the session data;
+  --   see 'Web.Session.assignSessionKeyRotation'
   , freezeEmbedding :: SessionMapEmbedding SessionFreeze
   -- ^ How to represent a freeze instruction in the session data;
   --   see 'Web.Session.assignSessionFreeze'
@@ -38,7 +38,7 @@ data Options m = Options
 -- | Default options
 --
 --   - cookieName = @"session-key"@
---   - invalidationEmbedding = @'showReadKeyEmbedding' "session-invalidation"@
+--   - keyRotationEmbedding = @'showReadKeyEmbedding' "session-key-rotation"@
 --   - freezeEmbedding = @'showReadKeyEmbedding' "session-freeze"@
 --   - timing = 'defaultTimingOptions'
 --   - transportSecurity = 'AllowPlaintextTranport' (change this in production)
@@ -47,7 +47,7 @@ defaultOptions :: Options IO
 defaultOptions =
   Options
     { cookieName = "session-key"
-    , invalidationEmbedding = showReadKeyEmbedding "session-invalidation"
+    , keyRotationEmbedding = showReadKeyEmbedding "session-key-rotation"
     , freezeEmbedding = showReadKeyEmbedding "session-freeze"
     , timing = defaultTimingOptions
     , transportSecurity = AllowPlaintextTranport

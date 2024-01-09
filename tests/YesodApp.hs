@@ -46,10 +46,10 @@ getSessionOptions = do
   app <- getYesod
   pure $ hoistOptions liftIO app.mock.sessionManager.options
 
-invalidateSession :: Handler ()
-invalidateSession = do
+rotateSessionKey :: Handler ()
+rotateSessionKey = do
   o <- getSessionOptions
-  assignSessionInvalidation o (Just InvalidateCurrentSession)
+  assignSessionKeyRotation o (Just RotateSessionKey)
 
 disableSessionManagement :: Handler ()
 disableSessionManagement = do
@@ -72,12 +72,12 @@ postLogInR :: Handler ()
 postLogInR = do
   form :: LoginForm <- requireInsecureJsonBody
   setSession "user-id" form.uid
-  invalidateSession
+  rotateSessionKey
 
 postLogOutR :: Handler ()
 postLogOutR = do
   deleteSession "user-id"
-  invalidateSession
+  rotateSessionKey
 
 newtype LoginForm = LoginForm
   { uid :: Text
