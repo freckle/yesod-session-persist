@@ -14,18 +14,18 @@ import Data.Sequence qualified as Seq
 spec :: Spec
 spec = context "saveSession" $ do
   specify "doesn't unnecessarily create a session" $ hedgehog $ do
-    mock <- newMock defaultMockOptions
-    load <- loadNothing mock.sessionManager
-    save <- saveSession mock.sessionManager load $ loadedData load
+    mock@Mock {sessionManager} <- newMock defaultMockOptions
+    load <- loadNothing sessionManager
+    save <- saveSession sessionManager load $ loadedData load
     save === NoChange
     takeTranscript mock.mockStorage >>= (=== Seq.empty)
 
   specify "may create a session" $ hedgehog $ do
-    mock <- newMock defaultMockOptions
+    mock@Mock {sessionManager} <- newMock defaultMockOptions
     now <- readTVarIO mock.currentTime
-    load <- loadNothing mock.sessionManager
+    load <- loadNothing sessionManager
     let newData = loadedData load & Map.insert "a" "b"
-    save <- saveSession mock.sessionManager load newData
+    save <- saveSession sessionManager load newData
     annotateShow save
     session <- assertSaved save
     session.map === newData
@@ -35,20 +35,20 @@ spec = context "saveSession" $ do
     transcript === Seq.fromList [StorageOperation' $ InsertSession session]
 
   specify "may update a loaded session" $ hedgehog $ do
-    mock <- newMock $ defaultMockOptions & noTimeoutResolution
+    mock@Mock {sessionManager} <- newMock $ defaultMockOptions & noTimeoutResolution
     time1 <- readTVarIO mock.currentTime
     sessionKey <- do
-      load <- loadNothing mock.sessionManager
+      load <- loadNothing sessionManager
       let newData = loadedData load & Map.insert "a" "b"
-      save <- saveSession mock.sessionManager load newData
+      save <- saveSession sessionManager load newData
       session <- assertSaved save
       pure session.key
     pause mock
     time2 <- readTVarIO mock.currentTime
     void $ takeTranscript mock.mockStorage
-    load <- loadSession mock.sessionManager sessionKey
+    load <- loadSession sessionManager sessionKey
     let newData = loadedData load & Map.insert "c" "d"
-    save <- saveSession mock.sessionManager load newData
+    save <- saveSession sessionManager load newData
     annotateShow save
     session <- assertSaved save
     session.map === Map.fromList [("a", "b"), ("c", "d")]
@@ -62,23 +62,23 @@ spec = context "saveSession" $ do
         ]
 
   specify "changes the session key when we rotate" $ hedgehog $ do
-    mock@Mock {sessionManager = SessionManager {options}} <-
+    mock@Mock {sessionManager = sessionManager@SessionManager {options}} <-
       newMock $ defaultMockOptions & noTimeoutResolution
     sessionKey1 <- do
-      load <- loadNothing mock.sessionManager
+      load <- loadNothing sessionManager
       let newData = loadedData load & Map.insert "a" "b"
-      save <- saveSession mock.sessionManager load newData
+      save <- saveSession sessionManager load newData
       session <- assertSaved save
       pure session.key
     pause mock
     sessionKey2 <- do
-      load <- loadSession mock.sessionManager sessionKey1
+      load <- loadSession sessionManager sessionKey1
       void $ takeTranscript mock.mockStorage
       let sessionMap2 =
             loadedData load
               & setSessionKeyRotation options (Just RotateSessionKey)
               & Map.insert "c" "d"
-      save <- saveSession mock.sessionManager load sessionMap2
+      save <- saveSession sessionManager load sessionMap2
       annotateShow save
       session <- assertSaved save
       transcript <- takeTranscript mock.mockStorage
@@ -90,15 +90,15 @@ spec = context "saveSession" $ do
       pure session.key
     sessionKey1 /== sessionKey2
     do
-      load <- loadSession mock.sessionManager sessionKey1
+      load <- loadSession sessionManager sessionKey1
       didSessionLoad load === False
-    load <- loadSession mock.sessionManager sessionKey2
+    load <- loadSession sessionManager sessionKey2
     loadedData load === Map.fromList [("a", "b"), ("c", "d")]
 
 setSessionKeyRotation
   :: Options tx m -> Maybe KeyRotation -> SessionMap -> SessionMap
 setSessionKeyRotation options =
-  execState . embed options.keyRotationEmbedding
+  execState . embed options.embedding.keyRotation
 
 assertSaved :: Show a => Save a -> PropertyT IO a
 assertSaved = \case

@@ -3,5 +3,5 @@ roots = [
   "^Main.main$",
   "^Paths_",
   "^Web.Session.Yesod.makeSessionBackend$",
-  "^Web.Session.Prelude.Randomization.deterministicallyRandomIO$",
+  "^Web.Session.Options.hoistOptions$",
 ]

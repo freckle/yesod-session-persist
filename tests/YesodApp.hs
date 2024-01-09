@@ -23,7 +23,7 @@ newApp timing = do
   pure App {mock}
 
 newtype App = App
-  { mock :: Mock IO
+  { mock :: Mock STM IO
   }
 
 -- Derive routes and instances for App.
@@ -37,23 +37,20 @@ mkYesod
     /log-out LogOutR POST
   |]
 
+instance HasSessionEmbeddings App where
+  getSessionEmbeddings app =
+    let
+      App {mock} = app
+      Mock {sessionManager} = mock
+      SessionManager {options} = sessionManager
+      Options {embedding} = options
+    in
+      embedding
+
 instance Yesod App where
-  makeSessionBackend App {mock} =
-    pure $ Just $ makeSessionBackend'' mock.sessionManager
-
-rotateSessionKey :: Handler ()
-rotateSessionKey = do
-  App {mock = Mock {sessionManager = SessionManager {options}}} <- getYesod
-  assignSessionKeyRotation
-    (hoistOptions id liftIO options)
-    (Just RotateSessionKey)
-
-disableSessionManagement :: Handler ()
-disableSessionManagement = do
-  App {mock = Mock {sessionManager = SessionManager {options}}} <- getYesod
-  assignSessionFreeze
-    (hoistOptions id liftIO options)
-    (Just FreezeSessionForCurrentRequest)
+  makeSessionBackend App {mock} = do
+    let Mock {sessionManager} = mock
+    pure $ Just $ makeSessionBackend'' sessionManager
 
 getHomeR :: Handler Html
 getHomeR = defaultLayout [whamlet|Hello World!|]

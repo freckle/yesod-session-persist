@@ -43,8 +43,8 @@ import Hedgehog.Gen qualified as Gen
 import Hedgehog.Range qualified as Range
 import System.Random qualified as Random
 
-data Mock m = Mock
-  { sessionManager :: SessionManager m
+data Mock tx m = Mock
+  { sessionManager :: SessionManager tx m
   , currentTime :: TVar UTCTime
   , mockStorage :: MockStorage m
   }
@@ -77,7 +77,7 @@ noTimeoutResolution :: MockOptions -> MockOptions
 noTimeoutResolution MockOptions {timeout} =
   MockOptions {timeout = timeout {Gen.generateResolution = Just False}}
 
-newMock :: MockOptions -> PropertyT IO (Mock (PropertyT IO))
+newMock :: MockOptions -> PropertyT IO (Mock STM (PropertyT IO))
 newMock mockOptions = do
   seed <- forAll Gen.enumBounded
   let randomization = liftIO $ atomically $ newRandomization seed
@@ -105,7 +105,7 @@ newMock mockOptions = do
 
   pure mock
 
-newMock' :: TimingOptions NominalDiffTime -> IO (Mock IO)
+newMock' :: TimingOptions NominalDiffTime -> IO (Mock STM IO)
 newMock' timing = do
   let randomization = atomically . newRandomization =<< Random.randomIO
 
@@ -140,7 +140,7 @@ newRandomization seed =
 -- | Advance time by some brief (possibly zero) amount
 --
 -- The time elapsed will be shorter than any timeout settings.
-pause :: Mock (PropertyT IO) -> PropertyT IO ()
+pause :: Mock STM (PropertyT IO) -> PropertyT IO ()
 pause mock@Mock {sessionManager = SessionManager {options}} = do
   let
     timeout = options.timing.timeout
@@ -167,16 +167,15 @@ data ExpirationReason = IdleTimeout | AbsoluteTimeout
   deriving stock (Show)
 
 createArbitrarySession
-  :: Mock (PropertyT IO) -> SessionGenOptions -> PropertyT IO SessionKey
-createArbitrarySession
-  mock@Mock
-    { mockStorage
-    , sessionManager = SessionManager {storage, runTransaction, options}
-    }
-  opt =
+  :: Mock STM (PropertyT IO) -> SessionGenOptions -> PropertyT IO SessionKey
+createArbitrarySession mock opt =
+  let
+    Mock {mockStorage, sessionManager} = mock
+    SessionManager {storage, runTransaction, options} = sessionManager
+  in
     offTheRecordIO mockStorage
       $ do
-        key <- newSessionKey mock.sessionManager
+        key <- newSessionKey sessionManager
         sessionMap <- forAll Gen.sessionData
         now <- options.clock
         let timeout = options.timing.timeout

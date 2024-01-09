@@ -35,14 +35,18 @@ module Web.Session
   , StorageException (..)
 
     -- * Key rotation
+  , rotateSessionKey
   , assignSessionKeyRotation
   , KeyRotation (..)
 
     -- * Freezing
+  , disableSessionManagement
   , assignSessionFreeze
   , SessionFreeze (..)
 
     -- * Session map embedding
+  , SessionEmbeddings (..)
+  , HasSessionEmbeddings (..)
   , Embedding (..)
   , SessionMapEmbedding
   , MapOperations (..)

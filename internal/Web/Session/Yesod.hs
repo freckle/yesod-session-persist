@@ -68,7 +68,7 @@ makeSessionBackend' SessionConfiguration' {options = options :: Options tx m, ..
   let sessionManager = SessionManager {keyManager, storage, options, runTransaction}
   pure $ makeSessionBackend'' sessionManager
 
-makeSessionBackend'' :: SessionManager IO -> SessionBackend
+makeSessionBackend'' :: Monad tx => SessionManager tx IO -> SessionBackend
 makeSessionBackend'' sessionManager@SessionManager {options} =
   SessionBackend
     { sbLoadSession = \req -> do

@@ -12,13 +12,13 @@ import Data.Text qualified as T
 spec :: Spec
 spec = context "SessionKeyManager" $ do
   specify "generates 24-character text" $ hedgehog $ do
-    mock <- newMock defaultMockOptions
-    sessionKey <- newSessionKey mock.sessionManager
+    Mock {sessionManager} <- newMock defaultMockOptions
+    sessionKey <- newSessionKey sessionManager
     T.length sessionKey.text === 24
 
   specify "uses only letters, numbers, dash, underscore" $ hedgehog $ do
-    mock <- newMock defaultMockOptions
-    sessionKey <- newSessionKey mock.sessionManager
+    Mock {sessionManager} <- newMock defaultMockOptions
+    sessionKey <- newSessionKey sessionManager
     let charactersPresent = Set.fromList (T.unpack sessionKey.text)
     assert $ charactersPresent `Set.isSubsetOf` charactersWanted
 
@@ -26,23 +26,23 @@ spec = context "SessionKeyManager" $ do
     $ specify "never generates the same key twice"
     $ hedgehog
     $ do
-      mock <- newMock defaultMockOptions
+      Mock {sessionManager} <- newMock defaultMockOptions
       let n = 1000
       sessionKeys <-
         fmap Set.fromList
           $ replicateM n
-          $ newSessionKey mock.sessionManager
+          $ newSessionKey sessionManager
       Set.size sessionKeys === n
 
   specify "accepts its own keys" $ hedgehog $ do
-    mock <- newMock defaultMockOptions
-    sessionKey <- newSessionKey mock.sessionManager
-    assert $ sessionKeyAppearsReasonable mock.sessionManager sessionKey
+    Mock {sessionManager} <- newMock defaultMockOptions
+    sessionKey <- newSessionKey sessionManager
+    assert $ sessionKeyAppearsReasonable sessionManager sessionKey
 
   specify "does not accept invalid keys" $ hedgehog $ do
-    mock <- newMock defaultMockOptions
+    Mock {sessionManager} <- newMock defaultMockOptions
     for_ someInvalidCookies $ \c ->
-      checkedSessionKeyFromCookieValue mock.sessionManager c
+      checkedSessionKeyFromCookieValue sessionManager c
         === Nothing
 
 charactersWanted :: Set Char

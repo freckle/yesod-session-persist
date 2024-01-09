@@ -12,28 +12,29 @@ import Data.Sequence qualified as Seq
 spec :: Spec
 spec = context "Session loading" $ do
   specify "may load a session" $ hedgehog $ do
-    mock <- newMock defaultMockOptions
+    mock@Mock {sessionManager} <- newMock defaultMockOptions
     let genOptions = defaultSessionGenOptions {liveness = Just Live}
     sessionKey <- createArbitrarySession mock genOptions
-    load <- loadSession mock.sessionManager sessionKey
+    load <- loadSession sessionManager sessionKey
     assert $ didSessionLoad load
 
   context "may load nothing" $ do
     specify "when there is no session key" $ hedgehog $ do
-      mock <- newMock defaultMockOptions
-      load <- loadNothing mock.sessionManager
+      mock@Mock {sessionManager} <- newMock defaultMockOptions
+      load <- loadNothing sessionManager
       assert $ not $ didSessionLoad load
       takeTranscript mock.mockStorage >>= (=== Seq.empty)
 
     specify "when the key is not in storage" $ hedgehog $ do
-      mock <- newMock defaultMockOptions
-      sessionKey <- newSessionKey mock.sessionManager
-      load <- loadSession mock.sessionManager sessionKey
+      Mock {sessionManager} <- newMock defaultMockOptions
+      sessionKey <- newSessionKey sessionManager
+      load <- loadSession sessionManager sessionKey
       assert $ not $ didSessionLoad load
 
     specify "when the session is expired" $ hedgehog $ do
-      mock <- newMock $ defaultMockOptions & requireSomeTimeLimit
+      mock@Mock {sessionManager} <-
+        newMock $ defaultMockOptions & requireSomeTimeLimit
       let genOptions = defaultSessionGenOptions {liveness = Just $ Expired Nothing}
       sessionKey <- createArbitrarySession mock genOptions
-      load <- loadSession mock.sessionManager sessionKey
+      load <- loadSession sessionManager sessionKey
       assert $ not $ didSessionLoad load

@@ -34,7 +34,7 @@ loadedData :: Load Session -> SessionMap
 loadedData load =
   maybe Map.empty (.map) load.got
 
-loadSession :: Monad m => SessionManager m -> SessionKey -> m (Load Session)
+loadSession :: Monad m => SessionManager tx m -> SessionKey -> m (Load Session)
 loadSession SessionManager {options, storage, runTransaction} sessionKey = do
   now <- options.clock
   got <-
@@ -45,11 +45,11 @@ loadSession SessionManager {options, storage, runTransaction} sessionKey = do
       pure session
   pure Load {got, time = now}
 
-loadNothing :: Monad m => SessionManager m -> m (Load a)
+loadNothing :: Monad m => SessionManager tx m -> m (Load a)
 loadNothing SessionManager {options} = do
   now <- options.clock
   pure Load {got = Nothing, time = now}
 
 loadSessionMaybe
-  :: Monad m => SessionManager m -> Maybe SessionKey -> m (Load Session)
+  :: Monad m => SessionManager tx m -> Maybe SessionKey -> m (Load Session)
 loadSessionMaybe sm = maybe (loadNothing sm) (loadSession sm)

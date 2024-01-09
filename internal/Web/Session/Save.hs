@@ -41,13 +41,17 @@ data Save a
 -- variable, then 'saveSession' will delete the older session but will
 -- avoid creating a new, empty one.
 saveSession
-  :: SessionManager m -> Load Session -> SessionMap -> m (Save Session)
+  :: Monad tx
+  => SessionManager tx m
+  -> Load Session
+  -> SessionMap
+  -> m (Save Session)
 saveSession SessionManager {options, storage, keyManager, runTransaction} load outputData =
   let ((rotation, freeze), newInfo) =
         flip State.runState outputData
           $ (,)
-          <$> extractIgnoringError options.keyRotationEmbedding
-          <*> extractIgnoringError options.freezeEmbedding
+          <$> extractIgnoringError options.embedding.keyRotation
+          <*> extractIgnoringError options.embedding.freeze
   in  runTransaction
         $ case freeze of
           Just FreezeSessionForCurrentRequest -> pure Frozen

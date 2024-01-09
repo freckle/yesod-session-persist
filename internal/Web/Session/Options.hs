@@ -2,6 +2,8 @@ module Web.Session.Options
   ( Options (..)
   , defaultOptions
   , hoistOptions
+  , SessionEmbeddings (..)
+  , HasSessionEmbeddings (..)
   ) where
 
 import Web.Session.Prelude
@@ -20,15 +22,10 @@ import Data.Time qualified as Time
 data Options tx m = Options
   { cookieName :: Text
   -- ^ The name of cookie where the session key will be saved
-  , keyRotationEmbedding :: SessionMapEmbedding KeyRotation
-  -- ^ How to represent a key rotation instruction in the session data;
-  --   see 'Web.Session.assignSessionKeyRotation'
-  , freezeEmbedding :: SessionMapEmbedding SessionFreeze
-  -- ^ How to represent a freeze instruction in the session data;
-  --   see 'Web.Session.assignSessionFreeze'
   , timing :: TimingOptions NominalDiffTime
   -- ^ Various time duration settings
   , transportSecurity :: TransportSecurity
+  , embedding :: SessionEmbeddings
   -- ^ Whether cookies require HTTPS
   , clock :: m UTCTime
   -- ^ How to determine the current time;
@@ -36,6 +33,21 @@ data Options tx m = Options
   , randomization :: m (Randomization tx)
   -- ^ Generator of random byte strings, used to contrive session keys
   }
+
+data SessionEmbeddings = SessionEmbeddings
+  { keyRotation :: SessionMapEmbedding KeyRotation
+  -- ^ How to represent a key rotation instruction in the session data;
+  --   see 'Web.Session.assignSessionKeyRotation'
+  , freeze :: SessionMapEmbedding SessionFreeze
+  -- ^ How to represent a freeze instruction in the session data;
+  --   see 'Web.Session.assignSessionFreeze'
+  }
+
+class HasSessionEmbeddings a where
+  getSessionEmbeddings :: a -> SessionEmbeddings
+
+instance HasSessionEmbeddings SessionEmbeddings where
+  getSessionEmbeddings = id
 
 -- | Default options
 --
@@ -49,12 +61,15 @@ defaultOptions :: Options IO IO
 defaultOptions =
   Options
     { cookieName = "session-key"
-    , keyRotationEmbedding = showReadKeyEmbedding "session-key-rotation"
-    , freezeEmbedding = showReadKeyEmbedding "session-freeze"
     , timing = defaultTimingOptions
     , transportSecurity = AllowPlaintextTranport
     , clock = Time.getCurrentTime
     , randomization = defaultRandomization
+    , embedding =
+        SessionEmbeddings
+          { keyRotation = showReadKeyEmbedding "session-key-rotation"
+          , freeze = showReadKeyEmbedding "session-freeze"
+          }
     }
 
 hoistOptions
