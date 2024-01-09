@@ -65,6 +65,7 @@ mkYesod
     /user UserR GET
     /log-in LogInR POST
     /log-out LogOutR POST
+    /rotate RotateR GET
   |]
 
 instance HasSessionEmbeddings App where
@@ -100,11 +101,13 @@ postLogInR = do
   setSession "user-id" form.uid
 
 postLogOutR :: Handler ()
-postLogOutR = do
-  deleteSession "user-id"
+postLogOutR = deleteSession "user-id"
 
 newtype LoginForm = LoginForm
   { uid :: Text
   }
   deriving stock (Generic)
   deriving anyclass (FromJSON)
+
+getRotateR :: Handler ()
+getRotateR = rotateSessionKey

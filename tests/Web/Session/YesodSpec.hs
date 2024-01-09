@@ -104,6 +104,37 @@ spec =
           request $ do setUrl UserR; setMethod "GET"
           bodyEquals "-"
 
+      specify @(YesodExample App ()) "rotates the key when 'rotateSessionKey' is used" $ do
+        app <- getTestYesod
+
+        -- Log in
+        request $ do
+          setUrl LogInR
+          setMethod "POST"
+          setRequestBody $ encode $ object [("uid", "xyz")]
+
+        -- Get the session
+        transcript <- liftIO $ takeTranscript app.mock.mockStorage
+        sessionKey :: SessionKey <-
+          case toList transcript of
+            [StorageOperation' (InsertSession s)] -> pure s.key
+            _ -> liftIO $ fail $ show transcript
+
+        -- Make a request to the route that does a key rotation
+        request $ do setUrl RotateR; setMethod "GET"
+
+        -- The old session should be deleted
+        transcript' <- liftIO $ takeTranscript app.mock.mockStorage
+        liftIO
+          $ List.take 2 (toList transcript')
+          `shouldBe` [ StorageOperation' (GetSession sessionKey)
+                     , StorageOperation' (DeleteSession sessionKey)
+                     ]
+
+        -- But we're still logged in
+        request $ do setUrl UserR; setMethod "GET"
+        bodyEquals (show @ByteString "xyz")
+
       specify @(YesodExample App ()) "rotates the key on auth changes"
         $ do
           app <- getTestYesod
@@ -116,9 +147,9 @@ spec =
 
           -- Get the session
           transcript <- liftIO $ takeTranscript app.mock.mockStorage
-          session :: Session <-
+          sessionKey :: SessionKey <-
             case toList transcript of
-              [StorageOperation' (InsertSession s)] -> pure s
+              [StorageOperation' (InsertSession s)] -> pure s.key
               _ -> liftIO $ fail $ show transcript
 
           -- Log in differently
@@ -131,8 +162,8 @@ spec =
           transcript' <- liftIO $ takeTranscript app.mock.mockStorage
           liftIO
             $ List.take 2 (toList transcript')
-            `shouldBe` [ StorageOperation' (GetSession session.key)
-                       , StorageOperation' (DeleteSession session.key)
+            `shouldBe` [ StorageOperation' (GetSession sessionKey)
+                       , StorageOperation' (DeleteSession sessionKey)
                        ]
 
           -- But we're still logged in as the new user
