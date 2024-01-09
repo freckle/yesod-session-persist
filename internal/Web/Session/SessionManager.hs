@@ -19,7 +19,7 @@ data SessionManager m = forall tx.
   -- ^ A random session key generator
   , storage :: forall a. StorageOperation a -> tx a
   -- ^ The storage backend
-  , options :: Options m
+  , options :: Options tx m
   , runTransaction :: forall a. tx a -> m a
   }
 

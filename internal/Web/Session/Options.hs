@@ -17,7 +17,7 @@ import Data.Time qualified as Time
 -- | Settings that have defaults
 --
 -- See 'defaultOptions'.
-data Options m = Options
+data Options tx m = Options
   { cookieName :: Text
   -- ^ The name of cookie where the session key will be saved
   , keyRotationEmbedding :: SessionMapEmbedding KeyRotation
@@ -33,6 +33,8 @@ data Options m = Options
   , clock :: m UTCTime
   -- ^ How to determine the current time;
   --   you can change this to a fake for testing
+  , randomization :: m (Randomization tx)
+  -- ^ Generator of random byte strings, used to contrive session keys
   }
 
 -- | Default options
@@ -43,7 +45,7 @@ data Options m = Options
 --   - timing = 'defaultTimingOptions'
 --   - transportSecurity = 'AllowPlaintextTranport' (change this in production)
 --   - clock = 'Time.getCurrentTime'
-defaultOptions :: Options IO
+defaultOptions :: (MonadIO tx, MonadIO m) => Options tx m
 defaultOptions =
   Options
     { cookieName = "session-key"
@@ -51,12 +53,19 @@ defaultOptions =
     , freezeEmbedding = showReadKeyEmbedding "session-freeze"
     , timing = defaultTimingOptions
     , transportSecurity = AllowPlaintextTranport
-    , clock = Time.getCurrentTime
+    , clock = liftIO Time.getCurrentTime
+    , randomization = defaultRandomization
     }
 
-hoistOptions :: (forall a. m a -> n a) -> Options m -> Options n
-hoistOptions f Options {..} =
+hoistOptions
+  :: Functor m2
+  => (forall a. tx1 a -> tx2 a)
+  -> (forall a. m1 a -> m2 a)
+  -> Options tx1 m1
+  -> Options tx2 m2
+hoistOptions f g Options {..} =
   Options
-    { clock = f clock
+    { clock = g clock
+    , randomization = hoistRandomization f <$> g randomization
     , ..
     }

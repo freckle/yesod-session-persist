@@ -79,7 +79,7 @@ saveSession SessionManager {options, storage, keyManager, runTransaction} load o
 -- the old session is returned and no update is made.
 saveSessionOnDb
   :: Monad tx
-  => Options m
+  => Options tx m
   -> (forall a. StorageOperation a -> tx a)
   -> SessionKeyManager tx
   -> UTCTime

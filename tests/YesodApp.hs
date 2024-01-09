@@ -41,20 +41,19 @@ instance Yesod App where
   makeSessionBackend App {mock} =
     pure $ Just $ makeSessionBackend'' mock.sessionManager
 
-getSessionOptions :: Handler (Options Handler)
-getSessionOptions = do
-  app <- getYesod
-  pure $ hoistOptions liftIO app.mock.sessionManager.options
-
 rotateSessionKey :: Handler ()
 rotateSessionKey = do
-  o <- getSessionOptions
-  assignSessionKeyRotation o (Just RotateSessionKey)
+  App {mock = Mock {sessionManager = SessionManager {options}}} <- getYesod
+  assignSessionKeyRotation
+    (hoistOptions id liftIO options)
+    (Just RotateSessionKey)
 
 disableSessionManagement :: Handler ()
 disableSessionManagement = do
-  o <- getSessionOptions
-  assignSessionFreeze o (Just FreezeSessionForCurrentRequest)
+  App {mock = Mock {sessionManager = SessionManager {options}}} <- getYesod
+  assignSessionFreeze
+    (hoistOptions id liftIO options)
+    (Just FreezeSessionForCurrentRequest)
 
 getHomeR :: Handler Html
 getHomeR = defaultLayout [whamlet|Hello World!|]

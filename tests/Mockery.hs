@@ -80,7 +80,7 @@ noTimeoutResolution MockOptions {timeout} =
 newMock :: MockOptions -> PropertyT IO (Mock (PropertyT IO))
 newMock mockOptions = do
   seed <- forAll Gen.enumBounded
-  randomization <- liftIO $ atomically $ newRandomization seed
+  let randomization = liftIO $ atomically $ newRandomization seed
 
   currentTime <- newTVarIO =<< forAll Gen.time
   let clock = readTVarIO currentTime
@@ -90,13 +90,21 @@ newMock mockOptions = do
 
   timing <- forAll $ Gen.timingOptions mockOptions.timeout
 
-  let sessionManager =
-        SessionManager
-          { keyManager = makeSessionKeyManager randomization
-          , storage
-          , options = defaultOptions {clock, timing}
-          , runTransaction = atomically
+  let options :: Options STM (PropertyT IO) =
+        Options
+          { cookieName = "session-key"
+          , keyRotationEmbedding = showReadKeyEmbedding "session-key-rotation"
+          , freezeEmbedding = showReadKeyEmbedding "session-freeze"
+          , transportSecurity = AllowPlaintextTranport
+          , timing
+          , clock
+          , randomization
           }
+
+  keyManager <- makeSessionKeyManager <$> randomization
+
+  let sessionManager =
+        SessionManager {keyManager, storage, options, runTransaction = atomically}
 
   let mock = Mock {sessionManager, currentTime, mockStorage}
 
@@ -108,7 +116,7 @@ newMock mockOptions = do
 
 newMock' :: TimingOptions NominalDiffTime -> IO (Mock IO)
 newMock' timing = do
-  randomization <- atomically . newRandomization =<< Random.randomIO
+  let randomization = atomically . newRandomization =<< Random.randomIO
 
   currentTime <- newTVarIO =<< Time.getCurrentTime
   let clock = readTVarIO currentTime
@@ -116,11 +124,24 @@ newMock' timing = do
   mockStorage@MockStorage {storage} <-
     hoistMockStorage atomically <$> atomically newMockStorage
 
+  keyManager <- makeSessionKeyManager <$> randomization
+
+  let options =
+        Options
+          { cookieName = "session-key"
+          , keyRotationEmbedding = showReadKeyEmbedding "session-key-rotation"
+          , freezeEmbedding = showReadKeyEmbedding "session-freeze"
+          , transportSecurity = AllowPlaintextTranport
+          , timing
+          , clock
+          , randomization
+          }
+
   let sessionManager =
         SessionManager
-          { keyManager = makeSessionKeyManager randomization
+          { keyManager
           , storage
-          , options = defaultOptions {clock, timing}
+          , options
           , runTransaction = atomically
           }
   pure Mock {sessionManager, currentTime, mockStorage}
@@ -138,9 +159,9 @@ newRandomization seed =
 --
 -- The time elapsed will be shorter than any timeout settings.
 pause :: Mock (PropertyT IO) -> PropertyT IO ()
-pause mock = do
+pause mock@Mock {sessionManager = SessionManager {options}} = do
   let
-    timeout = mock.sessionManager.options.timing.timeout
+    timeout = options.timing.timeout
     upperBound =
       maybe (secondsToNominalDiffTime 10) (/ 2) (timeout.idle <|> timeout.absolute)
   amount <-
@@ -165,13 +186,16 @@ data ExpirationReason = IdleTimeout | AbsoluteTimeout
 
 createArbitrarySession
   :: Mock (PropertyT IO) -> SessionGenOptions -> PropertyT IO SessionKey
-createArbitrarySession mock@Mock {mockStorage, sessionManager = SessionManager {storage, runTransaction}} opt =
+createArbitrarySession mock@Mock
+                        { mockStorage
+                        , sessionManager = SessionManager {storage, runTransaction, options}
+                        } opt =
   offTheRecordIO mockStorage
     $ do
       key <- newSessionKey mock.sessionManager
       sessionMap <- forAll Gen.sessionData
-      now <- mock.sessionManager.options.clock
-      let timeout = mock.sessionManager.options.timing.timeout
+      now <- options.clock
+      let timeout = options.timing.timeout
       timeGen <- case opt.liveness of
         Nothing -> pure $ whatever now
         Just Live -> pure $ live timeout now

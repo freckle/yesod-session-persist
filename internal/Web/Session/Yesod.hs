@@ -28,16 +28,14 @@ import Web.Session.Storage.Persistent
 
 import Yesod.Core.Types (SessionBackend (..))
 
-import Database.Persist.Sql (runSqlPool)
+import Database.Persist.Sql (SqlPersistT, runSqlPool)
 
 data SessionConfiguration session = SessionConfiguration
   { persistence :: SessionPersistence session
   -- ^ Mapping between 'Session' and your Persistent entity
   , connectionPool :: ConnectionPool
   -- ^ SQL connection pool
-  , randomization :: Randomization IO
-  -- ^ Generator of random byte strings, used to contrive session keys
-  , options :: Options IO
+  , options :: Options (SqlPersistT IO) IO
   -- ^ Various options that have defaults; see 'defaultOptions'
   }
 
@@ -46,12 +44,11 @@ data SessionConfiguration session = SessionConfiguration
 -- The @session@ type parameter represents the Persistent entity
 -- you're using to store sessions
 -- (see the 'SessionPersistence' field of the configuration).
-makeSessionBackend :: SessionConfiguration session -> SessionBackend
+makeSessionBackend :: SessionConfiguration session -> IO SessionBackend
 makeSessionBackend x =
   makeSessionBackend'
     SessionConfiguration'
       { storage = persistentStorage x.persistence
-      , randomization = hoistRandomization lift x.randomization
       , options = x.options
       , runTransaction = (`runSqlPool` x.connectionPool)
       }
@@ -60,25 +57,23 @@ data SessionConfiguration' session = forall tx.
   Monad tx =>
   SessionConfiguration'
   { storage :: forall a. StorageOperation a -> tx a
-  , randomization :: Randomization tx
-  , options :: Options IO
+  , options :: Options tx IO
   , runTransaction :: forall a. tx a -> IO a
   }
 
-makeSessionBackend' :: SessionConfiguration' session -> SessionBackend
-makeSessionBackend' SessionConfiguration' {..} =
-  let
-    keyManager = makeSessionKeyManager randomization
-    sessionManager = SessionManager {keyManager, storage, options, runTransaction}
-  in
-    makeSessionBackend'' sessionManager
+makeSessionBackend' :: SessionConfiguration' session -> IO SessionBackend
+makeSessionBackend' SessionConfiguration' {options = options :: Options tx m, ..} = do
+  keyManager :: SessionKeyManager tx <-
+    makeSessionKeyManager <$> options.randomization
+  let sessionManager = SessionManager {keyManager, storage, options, runTransaction}
+  pure $ makeSessionBackend'' sessionManager
 
 makeSessionBackend'' :: SessionManager IO -> SessionBackend
-makeSessionBackend'' sessionManager =
+makeSessionBackend'' sessionManager@SessionManager {options} =
   SessionBackend
     { sbLoadSession = \req -> do
         let
-          cookie = findSessionKey (encodeUtf8 sessionManager.options.cookieName) req
+          cookie = findSessionKey (encodeUtf8 options.cookieName) req
           sessionKeyMaybe = cookie >>= checkedSessionKeyFromCookieValue sessionManager
 
         load <- loadSessionMaybe sessionManager sessionKeyMaybe
@@ -87,9 +82,6 @@ makeSessionBackend'' sessionManager =
           ( loadedData load
           , \newData -> do
               save <- saveSession sessionManager load newData
-              pure
-                $ setCookie
-                  sessionManager.options
-                  CookieContext {cookie, load = load.got, save}
+              pure $ setCookie options CookieContext {cookie, load = load.got, save}
           )
     }

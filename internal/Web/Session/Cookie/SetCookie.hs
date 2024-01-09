@@ -17,15 +17,15 @@ import Web.Cookie qualified as C
 import Web.Session.TransportSecurity qualified as TransportSecurity
 
 makeSetCookieHeaders
-  :: Options m -> Maybe (SessionKey, Time UTCTime) -> [Header]
+  :: Options tx m -> Maybe (SessionKey, Time UTCTime) -> [Header]
 makeSetCookieHeaders options =
   (: []) <$> maybe (deleteCookie options) (createCookie options)
 
-cookieNameBS :: Options m -> ByteString
+cookieNameBS :: Options tx m -> ByteString
 cookieNameBS options = encodeUtf8 options.cookieName
 
 -- | Create a cookie for the given session
-createCookie :: Options m -> (SessionKey, Time UTCTime) -> Header
+createCookie :: Options tx m -> (SessionKey, Time UTCTime) -> Header
 createCookie options (key, time) =
   AddCookie
     C.def
@@ -39,7 +39,7 @@ createCookie options (key, time) =
       }
 
 -- | Remove the session cookie from the client
-deleteCookie :: Options m -> Header
+deleteCookie :: Options tx m -> Header
 deleteCookie options =
   AddCookie
     C.def

@@ -62,7 +62,8 @@ spec = context "saveSession" $ do
         ]
 
   specify "changes the session key when we rotate" $ hedgehog $ do
-    mock <- newMock $ defaultMockOptions & noTimeoutResolution
+    mock@Mock {sessionManager = SessionManager {options}} <-
+      newMock $ defaultMockOptions & noTimeoutResolution
     sessionKey1 <- do
       load <- loadNothing mock.sessionManager
       let newData = loadedData load & Map.insert "a" "b"
@@ -75,9 +76,7 @@ spec = context "saveSession" $ do
       void $ takeTranscript mock.mockStorage
       let sessionMap2 =
             loadedData load
-              & setSessionKeyRotation
-                mock.sessionManager.options
-                (Just RotateSessionKey)
+              & setSessionKeyRotation options (Just RotateSessionKey)
               & Map.insert "c" "d"
       save <- saveSession mock.sessionManager load sessionMap2
       annotateShow save
@@ -97,7 +96,7 @@ spec = context "saveSession" $ do
     loadedData load === Map.fromList [("a", "b"), ("c", "d")]
 
 setSessionKeyRotation
-  :: Options m -> Maybe KeyRotation -> SessionMap -> SessionMap
+  :: Options tx m -> Maybe KeyRotation -> SessionMap -> SessionMap
 setSessionKeyRotation options =
   execState . embed options.keyRotationEmbedding
 

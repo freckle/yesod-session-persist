@@ -25,7 +25,7 @@ import Yesod.Core (MonadHandler (liftHandler))
 -- and is not persisted across requests.
 assignSessionKeyRotation
   :: MonadHandler m
-  => Options m
+  => Options tx m
   -> Maybe KeyRotation
   -- ^ 'Just' to rotate, or 'Nothing' to cancel any previous
   --   request for rotation and restore the default behavior

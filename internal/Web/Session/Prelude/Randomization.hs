@@ -23,11 +23,12 @@ hoistRandomization
 hoistRandomization f (Randomization g) = Randomization (f . g)
 
 -- | Convert from a deterministic generator to an effectful one
-deterministicallyRandomIO :: DeterministicRandomization -> IO (Randomization IO)
+deterministicallyRandomIO
+  :: (MonadIO m, MonadIO n) => DeterministicRandomization -> m (Randomization n)
 deterministicallyRandomIO =
-  newIORef >=> pure . \ref ->
+  liftIO . newIORef >=> pure . \ref ->
     Randomization $ \n ->
-      atomicModifyIORef' ref $ \(DeterministicRandomization gen) ->
+      liftIO $ atomicModifyIORef' ref $ \(DeterministicRandomization gen) ->
         swap $ gen n
 
 -- | Like 'deterministicallyRandomIO' but in 'STM' rather than 'IO'
@@ -48,9 +49,9 @@ newtype DeterministicRandomization = DeterministicRandomization
   --   'ByteString' of that length and a new deterministic generator.
   }
 
-defaultRandomization :: IO (Randomization IO)
+defaultRandomization :: (MonadIO m, MonadIO n) => m (Randomization n)
 defaultRandomization =
-  deterministicallyRandomIO . makeDeterministicRandomization =<< drgNew
+  deterministicallyRandomIO . makeDeterministicRandomization =<< liftIO drgNew
  where
   makeDeterministicRandomization :: ChaChaDRG -> DeterministicRandomization
   makeDeterministicRandomization drg =

@@ -17,7 +17,7 @@ import Yesod.Core (MonadHandler (liftHandler))
 -- database actions will be performed and no cookies will be set.
 assignSessionFreeze
   :: MonadHandler m
-  => Options m
+  => Options tx m
   -> Maybe SessionFreeze
   -- ^ 'Just' to freeze the session, or 'Nothing' to cancel any previous
   --   request for session freezing and restore the default behavior

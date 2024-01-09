@@ -18,7 +18,7 @@ data CookieContext = CookieContext
   , save :: Save Session
   }
 
-setCookie :: Options m -> CookieContext -> [Header]
+setCookie :: Options tx m -> CookieContext -> [Header]
 setCookie options x =
   let
     cookiesForSession :: Maybe Session -> [Header]
