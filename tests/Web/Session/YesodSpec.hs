@@ -26,17 +26,17 @@ spec =
         request $ do setUrl HomeR; setMethod "GET"
 
         -- Since there was no session, one should be inserted
-        transcript <- liftIO $ takeTranscript app.mock.mockStorage
-        session :: Session <-
+        sessionKey :: SessionKey <- do
+          transcript <- liftIO $ takeTranscript app.mock.mockStorage
           case toList transcript of
-            [StorageOperation' (InsertSession s)] -> pure s
+            [StorageOperation' (InsertSession s)] -> pure s.key
             _ -> liftIO $ fail $ show transcript
 
         -- We should receive a set-cookie header
         assertSetCookie
           $ def
             { setCookieName = "session-key"
-            , setCookieValue = encodeUtf8 session.key.text
+            , setCookieValue = encodeUtf8 sessionKey.text
             , setCookiePath = Just "/"
             , setCookieExpires =
                 Just
@@ -70,12 +70,24 @@ spec =
             setMethod "POST"
             setRequestBody $ encode $ object [("uid", "xyz")]
 
-          -- A short pause should not affect anything
-          atomically $ modifyTVar' app.mock.currentTime $ addUTCTime 90
+          sessionKey :: SessionKey <- do
+            transcript <- liftIO $ takeTranscript app.mock.mockStorage
+            case toList transcript of
+              [StorageOperation' (InsertSession s)] -> pure s.key
+              _ -> liftIO $ fail $ show transcript
 
-          -- Verify that we're now logged in
-          request $ do setUrl UserR; setMethod "GET"
-          bodyEquals (show @ByteString "xyz")
+          replicateM_ 3 $ do
+            -- A short pause should not affect anything
+            atomically $ modifyTVar' app.mock.currentTime $ addUTCTime 90
+
+            -- Verify that we're now logged in
+            request $ do setUrl UserR; setMethod "GET"
+            bodyEquals (show @ByteString "xyz")
+
+            liftIO $ do
+              transcript <- takeTranscript app.mock.mockStorage
+              toList transcript
+                `shouldBe` [StorageOperation' (GetSession sessionKey)]
 
       specify @(YesodExample App ()) "Does not load an expired session"
         $ do

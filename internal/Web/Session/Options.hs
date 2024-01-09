@@ -32,6 +32,9 @@ data Options tx m = Options
   --   you can change this to a fake for testing
   , randomization :: m (Randomization tx)
   -- ^ Generator of random byte strings, used to contrive session keys
+  , keyRotationTrigger :: Comparison SessionMap -> Maybe KeyRotation
+  -- ^ At the end of request handling, compare old session data to new
+  --   session data to determine whether a key rotation should be performed
   }
 
 data SessionEmbeddings = SessionEmbeddings
@@ -57,6 +60,7 @@ instance HasSessionEmbeddings SessionEmbeddings where
 --   - timing = 'defaultTimingOptions'
 --   - transportSecurity = 'AllowPlaintextTranport' (change this in production)
 --   - clock = 'Time.getCurrentTime'
+--   - keyRotationTrigger = 'const' 'Nothing'
 defaultOptions :: Options IO IO
 defaultOptions =
   Options
@@ -70,6 +74,7 @@ defaultOptions =
           { keyRotation = showReadKeyEmbedding "session-key-rotation"
           , freeze = showReadKeyEmbedding "session-freeze"
           }
+    , keyRotationTrigger = const Nothing
     }
 
 hoistOptions

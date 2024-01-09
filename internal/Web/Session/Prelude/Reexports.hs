@@ -59,7 +59,7 @@ import Data.Bool as X
 import Data.ByteString as X (ByteString)
 import Data.Char as X (Char)
 import Data.Either as X (Either (..), either, fromRight)
-import Data.Eq as X (Eq, (==))
+import Data.Eq as X (Eq, (/=), (==))
 import Data.Foldable as X (foldMap, for_, toList)
 import Data.Function as X (const, flip, id, ($), (&), (.))
 import Data.Functor as X (Functor, fmap, void, ($>), (<$>), (<&>))

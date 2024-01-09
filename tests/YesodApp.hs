@@ -9,18 +9,48 @@ import Web.Session.Prelude
 
 import Mockery
 import Web.Session
+import Web.Session.SessionKey
 import Web.Session.SessionManager
+import Web.Session.Storage.Mock
 import Web.Session.Yesod
 
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
+import Data.Time qualified as Time
 import GHC.Generics (Generic)
+import System.Random qualified as Random
 import Yesod
 
 newApp :: TimingOptions NominalDiffTime -> IO App
 newApp timing = do
-  mock <- newMock' timing
+  mock <- do
+    let randomization = atomically . newRandomization =<< Random.randomIO
+
+    currentTime <- newTVarIO =<< Time.getCurrentTime
+    let clock = readTVarIO currentTime
+
+    mockStorage@MockStorage {storage} <-
+      hoistMockStorage atomically <$> atomically newMockStorage
+
+    keyManager <- makeSessionKeyManager <$> randomization
+
+    let options = defaultOptions {timing, clock, randomization, keyRotationTrigger}
+
+    let sessionManager =
+          SessionManager
+            { keyManager
+            , storage
+            , options
+            , runTransaction = atomically
+            }
+    pure Mock {sessionManager, currentTime, mockStorage}
+
   pure App {mock}
+
+keyRotationTrigger :: Comparison SessionMap -> Maybe KeyRotation
+keyRotationTrigger x = do
+  guard $ differsOn (Map.lookup "user-id") x
+  Just RotateSessionKey
 
 newtype App = App
   { mock :: Mock STM IO
@@ -68,12 +98,10 @@ postLogInR :: Handler ()
 postLogInR = do
   form :: LoginForm <- requireInsecureJsonBody
   setSession "user-id" form.uid
-  rotateSessionKey
 
 postLogOutR :: Handler ()
 postLogOutR = do
   deleteSession "user-id"
-  rotateSessionKey
 
 newtype LoginForm = LoginForm
   { uid :: Text

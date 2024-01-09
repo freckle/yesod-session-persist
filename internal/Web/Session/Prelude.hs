@@ -3,6 +3,7 @@ module Web.Session.Prelude
   )
 where
 
+import Web.Session.Prelude.Comparison as X
 import Web.Session.Prelude.Embedding as X
 import Web.Session.Prelude.Randomization as X
 import Web.Session.Prelude.Reexports as X

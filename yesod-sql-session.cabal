@@ -70,6 +70,7 @@ library internal
       Web.Session.MapEmbedding
       Web.Session.Options
       Web.Session.Prelude
+      Web.Session.Prelude.Comparison
       Web.Session.Prelude.Embedding
       Web.Session.Prelude.Randomization
       Web.Session.Prelude.Reexports

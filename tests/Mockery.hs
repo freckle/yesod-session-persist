@@ -2,7 +2,6 @@ module Mockery
   ( -- * Mock
     Mock (..)
   , newMock
-  , newMock'
 
     -- * Options
   , MockOptions (..)
@@ -23,6 +22,9 @@ module Mockery
     -- * Transcript
   , takeTranscript
 
+    -- * Randomization
+  , newRandomization
+
     -- * Miscellany
   , repeat_
   ) where
@@ -37,7 +39,6 @@ import Web.Session.Storage.Operation
 
 import Test.Hspec.Hedgehog
 
-import Data.Time qualified as Time
 import Generators qualified as Gen
 import Hedgehog.Gen qualified as Gen
 import Hedgehog.Range qualified as Range
@@ -104,29 +105,6 @@ newMock mockOptions = do
     $ createArbitrarySession mock defaultSessionGenOptions
 
   pure mock
-
-newMock' :: TimingOptions NominalDiffTime -> IO (Mock STM IO)
-newMock' timing = do
-  let randomization = atomically . newRandomization =<< Random.randomIO
-
-  currentTime <- newTVarIO =<< Time.getCurrentTime
-  let clock = readTVarIO currentTime
-
-  mockStorage@MockStorage {storage} <-
-    hoistMockStorage atomically <$> atomically newMockStorage
-
-  keyManager <- makeSessionKeyManager <$> randomization
-
-  let options = defaultOptions {timing, clock, randomization}
-
-  let sessionManager =
-        SessionManager
-          { keyManager
-          , storage
-          , options
-          , runTransaction = atomically
-          }
-  pure Mock {sessionManager, currentTime, mockStorage}
 
 newRandomization :: Int -> STM (Randomization STM)
 newRandomization seed =

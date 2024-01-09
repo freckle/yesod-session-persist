@@ -47,33 +47,37 @@ saveSession
   -> SessionMap
   -> m (Save Session)
 saveSession SessionManager {options, storage, keyManager, runTransaction} load outputData =
-  let ((rotation, freeze), newInfo) =
-        flip State.runState outputData
-          $ (,)
-          <$> extractIgnoringError options.embedding.keyRotation
-          <*> extractIgnoringError options.embedding.freeze
-  in  runTransaction
-        $ case freeze of
-          Just FreezeSessionForCurrentRequest -> pure Frozen
-          Nothing ->
-            let save oldSessionMaybe =
-                  saveSessionOnDb
-                    options
-                    storage
-                    keyManager
-                    load.time
-                    newInfo
-                    oldSessionMaybe
-            in  case load.got of
-                  Nothing -> save Nothing
-                  Just s -> case rotation of
-                    Just RotateSessionKey -> do
-                      storage $ DeleteSession s.key
-                      saveResult <- save Nothing
-                      pure $ case saveResult of
-                        NoChange -> Deleted
-                        x -> x
-                    Nothing -> save (Just s)
+  let
+    ((requestedRotation, freeze), newInfo) =
+      flip State.runState outputData
+        $ (,)
+        <$> extractIgnoringError options.embedding.keyRotation
+        <*> extractIgnoringError options.embedding.freeze
+    autoRotation = options.keyRotationTrigger Comparison {old = loadedData load, new = newInfo}
+    rotation = requestedRotation <|> autoRotation
+  in
+    runTransaction
+      $ case freeze of
+        Just FreezeSessionForCurrentRequest -> pure Frozen
+        Nothing ->
+          let save oldSessionMaybe =
+                saveSessionOnDb
+                  options
+                  storage
+                  keyManager
+                  load.time
+                  newInfo
+                  oldSessionMaybe
+          in  case load.got of
+                Nothing -> save Nothing
+                Just s -> case rotation of
+                  Just RotateSessionKey -> do
+                    storage $ DeleteSession s.key
+                    saveResult <- save Nothing
+                    pure $ case saveResult of
+                      NoChange -> Deleted
+                      x -> x
+                  Nothing -> save (Just s)
 
 -- | Save a session to the database
 --

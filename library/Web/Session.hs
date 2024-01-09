@@ -53,6 +53,9 @@ module Web.Session
   , bsKeyEmbedding
   , dimapEmbedding
   , showReadKeyEmbedding
+
+    -- * Comparison
+  , Comparison (..)
   ) where
 
 import Web.Session.Freeze.Action
