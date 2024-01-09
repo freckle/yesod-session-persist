@@ -26,6 +26,7 @@ module Web.Session
 
     -- * Randomization
   , Randomization (..)
+  , defaultRandomization
   , deterministicallyRandomIO
   , DeterministicRandomization (..)
 

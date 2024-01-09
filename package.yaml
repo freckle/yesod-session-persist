@@ -67,6 +67,7 @@ internal-libraries:
       - bytestring
       - containers
       - cookie
+      - crypton
       - exceptions
       - http-types
       - mtl

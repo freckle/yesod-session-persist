@@ -120,6 +120,7 @@ library internal
     , bytestring
     , containers
     , cookie
+    , crypton
     , exceptions
     , http-types
     , mtl

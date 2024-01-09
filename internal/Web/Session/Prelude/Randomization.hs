@@ -4,9 +4,12 @@ module Web.Session.Prelude.Randomization
   , deterministicallyRandomSTM
   , DeterministicRandomization (..)
   , hoistRandomization
+  , defaultRandomization
   ) where
 
 import Web.Session.Prelude.Reexports
+
+import Crypto.Random (ChaChaDRG, DRG (randomBytesGenerate), drgNew)
 
 -- | General means of obtaining randomness
 newtype Randomization m = Randomization
@@ -44,3 +47,13 @@ newtype DeterministicRandomization = DeterministicRandomization
   -- ^ Given a requested number of bytes, this function should give a
   --   'ByteString' of that length and a new deterministic generator.
   }
+
+defaultRandomization :: IO (Randomization IO)
+defaultRandomization =
+  deterministicallyRandomIO . makeDeterministicRandomization =<< drgNew
+ where
+  makeDeterministicRandomization :: ChaChaDRG -> DeterministicRandomization
+  makeDeterministicRandomization drg =
+    DeterministicRandomization $ \n ->
+      let (bs, drg') = randomBytesGenerate (fromIntegral n) drg
+      in  (bs, makeDeterministicRandomization drg')
