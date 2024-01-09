@@ -24,7 +24,7 @@ hoistRandomization f (Randomization g) = Randomization (f . g)
 
 -- | Convert from a deterministic generator to an effectful one
 deterministicallyRandomIO
-  :: (MonadIO m, MonadIO n) => DeterministicRandomization -> m (Randomization n)
+  :: DeterministicRandomization -> IO (Randomization IO)
 deterministicallyRandomIO =
   liftIO . newIORef >=> pure . \ref ->
     Randomization $ \n ->
@@ -49,7 +49,7 @@ newtype DeterministicRandomization = DeterministicRandomization
   --   'ByteString' of that length and a new deterministic generator.
   }
 
-defaultRandomization :: (MonadIO m, MonadIO n) => m (Randomization n)
+defaultRandomization :: IO (Randomization IO)
 defaultRandomization =
   deterministicallyRandomIO . makeDeterministicRandomization =<< liftIO drgNew
  where

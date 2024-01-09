@@ -45,7 +45,7 @@ data Options tx m = Options
 --   - timing = 'defaultTimingOptions'
 --   - transportSecurity = 'AllowPlaintextTranport' (change this in production)
 --   - clock = 'Time.getCurrentTime'
-defaultOptions :: (MonadIO tx, MonadIO m) => Options tx m
+defaultOptions :: Options IO IO
 defaultOptions =
   Options
     { cookieName = "session-key"
@@ -53,7 +53,7 @@ defaultOptions =
     , freezeEmbedding = showReadKeyEmbedding "session-freeze"
     , timing = defaultTimingOptions
     , transportSecurity = AllowPlaintextTranport
-    , clock = liftIO Time.getCurrentTime
+    , clock = Time.getCurrentTime
     , randomization = defaultRandomization
     }
 

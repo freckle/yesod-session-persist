@@ -90,16 +90,7 @@ newMock mockOptions = do
 
   timing <- forAll $ Gen.timingOptions mockOptions.timeout
 
-  let options :: Options STM (PropertyT IO) =
-        Options
-          { cookieName = "session-key"
-          , keyRotationEmbedding = showReadKeyEmbedding "session-key-rotation"
-          , freezeEmbedding = showReadKeyEmbedding "session-freeze"
-          , transportSecurity = AllowPlaintextTranport
-          , timing
-          , clock
-          , randomization
-          }
+  let options = defaultOptions {timing, clock, randomization}
 
   keyManager <- makeSessionKeyManager <$> randomization
 
@@ -126,16 +117,7 @@ newMock' timing = do
 
   keyManager <- makeSessionKeyManager <$> randomization
 
-  let options =
-        Options
-          { cookieName = "session-key"
-          , keyRotationEmbedding = showReadKeyEmbedding "session-key-rotation"
-          , freezeEmbedding = showReadKeyEmbedding "session-freeze"
-          , transportSecurity = AllowPlaintextTranport
-          , timing
-          , clock
-          , randomization
-          }
+  let options = defaultOptions {timing, clock, randomization}
 
   let sessionManager =
         SessionManager
@@ -186,51 +168,53 @@ data ExpirationReason = IdleTimeout | AbsoluteTimeout
 
 createArbitrarySession
   :: Mock (PropertyT IO) -> SessionGenOptions -> PropertyT IO SessionKey
-createArbitrarySession mock@Mock
-                        { mockStorage
-                        , sessionManager = SessionManager {storage, runTransaction, options}
-                        } opt =
-  offTheRecordIO mockStorage
-    $ do
-      key <- newSessionKey mock.sessionManager
-      sessionMap <- forAll Gen.sessionData
-      now <- options.clock
-      let timeout = options.timing.timeout
-      timeGen <- case opt.liveness of
-        Nothing -> pure $ whatever now
-        Just Live -> pure $ live timeout now
-        Just (Expired reasonMaybe) -> do
-          reason <- case reasonMaybe of
-            Nothing ->
-              case (nonEmpty . catMaybes)
-                [ timeout.idle $> IdleTimeout
-                , timeout.absolute $> AbsoluteTimeout
-                ] of
-                Just xs -> forAll $ Gen.element $ toList xs
-                Nothing ->
-                  fail
-                    "Cannot generate an expired session for a configuration with no timeout limits"
-            Just x -> pure x
-          case reason of
-            IdleTimeout ->
-              maybe
-                ( fail
-                    "Cannot generate an expired-by-idle-timeout session for a configuration with no idle timeout limit"
-                )
-                pure
-                $ expiredViaIdleTimeout timeout now
-            AbsoluteTimeout ->
-              maybe
-                ( fail
-                    "Cannot generate an expired-by-absolute-timeout session for a configuration with no absolute timeout limit"
-                )
-                pure
-                $ expiredViaAbsoluteTimeout timeout now
-      time <- forAll timeGen
+createArbitrarySession
+  mock@Mock
+    { mockStorage
+    , sessionManager = SessionManager {storage, runTransaction, options}
+    }
+  opt =
+    offTheRecordIO mockStorage
+      $ do
+        key <- newSessionKey mock.sessionManager
+        sessionMap <- forAll Gen.sessionData
+        now <- options.clock
+        let timeout = options.timing.timeout
+        timeGen <- case opt.liveness of
+          Nothing -> pure $ whatever now
+          Just Live -> pure $ live timeout now
+          Just (Expired reasonMaybe) -> do
+            reason <- case reasonMaybe of
+              Nothing ->
+                case (nonEmpty . catMaybes)
+                  [ timeout.idle $> IdleTimeout
+                  , timeout.absolute $> AbsoluteTimeout
+                  ] of
+                  Just xs -> forAll $ Gen.element $ toList xs
+                  Nothing ->
+                    fail
+                      "Cannot generate an expired session for a configuration with no timeout limits"
+              Just x -> pure x
+            case reason of
+              IdleTimeout ->
+                maybe
+                  ( fail
+                      "Cannot generate an expired-by-idle-timeout session for a configuration with no idle timeout limit"
+                  )
+                  pure
+                  $ expiredViaIdleTimeout timeout now
+              AbsoluteTimeout ->
+                maybe
+                  ( fail
+                      "Cannot generate an expired-by-absolute-timeout session for a configuration with no absolute timeout limit"
+                  )
+                  pure
+                  $ expiredViaAbsoluteTimeout timeout now
+        time <- forAll timeGen
 
-      let session = Session {key, map = sessionMap, time}
-      runTransaction $ storage $ InsertSession session
-      pure session.key
+        let session = Session {key, map = sessionMap, time}
+        runTransaction $ storage $ InsertSession session
+        pure session.key
 
 whatever :: UTCTime -> Gen (Time UTCTime)
 whatever now = do
