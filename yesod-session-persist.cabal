@@ -4,13 +4,13 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 
-name:           yesod-sql-session
+name:           yesod-session-persist
 version:        0.0.0.0
 synopsis:       SQL session backend for Yesod
 description:    Use Persistent to store Yesod sessions
 category:       Web
-homepage:       https://github.com/freckle/yesod-sql-session#readme
-bug-reports:    https://github.com/freckle/yesod-sql-session/issues
+homepage:       https://github.com/freckle/yesod-session-persist#readme
+bug-reports:    https://github.com/freckle/yesod-session-persist/issues
 maintainer:     Freckle Education
 license:        MIT
 license-file:   LICENSE
@@ -23,15 +23,15 @@ extra-doc-files:
 
 source-repository head
   type: git
-  location: https://github.com/freckle/yesod-sql-session
+  location: https://github.com/freckle/yesod-session-persist
 
 library
   exposed-modules:
       Yesod.Session.Persist
   other-modules:
-      Paths_yesod_sql_session
+      Paths_yesod_session_persist
   autogen-modules:
-      Paths_yesod_sql_session
+      Paths_yesod_session_persist
   hs-source-dirs:
       library
   default-extensions:
@@ -91,9 +91,9 @@ library internal
       Yesod.Session.Persist.TransportSecurity
       Yesod.Session.Persist.Yesod
   other-modules:
-      Paths_yesod_sql_session
+      Paths_yesod_session_persist
   autogen-modules:
-      Paths_yesod_sql_session
+      Paths_yesod_session_persist
   hs-source-dirs:
       internal
   default-extensions:
@@ -146,9 +146,9 @@ test-suite spec
       Yesod.Session.Persist.SessionKeySpec
       Yesod.Session.Persist.YesodSpec
       YesodApp
-      Paths_yesod_sql_session
+      Paths_yesod_session_persist
   autogen-modules:
-      Paths_yesod_sql_session
+      Paths_yesod_session_persist
   hs-source-dirs:
       tests
   default-extensions:
@@ -185,6 +185,6 @@ test-suite spec
     , wai
     , wai-extra
     , yesod
-    , yesod-sql-session
+    , yesod-session-persist
     , yesod-test
   default-language: GHC2021

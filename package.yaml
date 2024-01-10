@@ -1,8 +1,8 @@
-name: yesod-sql-session
+name: yesod-session-persist
 version: 0.0.0.0
 maintainer: Freckle Education
 category: Web
-github: freckle/yesod-sql-session
+github: freckle/yesod-session-persist
 synopsis: SQL session backend for Yesod
 description: |
   Use Persistent to store Yesod sessions
@@ -99,5 +99,5 @@ tests:
       - wai
       - wai-extra
       - yesod
-      - yesod-sql-session
+      - yesod-session-persist
       - yesod-test

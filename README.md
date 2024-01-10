@@ -1,7 +1,7 @@
-# yesod-sql-session
+# yesod-session-persist
 
-[![Hackage](https://img.shields.io/hackage/v/yesod-sql-session.svg?style=flat)](https://hackage.haskell.org/package/yesod-sql-session)
-[![CI](https://github.com/freckle/yesod-sql-session/actions/workflows/ci.yml/badge.svg)](https://github.com/freckle/yesod-sql-session/actions/workflows/ci.yml)
+[![Hackage](https://img.shields.io/hackage/v/yesod-session-persist.svg?style=flat)](https://hackage.haskell.org/package/yesod-session-persist)
+[![CI](https://github.com/freckle/yesod-session-persist/actions/workflows/ci.yml/badge.svg)](https://github.com/freckle/yesod-session-persist/actions/workflows/ci.yml)
 
 Use this package to construct a Yesod session backend for which sessions are
 stored in a database table. You provide a Persistent entity.
