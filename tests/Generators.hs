@@ -12,9 +12,9 @@ module Generators
   , sessionData
   ) where
 
-import Web.Session.Prelude
+import Yesod.Session.Persist.Prelude
 
-import Web.Session
+import Yesod.Session.Persist
 
 import Test.Hspec.Hedgehog
 

@@ -2,6 +2,6 @@ type-class-roots = true
 roots = [
   "^Main.main$",
   "^Paths_",
-  "^Web.Session.Yesod.makeSessionBackend$",
-  "^Web.Session.Options.hoistOptions$",
+  "^Yesod.Session.Persist.Yesod.makeSessionBackend$",
+  "^Yesod.Session.Persist.Options.hoistOptions$",
 ]

@@ -5,14 +5,14 @@
 
 module YesodApp where
 
-import Web.Session.Prelude
+import Yesod.Session.Persist.Prelude
 
 import Mockery
-import Web.Session
-import Web.Session.SessionKey
-import Web.Session.SessionManager
-import Web.Session.Storage.Mock
-import Web.Session.Yesod
+import Yesod.Session.Persist
+import Yesod.Session.Persist.SessionKey
+import Yesod.Session.Persist.SessionManager
+import Yesod.Session.Persist.Storage.Mock
+import Yesod.Session.Persist.Yesod
 
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T

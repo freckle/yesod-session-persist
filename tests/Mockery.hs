@@ -29,13 +29,13 @@ module Mockery
   , repeat_
   ) where
 
-import Web.Session.Prelude
+import Yesod.Session.Persist.Prelude
 
-import Web.Session
-import Web.Session.SessionKey
-import Web.Session.SessionManager
-import Web.Session.Storage.Mock
-import Web.Session.Storage.Operation
+import Yesod.Session.Persist
+import Yesod.Session.Persist.SessionKey
+import Yesod.Session.Persist.SessionManager
+import Yesod.Session.Persist.Storage.Mock
+import Yesod.Session.Persist.Storage.Operation
 
 import Test.Hspec.Hedgehog
 
