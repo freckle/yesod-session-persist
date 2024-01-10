@@ -39,13 +39,20 @@
             p.base64
             p.bytestring
             p.containers
+            p.cookie
+            p.crypton
             p.data-default
             p.hspec
             p.mtl
             p.nonce
+            p.persistent
+            p.QuickCheck
             p.text
             p.time
+            p.wai
+            p.yesod
             p.yesod-core
+            p.yesod-test
           ];
         };
 
@@ -74,22 +81,15 @@
         buildInputs = with (nixpkgs.stable); [
           pcre
           pcre.dev
-          postgresql
-          rdkafka
           zlib
           zlib.dev
         ];
 
         nativeBuildInputs = with (packages); [
-          apply-refact
-          awscli
           cabal
-          dhall
-          fast-tags
           fourmolu
           ghc
           haskell-language-server
-          hiedb
           hlint
           stack
         ];

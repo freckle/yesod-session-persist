@@ -4,9 +4,7 @@
 [![CI](https://github.com/freckle/yesod-sql-session/actions/workflows/ci.yml/badge.svg)](https://github.com/freckle/yesod-sql-session/actions/workflows/ci.yml)
 
 Use this package to construct a Yesod session backend for which sessions are
-stored in a database table.
-You provide a Persistent entity, a SQL connection pool, and a random bytestring
-generator.
+stored in a database table. You provide a Persistent entity.
 
 ## Features
 

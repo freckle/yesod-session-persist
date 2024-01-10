@@ -76,7 +76,6 @@ internal-libraries:
       - text
       - time
       - transformers
-      - unliftio-core
       - wai
       - yesod-core
 

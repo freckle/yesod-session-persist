@@ -130,7 +130,6 @@ library internal
     , text
     , time
     , transformers
-    , unliftio-core
     , wai
     , yesod-core
   default-language: GHC2021

@@ -33,7 +33,6 @@ import Control.Monad.Catch as X (MonadThrow, throwM)
 import Control.Monad.Except as X (MonadError, throwError)
 import Control.Monad.Fail as X (fail)
 import Control.Monad.IO.Class as X (MonadIO (liftIO))
-import Control.Monad.IO.Unlift as X (MonadUnliftIO)
 import Control.Monad.Reader as X (ReaderT)
 import Control.Monad.State as X
   ( StateT (..)

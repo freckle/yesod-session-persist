@@ -28,14 +28,10 @@ import Web.Session.Storage.Persistent
 
 import Yesod.Core.Types (SessionBackend (..))
 
-import Database.Persist.Sql (SqlPersistT, runSqlPool)
-
-data SessionConfiguration session = SessionConfiguration
-  { persistence :: SessionPersistence session
+data SessionConfiguration persistentBackend persistentRecord = SessionConfiguration
+  { persistence :: SessionPersistence persistentBackend persistentRecord IO
   -- ^ Mapping between 'Session' and your Persistent entity
-  , connectionPool :: ConnectionPool
-  -- ^ SQL connection pool
-  , options :: Options (SqlPersistT IO) IO
+  , options :: Options (ReaderT persistentBackend IO) IO
   -- ^ Various options that have defaults; see 'defaultOptions'
   }
 
@@ -44,14 +40,20 @@ data SessionConfiguration session = SessionConfiguration
 -- The @session@ type parameter represents the Persistent entity
 -- you're using to store sessions
 -- (see the 'SessionPersistence' field of the configuration).
-makeSessionBackend :: SessionConfiguration session -> IO SessionBackend
-makeSessionBackend x =
-  makeSessionBackend'
-    SessionConfiguration'
-      { storage = persistentStorage x.persistence
-      , options = x.options
-      , runTransaction = (`runSqlPool` x.connectionPool)
-      }
+makeSessionBackend
+  :: forall persistentBackend persistentRecord
+   . SessionConfiguration persistentBackend persistentRecord
+  -> IO SessionBackend
+makeSessionBackend configuration =
+  let SessionConfiguration {persistence, options} = configuration
+  in  case persistence of
+        SessionPersistence {runTransaction} ->
+          makeSessionBackend'
+            SessionConfiguration'
+              { storage = persistentStorage persistence
+              , options = options
+              , runTransaction
+              }
 
 data SessionConfiguration' session = forall tx.
   Monad tx =>
