@@ -2,48 +2,54 @@ module Yesod.Session.Persist.SessionKeySpec
   ( spec
   ) where
 
-import TestPrelude
-
-import Yesod.Session.Persist.SessionManager
+import Yesod.Session.Persist.Test.Prelude
 
 import Data.Set qualified as Set
 import Data.Text qualified as T
 
 spec :: Spec
 spec = context "SessionKeyManager" $ do
-  specify "generates 24-character text" $ hedgehog $ do
-    Mock {sessionManager} <- newMock defaultMockOptions
-    sessionKey <- newSessionKey sessionManager
-    T.length sessionKey.text === 24
+  specify "generates 24-character text"
+    $ forAll (genMockInit id)
+    $ \mockInit -> ioProperty $ do
+      Mock {sessionManager} <- newMock id mockInit
+      sessionKey <- newSessionKey sessionManager
+      pure $ T.length sessionKey.text == 24
 
-  specify "uses only letters, numbers, dash, underscore" $ hedgehog $ do
-    Mock {sessionManager} <- newMock defaultMockOptions
-    sessionKey <- newSessionKey sessionManager
-    let charactersPresent = Set.fromList (T.unpack sessionKey.text)
-    assert $ charactersPresent `Set.isSubsetOf` charactersWanted
+  specify "uses only letters, numbers, dash, underscore"
+    $ forAll (genMockInit id)
+    $ \mockInit -> ioProperty $ do
+      Mock {sessionManager} <- newMock id mockInit
+      sessionKey <- newSessionKey sessionManager
+      let charactersPresent = Set.fromList (T.unpack sessionKey.text)
+      pure $ charactersPresent `Set.isSubsetOf` charactersWanted
 
-  modifyArgs (\x -> x {maxSuccess = 1})
-    $ specify "never generates the same key twice"
-    $ hedgehog
-    $ do
-      Mock {sessionManager} <- newMock defaultMockOptions
+  specify "never generates the same key twice"
+    $ forAll (genMockInit id)
+    $ \mockInit -> ioProperty $ do
+      Mock {sessionManager} <- newMock id mockInit
       let n = 1000
       sessionKeys <-
         fmap Set.fromList
           $ replicateM n
           $ newSessionKey sessionManager
-      Set.size sessionKeys === n
+      pure $ Set.size sessionKeys == n
 
-  specify "accepts its own keys" $ hedgehog $ do
-    Mock {sessionManager} <- newMock defaultMockOptions
-    sessionKey <- newSessionKey sessionManager
-    assert $ sessionKeyAppearsReasonable sessionManager sessionKey
+  specify "accepts its own keys"
+    $ forAll (genMockInit id)
+    $ \mockInit -> ioProperty $ do
+      Mock {sessionManager} <- newMock id mockInit
+      sessionKey <- newSessionKey sessionManager
+      pure $ sessionKeyAppearsReasonable sessionManager sessionKey
 
-  specify "does not accept invalid keys" $ hedgehog $ do
-    Mock {sessionManager} <- newMock defaultMockOptions
-    for_ someInvalidCookies $ \c ->
-      checkedSessionKeyFromCookieValue sessionManager c
-        === Nothing
+  specify "does not accept invalid keys"
+    $ forAll (genMockInit id)
+    $ \mockInit -> ioProperty $ do
+      Mock {sessionManager} <- newMock id mockInit
+      pure
+        $ all
+          (isNothing . checkedSessionKeyFromCookieValue sessionManager)
+          someInvalidCookies
 
 charactersWanted :: Set Char
 charactersWanted =

@@ -1,4 +1,1 @@
 resolver: lts-21.25
-
-extra-deps:
-  - hedgehog-1.4

@@ -2,14 +2,14 @@ module Yesod.Session.Persist.YesodSpec
   ( spec
   ) where
 
-import TestPrelude
+import Yesod.Session.Persist.Test.Prelude
 
 import Data.Aeson (encode, object)
 import Network.Wai
 import Network.Wai.Test (simpleHeaders)
 import Web.Cookie
+import Yesod.Session.Persist.YesodApp
 import Yesod.Test
-import YesodApp
 
 import Data.List qualified as List
 import Data.Sequence qualified as Seq
@@ -78,7 +78,7 @@ spec =
 
           replicateM_ 3 $ do
             -- A short pause should not affect anything
-            atomically $ modifyTVar' app.mock.currentTime $ addUTCTime 90
+            advanceTime 90 app.mock
 
             -- Verify that we're now logged in
             request $ do setUrl UserR; setMethod "GET"
@@ -99,7 +99,7 @@ spec =
             setRequestBody $ encode $ object [("uid", "xyz")]
 
           -- A pause longer than the idle timeout should kill the session
-          atomically $ modifyTVar' app.mock.currentTime $ addUTCTime (60 * 60 * 10)
+          advanceTime (60 * 60 * 10) app.mock
 
           request $ do setUrl UserR; setMethod "GET"
           bodyEquals "-"

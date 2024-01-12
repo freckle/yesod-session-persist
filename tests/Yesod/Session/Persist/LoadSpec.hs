@@ -2,39 +2,56 @@ module Yesod.Session.Persist.LoadSpec
   ( spec
   ) where
 
-import TestPrelude
-
-import Yesod.Session.Persist.Load
-import Yesod.Session.Persist.SessionManager
+import Yesod.Session.Persist.Test.Prelude
 
 import Data.Sequence qualified as Seq
 
 spec :: Spec
 spec = context "Session loading" $ do
-  specify "may load a session" $ hedgehog $ do
-    mock@Mock {sessionManager} <- newMock defaultMockOptions
-    let genOptions = defaultSessionGenOptions {liveness = Just Live}
-    sessionKey <- createArbitrarySession mock genOptions
-    load <- loadSession sessionManager sessionKey
-    assert $ didSessionLoad load
+  specify "may load a session"
+    $ forAll (genMockInit id)
+    $ \mockInit ->
+      forAll (genSessionInit requireLive mockInit) $ \sessionInit ->
+        forAll (genVectorOfRange (0, 5) $ genSessionInit id mockInit)
+          $ \otherSessionInits ->
+            ioProperty $ do
+              mock@Mock {sessionManager} <- newMock id mockInit
+              traverse_ (createArbitrarySession mock) otherSessionInits
+              sessionKey <- createArbitrarySession mock sessionInit
+              load <- loadSession sessionManager sessionKey
+              pure $ counterexample (show load) $ didSessionLoad load
 
   context "may load nothing" $ do
-    specify "when there is no session key" $ hedgehog $ do
-      mock@Mock {sessionManager} <- newMock defaultMockOptions
-      load <- loadNothing sessionManager
-      assert $ not $ didSessionLoad load
-      takeTranscript mock.mockStorage >>= (=== Seq.empty)
+    specify "when there is no session key"
+      $ forAll (genMockInit id)
+      $ \mockInit ->
+        forAll (genVectorOfRange (0, 5) $ genSessionInit id mockInit)
+          $ \sessionInits -> ioProperty $ do
+            mock@Mock {sessionManager} <- newMock id mockInit
+            traverse_ (createArbitrarySession mock) sessionInits
+            load :: Load Session <- loadNothing sessionManager
+            transcript <- takeTranscript mock.mockStorage
+            pure
+              $ counterexample (show load) (not $ didSessionLoad load)
+              .&&. counterexample (show transcript) (transcript == Seq.empty)
 
-    specify "when the key is not in storage" $ hedgehog $ do
-      Mock {sessionManager} <- newMock defaultMockOptions
-      sessionKey <- newSessionKey sessionManager
-      load <- loadSession sessionManager sessionKey
-      assert $ not $ didSessionLoad load
+    specify "when the key is not in storage"
+      $ forAll (genMockInit id)
+      $ \mockInit ->
+        forAll (genVectorOfRange (0, 5) $ genSessionInit id mockInit)
+          $ \sessionInits -> ioProperty $ do
+            mock@Mock {sessionManager} <- newMock id mockInit
+            traverse_ (createArbitrarySession mock) sessionInits
+            sessionKey <- newSessionKey sessionManager
+            load <- loadSession sessionManager sessionKey
+            pure $ counterexample (show load) (not $ didSessionLoad load)
 
-    specify "when the session is expired" $ hedgehog $ do
-      mock@Mock {sessionManager} <-
-        newMock $ defaultMockOptions & requireSomeTimeLimit
-      let genOptions = defaultSessionGenOptions {liveness = Just $ Expired Nothing}
-      sessionKey <- createArbitrarySession mock genOptions
-      load <- loadSession sessionManager sessionKey
-      assert $ not $ didSessionLoad load
+    specify "when the session is expired"
+      $ forAll (genMockInit requireSomeTimeLimit)
+      $ \mockInit ->
+        forAll (genSessionInit requireExpired mockInit)
+          $ \sessionInit -> ioProperty $ do
+            mock@Mock {sessionManager} <- newMock id mockInit
+            sessionKey <- createArbitrarySession mock sessionInit
+            load <- loadSession sessionManager sessionKey
+            pure $ counterexample (show load) (not $ didSessionLoad load)

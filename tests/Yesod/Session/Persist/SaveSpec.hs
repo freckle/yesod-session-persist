@@ -2,107 +2,119 @@ module Yesod.Session.Persist.SaveSpec
   ( spec
   ) where
 
-import TestPrelude
-
-import Yesod.Session.Persist.Load
-import Yesod.Session.Persist.Save
-import Yesod.Session.Persist.SessionManager
+import Yesod.Session.Persist.Test.Prelude
 
 import Data.Map.Strict qualified as Map
 import Data.Sequence qualified as Seq
 
 spec :: Spec
 spec = context "saveSession" $ do
-  specify "doesn't unnecessarily create a session" $ hedgehog $ do
-    mock@Mock {sessionManager} <- newMock defaultMockOptions
-    load <- loadNothing sessionManager
-    save <- saveSession sessionManager load $ loadedData load
-    save === NoChange
-    takeTranscript mock.mockStorage >>= (=== Seq.empty)
-
-  specify "may create a session" $ hedgehog $ do
-    mock@Mock {sessionManager} <- newMock defaultMockOptions
-    now <- readTVarIO mock.currentTime
-    load <- loadNothing sessionManager
-    let newData = loadedData load & Map.insert "a" "b"
-    save <- saveSession sessionManager load newData
-    annotateShow save
-    session <- assertSaved save
-    session.map === newData
-    session.time.created === now
-    session.time.accessed === now
-    transcript <- takeTranscript mock.mockStorage
-    transcript === Seq.fromList [StorageOperation' $ InsertSession session]
-
-  specify "may update a loaded session" $ hedgehog $ do
-    mock@Mock {sessionManager} <- newMock $ defaultMockOptions & noTimeoutResolution
-    time1 <- readTVarIO mock.currentTime
-    sessionKey <- do
+  specify "doesn't unnecessarily create a session"
+    $ forAll (genMockInit id)
+    $ \mockInit -> ioProperty $ do
+      mock@Mock {sessionManager} <- newMock id mockInit
       load <- loadNothing sessionManager
-      let newData = loadedData load & Map.insert "a" "b"
-      save <- saveSession sessionManager load newData
-      session <- assertSaved save
-      pure session.key
-    pause mock
-    time2 <- readTVarIO mock.currentTime
-    void $ takeTranscript mock.mockStorage
-    load <- loadSession sessionManager sessionKey
-    let newData = loadedData load & Map.insert "c" "d"
-    save <- saveSession sessionManager load newData
-    annotateShow save
-    session <- assertSaved save
-    session.map === Map.fromList [("a", "b"), ("c", "d")]
-    session.time.created === time1
-    session.time.accessed === time2
-    transcript <- takeTranscript mock.mockStorage
-    transcript
-      === Seq.fromList
-        [ StorageOperation' $ GetSession session.key
-        , StorageOperation' $ ReplaceSession session
-        ]
-
-  specify "changes the session key when we rotate" $ hedgehog $ do
-    mock@Mock {sessionManager = sessionManager@SessionManager {options}} <-
-      newMock $ defaultMockOptions & noTimeoutResolution
-    sessionKey1 <- do
-      load <- loadNothing sessionManager
-      let newData = loadedData load & Map.insert "a" "b"
-      save <- saveSession sessionManager load newData
-      session <- assertSaved save
-      pure session.key
-    pause mock
-    sessionKey2 <- do
-      load <- loadSession sessionManager sessionKey1
-      void $ takeTranscript mock.mockStorage
-      let sessionMap2 =
-            loadedData load
-              & setSessionKeyRotation options (Just RotateSessionKey)
-              & Map.insert "c" "d"
-      save <- saveSession sessionManager load sessionMap2
-      annotateShow save
-      session <- assertSaved save
+      save <- saveSession sessionManager load $ loadedData load
       transcript <- takeTranscript mock.mockStorage
-      transcript
-        === Seq.fromList
-          [ StorageOperation' $ DeleteSession sessionKey1
-          , StorageOperation' $ InsertSession session
-          ]
-      pure session.key
-    sessionKey1 /== sessionKey2
-    do
-      load <- loadSession sessionManager sessionKey1
-      didSessionLoad load === False
-    load <- loadSession sessionManager sessionKey2
-    loadedData load === Map.fromList [("a", "b"), ("c", "d")]
+      pure
+        $ counterexample (show save) (save === NoChange)
+        .&&. counterexample (show transcript) (transcript == Seq.empty)
+
+  specify "may create a session"
+    $ forAll (genMockInit id)
+    $ \mockInit -> ioProperty $ do
+      mock@Mock {sessionManager} <- newMock id mockInit
+      now <- readTVarIO mock.currentTime
+      load <- loadNothing sessionManager
+      let newData = loadedData load & Map.insert "a" "b"
+      session <- assertSaved =<< saveSession sessionManager load newData
+      transcript <- takeTranscript mock.mockStorage
+      pure
+        $ counterexample
+          (show session)
+          ( (session.map == newData)
+              .&&. (session.time.created == now)
+              .&&. (session.time.accessed == now)
+          )
+        .&&. counterexample
+          (show transcript)
+          (transcript == Seq.fromList [StorageOperation' $ InsertSession session])
+
+  specify "may update a loaded session"
+    $ forAll (genMockInit noTimeoutResolution)
+    $ \mockInit -> ioProperty $ do
+      mock@Mock {sessionManager} <- newMock id mockInit
+      time1 <- readTVarIO mock.currentTime
+      session1 <- do
+        load <- loadNothing sessionManager
+        let newData = loadedData load & Map.insert "a" "b"
+        assertSaved =<< saveSession sessionManager load newData
+      advanceTimeBriefly mock
+      time2 <- readTVarIO mock.currentTime
+      void $ takeTranscript mock.mockStorage
+      load <- loadSession sessionManager session1.key
+      let newData = loadedData load & Map.insert "c" "d"
+      session2 <- assertSaved =<< saveSession sessionManager load newData
+      transcript <- takeTranscript mock.mockStorage
+      pure
+        $ counterexample
+          (show session2)
+          ( (session2.map == Map.fromList [("a", "b"), ("c", "d")])
+              .&&. (session2.time.created == time1)
+              .&&. (session2.time.accessed == time2)
+          )
+        .&&. counterexample
+          (show transcript)
+          ( transcript
+              == Seq.fromList
+                [ StorageOperation' $ GetSession session2.key
+                , StorageOperation' $ ReplaceSession session2
+                ]
+          )
+
+  specify "changes the session key when we rotate"
+    $ forAll (genMockInit noTimeoutResolution)
+    $ \mockInit -> ioProperty $ do
+      mock@Mock {sessionManager} <- newMock id mockInit
+      let SessionManager {options} = sessionManager
+      session1 <- do
+        load <- loadNothing sessionManager
+        let newData = loadedData load & Map.insert "a" "b"
+        assertSaved =<< saveSession sessionManager load newData
+      advanceTimeBriefly mock
+      (session2, transcript) <- do
+        load <- loadSession sessionManager session1.key
+        void $ takeTranscript mock.mockStorage
+        let newData =
+              loadedData load
+                & setSessionKeyRotation options (Just RotateSessionKey)
+                & Map.insert "c" "d"
+        session <- assertSaved =<< saveSession sessionManager load newData
+        transcript <- takeTranscript mock.mockStorage
+        pure (session, transcript)
+      loadForOldSession <- loadSession sessionManager session1.key
+      loadForNewSession <- loadSession sessionManager session2.key
+      pure
+        $ counterexample (show (session1, session2)) (session1.key /= session2.key)
+        .&&. counterexample (show loadForOldSession) (not $ didSessionLoad loadForOldSession)
+        .&&. counterexample
+          (show loadForNewSession)
+          (loadedData loadForNewSession == Map.fromList [("a", "b"), ("c", "d")])
+        .&&. counterexample
+          (show transcript)
+          ( transcript
+              == Seq.fromList
+                [ StorageOperation' $ DeleteSession session1.key
+                , StorageOperation' $ InsertSession session2
+                ]
+          )
 
 setSessionKeyRotation
   :: Options tx m -> Maybe KeyRotation -> SessionMap -> SessionMap
 setSessionKeyRotation options =
   execState . embed options.embedding.keyRotation
 
-assertSaved :: Show a => Save a -> PropertyT IO a
+assertSaved :: Show a => Save a -> IO a
 assertSaved = \case
   Saved x -> pure x
-  x -> do
-    annotateShow x
-    failure
+  x -> fail $ "Expected Saved, but got: " <> show x

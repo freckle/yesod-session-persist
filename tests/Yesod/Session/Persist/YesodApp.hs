@@ -3,48 +3,24 @@
 {-# OPTIONS_GHC -fno-warn-missing-deriving-strategies #-}
 {-# OPTIONS_GHC -fno-warn-missing-export-lists #-}
 
-module YesodApp where
+module Yesod.Session.Persist.YesodApp where
 
-import Yesod.Session.Persist.Prelude
-
-import Mockery
-import Yesod.Session.Persist
-import Yesod.Session.Persist.SessionKey
-import Yesod.Session.Persist.SessionManager
-import Yesod.Session.Persist.Storage.Mock
-import Yesod.Session.Persist.Yesod
+import Yesod.Session.Persist.Test.Prelude
 
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
 import Data.Time qualified as Time
-import GHC.Generics (Generic)
-import System.Random qualified as Random
 import Yesod
 
 newApp :: TimingOptions NominalDiffTime -> IO App
 newApp timing = do
-  mock <- do
-    let randomization = atomically . newRandomization =<< Random.randomIO
+  -- We have limited ability to mock time in a Yesod test, because
+  -- the cookie manager will expire cookies based on the real time.
+  time <- Time.getCurrentTime
 
-    currentTime <- newTVarIO =<< Time.getCurrentTime
-    let clock = readTVarIO currentTime
-
-    mockStorage@MockStorage {storage} <-
-      hoistMockStorage atomically <$> atomically newMockStorage
-
-    keyManager <- makeSessionKeyManager <$> randomization
-
-    let options = defaultOptions {timing, clock, randomization, keyRotationTrigger}
-
-    let sessionManager =
-          SessionManager
-            { keyManager
-            , storage
-            , options
-            , runTransaction = atomically
-            }
-    pure Mock {sessionManager, currentTime, mockStorage}
-
+  randomSeed <- generate arbitrary
+  let mockInit = MockInit {randomSeed, time, timing}
+  mock <- newMock (\x -> x {keyRotationTrigger}) mockInit
   pure App {mock}
 
 keyRotationTrigger :: Comparison SessionMap -> Maybe KeyRotation

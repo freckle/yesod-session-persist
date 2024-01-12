@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Storage.Mock
+module Yesod.Session.Persist.Test.MockStorage
   ( newMockStorage
   , MockStorage (..)
   , hoistMockStorage

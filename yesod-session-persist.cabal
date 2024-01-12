@@ -81,7 +81,6 @@ library internal
       Yesod.Session.Persist.SessionKey
       Yesod.Session.Persist.SessionManager
       Yesod.Session.Persist.Storage.Exceptions
-      Yesod.Session.Persist.Storage.Mock
       Yesod.Session.Persist.Storage.Operation
       Yesod.Session.Persist.Storage.Persistent
       Yesod.Session.Persist.Timing.Math
@@ -138,14 +137,18 @@ test-suite spec
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Generators
-      Mockery
-      TestPrelude
       Yesod.Session.Persist.LoadSpec
       Yesod.Session.Persist.SaveSpec
       Yesod.Session.Persist.SessionKeySpec
+      Yesod.Session.Persist.Test.Gen.General
+      Yesod.Session.Persist.Test.Gen.Mock
+      Yesod.Session.Persist.Test.Gen.Session
+      Yesod.Session.Persist.Test.Mock
+      Yesod.Session.Persist.Test.MockStorage
+      Yesod.Session.Persist.Test.Prelude
+      Yesod.Session.Persist.Test.Randomization
+      Yesod.Session.Persist.YesodApp
       Yesod.Session.Persist.YesodSpec
-      YesodApp
       Paths_yesod_session_persist
   autogen-modules:
       Paths_yesod_session_persist
@@ -175,9 +178,7 @@ test-suite spec
     , base <5
     , containers
     , cookie
-    , hedgehog
     , hspec
-    , hspec-hedgehog
     , internal
     , random
     , text

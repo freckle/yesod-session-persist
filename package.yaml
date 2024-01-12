@@ -88,8 +88,6 @@ tests:
       - aeson
       - containers
       - cookie
-      - hedgehog
-      - hspec-hedgehog
       - hspec
       - internal
       - QuickCheck
