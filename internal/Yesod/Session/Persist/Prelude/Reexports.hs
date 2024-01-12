@@ -113,6 +113,7 @@ import Prelude as X
   ( Bounded
   , Enum
   , Int
+  , Integral
   , fromIntegral
   , minimum
   , negate
