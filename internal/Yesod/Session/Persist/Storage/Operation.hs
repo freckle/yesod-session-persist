@@ -4,6 +4,7 @@ module Yesod.Session.Persist.Storage.Operation
   ) where
 
 import Yesod.Session.Persist.Prelude
+
 import Yesod.Session.Persist.Session
 import Yesod.Session.Persist.SessionKey
 

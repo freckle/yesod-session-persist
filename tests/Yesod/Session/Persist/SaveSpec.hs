@@ -4,7 +4,7 @@ module Yesod.Session.Persist.SaveSpec
 
 import Yesod.Session.Persist.Test.Prelude
 
-import Control.Concurrent.STM.TVar
+import Control.Concurrent.STM.TVar (readTVarIO)
 import Data.Map.Strict qualified as Map
 import Data.Sequence qualified as Seq
 

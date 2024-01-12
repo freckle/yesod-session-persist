@@ -11,20 +11,18 @@ module Yesod.Session.Persist.Storage.Persistent
 
 import Yesod.Session.Persist.Prelude
 
-import Yesod.Session.Persist.Session
-import Yesod.Session.Persist.SessionKey
-import Yesod.Session.Persist.Storage.Exceptions
-import Yesod.Session.Persist.Storage.Operation
-
 import Database.Persist (Key, PersistRecordBackend)
+import Database.Persist qualified as Persist
 import Database.Persist.Class
   ( PersistEntity
   , PersistEntityBackend
   , SafeToInsert
   )
 import Database.Persist.Sql (ConnectionPool)
-
-import Database.Persist qualified as Persist
+import Yesod.Session.Persist.Session
+import Yesod.Session.Persist.SessionKey
+import Yesod.Session.Persist.Storage.Exceptions
+import Yesod.Session.Persist.Storage.Operation
 
 -- | Mapping between 'Session' and a Persistent entity of your choice
 data SessionPersistence backend record m = ( PersistRecordBackend record backend

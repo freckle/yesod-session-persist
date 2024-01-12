@@ -16,6 +16,7 @@ module Yesod.Session.Persist.Yesod
 
 import Yesod.Session.Persist.Prelude
 
+import Yesod.Core.Types (SessionBackend (..))
 import Yesod.Session.Persist.Cookie.Logic
 import Yesod.Session.Persist.Cookie.Reading
 import Yesod.Session.Persist.Load
@@ -25,8 +26,6 @@ import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.SessionManager
 import Yesod.Session.Persist.Storage.Operation
 import Yesod.Session.Persist.Storage.Persistent
-
-import Yesod.Core.Types (SessionBackend (..))
 
 data SessionConfiguration persistentBackend persistentRecord = SessionConfiguration
   { persistence :: SessionPersistence persistentBackend persistentRecord IO

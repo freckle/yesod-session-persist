@@ -6,11 +6,20 @@ import Yesod.Session.Persist.Test.Prelude
 
 import Control.Concurrent.STM.TVar (readTVarIO)
 import Data.Aeson (encode, object)
-import Network.Wai
+import Network.Wai (Middleware)
 import Network.Wai.Test (simpleHeaders)
-import Web.Cookie
-import Yesod.Session.Persist.YesodApp
+import Web.Cookie (SetCookie (..), def, parseSetCookie)
+import Yesod.Session.Persist.YesodApp (App (..), Route (..), newApp)
 import Yesod.Test
+  ( YesodExample
+  , bodyEquals
+  , getTestYesod
+  , request
+  , setMethod
+  , setRequestBody
+  , setUrl
+  , withResponse
+  )
 
 import Data.List qualified as List
 import Data.Sequence qualified as Seq

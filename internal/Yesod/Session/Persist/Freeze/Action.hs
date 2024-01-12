@@ -5,11 +5,9 @@ module Yesod.Session.Persist.Freeze.Action
 
 import Yesod.Session.Persist.Prelude
 
-import Yesod.Session.Persist.Freeze.Type
-
-import Yesod.Session.Persist.Options
-
 import Yesod.Core (MonadHandler (liftHandler), getYesod)
+import Yesod.Session.Persist.Freeze.Type
+import Yesod.Session.Persist.Options
 
 -- | Indicate whether the session should be frozen for the handling
 --   of the current request

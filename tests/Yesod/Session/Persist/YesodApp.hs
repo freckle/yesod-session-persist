@@ -7,11 +7,23 @@ module Yesod.Session.Persist.YesodApp where
 
 import Yesod.Session.Persist.Test.Prelude
 
-import Control.Monad.STM
+import Control.Monad.STM (STM)
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
 import Data.Time qualified as Time
 import Yesod
+  ( FromJSON
+  , Html
+  , RenderRoute (renderRoute)
+  , Yesod (defaultLayout, makeSessionBackend)
+  , deleteSession
+  , getSession
+  , mkYesod
+  , parseRoutes
+  , requireInsecureJsonBody
+  , setSession
+  , whamlet
+  )
 
 newApp :: TimingOptions NominalDiffTime -> IO App
 newApp timing = do

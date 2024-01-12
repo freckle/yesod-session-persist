@@ -4,16 +4,14 @@ module Yesod.Session.Persist.Cookie.SetCookie
 
 import Yesod.Session.Persist.Prelude
 
+import Web.Cookie qualified as C
+import Yesod.Core.Types (Header (AddCookie))
 import Yesod.Session.Persist.Options
 import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.Timing.Math
 import Yesod.Session.Persist.Timing.Options
 import Yesod.Session.Persist.Timing.Time
 import Yesod.Session.Persist.Timing.Timeout
-
-import Yesod.Core.Types (Header (AddCookie))
-
-import Web.Cookie qualified as C
 import Yesod.Session.Persist.TransportSecurity qualified as TransportSecurity
 
 makeSetCookieHeaders

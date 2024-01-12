@@ -8,11 +8,6 @@ module Yesod.Session.Persist.Test.MockStorage
 
 import Yesod.Session.Persist.Prelude
 
-import Yesod.Session.Persist.Session
-import Yesod.Session.Persist.SessionKey
-import Yesod.Session.Persist.Storage.Exceptions
-import Yesod.Session.Persist.Storage.Operation
-
 import Control.Concurrent.STM.TVar
   ( TVar
   , modifyTVar'
@@ -22,11 +17,13 @@ import Control.Concurrent.STM.TVar
   , writeTVar
   )
 import Control.Monad.STM (STM, atomically)
-
 import Data.Map.Strict qualified as Map
-import Data.Sequence qualified as Seq
-
 import Data.Sequence ((|>))
+import Data.Sequence qualified as Seq
+import Yesod.Session.Persist.Session
+import Yesod.Session.Persist.SessionKey
+import Yesod.Session.Persist.Storage.Exceptions
+import Yesod.Session.Persist.Storage.Operation
 
 data MockStorage m = MockStorage
   { storage :: forall a. StorageOperation a -> STM a

@@ -4,7 +4,7 @@ module Yesod.Session.Persist.Test.Randomization
 
 import Yesod.Session.Persist.Prelude
 
-import Control.Concurrent.STM.TVar
+import Control.Concurrent.STM.TVar (newTVar, readTVar, writeTVar)
 import Control.Monad.STM (STM)
 import System.Random qualified as Random
 

@@ -5,6 +5,8 @@ module Yesod.Session.Persist.Save
 
 import Yesod.Session.Persist.Prelude
 
+import Control.Monad.State qualified as State
+import Data.Map.Strict qualified as Map
 import Yesod.Session.Persist.Freeze.Type
 import Yesod.Session.Persist.KeyRotation.Type
 import Yesod.Session.Persist.Load
@@ -15,9 +17,6 @@ import Yesod.Session.Persist.SessionManager
 import Yesod.Session.Persist.Storage.Operation
 import Yesod.Session.Persist.Timing.Options
 import Yesod.Session.Persist.Timing.Time
-
-import Control.Monad.State qualified as State
-import Data.Map.Strict qualified as Map
 
 data Save a
   = -- | Nothing was done because a session freeze was requested

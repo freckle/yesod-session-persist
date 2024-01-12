@@ -7,12 +7,10 @@ module Yesod.Session.Persist.MapEmbedding
 
 import Yesod.Session.Persist.Prelude
 
-import Yesod.Core
-
 import Control.Monad.State qualified as State
 import Data.Map.Strict qualified as Map
-
 import Data.Text qualified as T
+import Yesod.Core (deleteSession, lookupSessionBS, setSessionBS)
 
 -- | Specifies how we represent some value within a 'SessionMap'
 --

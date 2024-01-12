@@ -8,7 +8,7 @@ module Yesod.Session.Persist.Test.Gen.General
 
 import Yesod.Session.Persist.Prelude
 
-import Test.QuickCheck hiding (Fixed)
+import Test.QuickCheck (Gen, choose)
 import Test.QuickCheck.Gen qualified as Gen
 
 chooseNominalDiffTime

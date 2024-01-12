@@ -9,7 +9,7 @@ module Yesod.Session.Persist.Test.Gen.Session
 import Yesod.Session.Persist.Prelude
 
 import Data.Map.Strict qualified as Map
-import Test.QuickCheck hiding (Fixed)
+import Test.QuickCheck (Gen)
 import Test.QuickCheck.Gen qualified as Gen
 import Yesod.Session.Persist
 import Yesod.Session.Persist.Test.Gen.General

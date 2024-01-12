@@ -9,7 +9,12 @@ module Yesod.Session.Persist.Test.Mock
 import Yesod.Session.Persist.Prelude
 
 import Control.Concurrent.STM.TVar
-import Control.Monad.STM
+  ( TVar
+  , modifyTVar'
+  , newTVarIO
+  , readTVarIO
+  )
+import Control.Monad.STM (STM, atomically)
 import Yesod.Session.Persist
 import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.SessionManager
