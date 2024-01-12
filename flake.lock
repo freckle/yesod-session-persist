@@ -49,33 +49,17 @@
       },
       "locked": {
         "dir": "main",
-        "lastModified": 1702501289,
-        "narHash": "sha256-ypEcEeBqDJUt0+Wm8FAN8c3sH3DoSQVfp+vxYTQ6Qpo=",
+        "lastModified": 1705043131,
+        "narHash": "sha256-Hnf2wzvXBKznYEll8JILCQv4uAKfWTWU7jberWKE8RE=",
         "owner": "freckle",
         "repo": "flakes",
-        "rev": "035ff665c6e98f6491adef6719257e4e58656044",
+        "rev": "9b0b7889579451fa3f45bf43dedd35d8c55e2617",
         "type": "github"
       },
       "original": {
         "dir": "main",
         "owner": "freckle",
         "repo": "flakes",
-        "type": "github"
-      }
-    },
-    "haskell": {
-      "locked": {
-        "lastModified": 1690271650,
-        "narHash": "sha256-qwdsW8DBY1qH+9luliIH7VzgwvL+ZGI3LZWC0LTiDMI=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "6dc93f0daec55ee2f441da385aaf143863e3d671",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "6dc93f0daec55ee2f441da385aaf143863e3d671",
         "type": "github"
       }
     },
@@ -195,17 +179,16 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "freckle": "freckle",
-        "haskell": "haskell",
         "stable": "stable"
       }
     },
     "stable": {
       "locked": {
-        "lastModified": 1704295289,
-        "narHash": "sha256-9WZDRfpMqCYL6g/HNWVvXF0hxdaAgwgIGeLYiOhmes8=",
+        "lastModified": 1704874635,
+        "narHash": "sha256-YWuCrtsty5vVZvu+7BchAxmcYzTMfolSPP5io8+WYCg=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b0b2c5445c64191fd8d0b31f2b1a34e45a64547d",
+        "rev": "3dc440faeee9e889fe2d1b4d25ad0f430d449356",
         "type": "github"
       },
       "original": {
