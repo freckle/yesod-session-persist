@@ -4,6 +4,7 @@ module Yesod.Session.Persist.YesodSpec
 
 import Yesod.Session.Persist.Test.Prelude
 
+import Control.Concurrent.STM.TVar (readTVarIO)
 import Data.Aeson (encode, object)
 import Network.Wai
 import Network.Wai.Test (simpleHeaders)
@@ -20,7 +21,7 @@ spec =
     context "Yesod App" $ do
       specify @(YesodExample App ()) "Sets a session cookie" $ do
         app <- getTestYesod
-        now <- readTVarIO app.mock.currentTime
+        now <- liftIO $ readTVarIO app.mock.currentTime
 
         -- Make a request to a normal route
         request $ do setUrl HomeR; setMethod "GET"

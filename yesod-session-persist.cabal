@@ -74,7 +74,6 @@ library internal
       Yesod.Session.Persist.Prelude.Embedding
       Yesod.Session.Persist.Prelude.Randomization
       Yesod.Session.Persist.Prelude.Reexports
-      Yesod.Session.Persist.Prelude.STM
       Yesod.Session.Persist.Prelude.Time
       Yesod.Session.Persist.Save
       Yesod.Session.Persist.Session
@@ -125,7 +124,6 @@ library internal
     , http-types
     , mtl
     , persistent
-    , stm
     , text
     , time
     , transformers
@@ -181,6 +179,7 @@ test-suite spec
     , hspec
     , internal
     , random
+    , stm
     , text
     , time
     , wai

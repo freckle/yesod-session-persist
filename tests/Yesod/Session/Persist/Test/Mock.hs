@@ -8,6 +8,8 @@ module Yesod.Session.Persist.Test.Mock
 
 import Yesod.Session.Persist.Prelude
 
+import Control.Concurrent.STM.TVar
+import Control.Monad.STM
 import Yesod.Session.Persist
 import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.SessionManager
@@ -56,7 +58,7 @@ createArbitrarySession mock sessionInit =
 
 advanceTime :: MonadIO m => NominalDiffTime -> Mock STM IO -> m ()
 advanceTime amount mock = do
-  atomically $ modifyTVar' mock.currentTime $ addUTCTime amount
+  liftIO $ atomically $ modifyTVar' mock.currentTime $ addUTCTime amount
 
 advanceTimeBriefly :: MonadIO m => Mock STM IO -> m ()
 advanceTimeBriefly mock =

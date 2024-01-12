@@ -27,7 +27,7 @@ module Yesod.Session.Persist
     -- * Randomization
   , Randomization (..)
   , defaultRandomization
-  , deterministicallyRandomIO
+  , deterministicallyRandom
   , DeterministicRandomization (..)
 
     -- * Storage

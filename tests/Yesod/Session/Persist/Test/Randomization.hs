@@ -4,6 +4,8 @@ module Yesod.Session.Persist.Test.Randomization
 
 import Yesod.Session.Persist.Prelude
 
+import Control.Concurrent.STM.TVar
+import Control.Monad.STM (STM)
 import System.Random qualified as Random
 
 newRandomization :: Int -> STM (Randomization STM)
@@ -14,3 +16,13 @@ newRandomization seed =
               let (bs, g') = Random.genByteString (fromIntegral n) g
               in  (bs, go g')
       in  go $ Random.mkStdGen seed
+
+deterministicallyRandomSTM
+  :: DeterministicRandomization -> STM (Randomization STM)
+deterministicallyRandomSTM =
+  newTVar >=> pure . \ref ->
+    Randomization $ \n -> do
+      DeterministicRandomization gen <- readTVar ref
+      let (bs, gen') = gen n
+      writeTVar ref $! gen'
+      pure bs

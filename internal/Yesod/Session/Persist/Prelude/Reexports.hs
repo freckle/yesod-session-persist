@@ -5,14 +5,6 @@ where
 
 import Control.Applicative as X (Applicative (..), empty, (<|>))
 import Control.Category as X ((>>>))
-import Control.Concurrent.STM as X
-  ( STM
-  , TVar
-  , modifyTVar'
-  , newTVar
-  , readTVar
-  , writeTVar
-  )
 import Control.Exception as X (Exception, SomeException (..))
 import Control.Exception.Annotated as X
   ( checkpointCallStack

@@ -1,7 +1,6 @@
 module Yesod.Session.Persist.Prelude.Randomization
   ( Randomization (..)
-  , deterministicallyRandomIO
-  , deterministicallyRandomSTM
+  , deterministicallyRandom
   , DeterministicRandomization (..)
   , hoistRandomization
   , defaultRandomization
@@ -23,24 +22,13 @@ hoistRandomization
 hoistRandomization f (Randomization g) = Randomization (f . g)
 
 -- | Convert from a deterministic generator to an effectful one
-deterministicallyRandomIO
+deterministicallyRandom
   :: DeterministicRandomization -> IO (Randomization IO)
-deterministicallyRandomIO =
+deterministicallyRandom =
   liftIO . newIORef >=> pure . \ref ->
     Randomization $ \n ->
       liftIO $ atomicModifyIORef' ref $ \(DeterministicRandomization gen) ->
         swap $ gen n
-
--- | Like 'deterministicallyRandomIO' but in 'STM' rather than 'IO'
-deterministicallyRandomSTM
-  :: DeterministicRandomization -> STM (Randomization STM)
-deterministicallyRandomSTM =
-  newTVar >=> pure . \ref ->
-    Randomization $ \n -> do
-      DeterministicRandomization gen <- readTVar ref
-      let (bs, gen') = gen n
-      writeTVar ref $! gen'
-      pure bs
 
 -- | A deterministic random generator
 newtype DeterministicRandomization = DeterministicRandomization
@@ -51,7 +39,7 @@ newtype DeterministicRandomization = DeterministicRandomization
 
 defaultRandomization :: IO (Randomization IO)
 defaultRandomization =
-  deterministicallyRandomIO . makeDeterministicRandomization =<< liftIO drgNew
+  deterministicallyRandom . makeDeterministicRandomization =<< liftIO drgNew
  where
   makeDeterministicRandomization :: ChaChaDRG -> DeterministicRandomization
   makeDeterministicRandomization drg =

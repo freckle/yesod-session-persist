@@ -13,6 +13,16 @@ import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.Storage.Exceptions
 import Yesod.Session.Persist.Storage.Operation
 
+import Control.Concurrent.STM.TVar
+  ( TVar
+  , modifyTVar'
+  , newTVar
+  , readTVar
+  , readTVarIO
+  , writeTVar
+  )
+import Control.Monad.STM (STM, atomically)
+
 import Data.Map.Strict qualified as Map
 import Data.Sequence qualified as Seq
 
@@ -33,10 +43,10 @@ hoistMockStorage f MockStorage {..} =
 -- | Perform some action without modifying the transcript
 offTheRecordIO :: MonadIO m => MockStorage m -> m a -> m a
 offTheRecordIO mock action = do
-  wasRecording <- readTVarIO mock.recordingVar
-  writeTVarIO mock.recordingVar False
+  wasRecording <- liftIO $ readTVarIO mock.recordingVar
+  liftIO $ atomically $ writeTVar mock.recordingVar False
   x <- action
-  writeTVarIO mock.recordingVar wasRecording
+  liftIO $ atomically $ writeTVar mock.recordingVar wasRecording
   pure x
 
 takeTranscript :: MockStorage m -> m (Seq StorageOperation')
@@ -88,3 +98,6 @@ handleOp ref = \case
             (const $ pure $ Just newSession)
         )
         newSession.key
+
+modifyTVarSTM :: TVar a -> (a -> STM a) -> STM ()
+modifyTVarSTM ref f = readTVar ref >>= f >>= (writeTVar ref $!)

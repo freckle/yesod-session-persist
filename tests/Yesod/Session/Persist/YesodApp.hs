@@ -7,6 +7,7 @@ module Yesod.Session.Persist.YesodApp where
 
 import Yesod.Session.Persist.Test.Prelude
 
+import Control.Monad.STM
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
 import Data.Time qualified as Time

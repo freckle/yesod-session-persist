@@ -72,7 +72,6 @@ internal-libraries:
       - http-types
       - mtl
       - persistent
-      - stm
       - text
       - time
       - transformers
@@ -92,6 +91,7 @@ tests:
       - internal
       - QuickCheck
       - random
+      - stm
       - text
       - time
       - wai
