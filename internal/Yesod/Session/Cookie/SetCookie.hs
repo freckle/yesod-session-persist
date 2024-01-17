@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Cookie.SetCookie
+module Yesod.Session.Cookie.SetCookie
   ( makeSetCookieHeaders
   ) where
 

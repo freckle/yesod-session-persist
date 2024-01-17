@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Cookie.Logic
+module Yesod.Session.Cookie.Logic
   ( setCookie
   , CookieContext (..)
   ) where
@@ -6,8 +6,8 @@ module Yesod.Session.Persist.Cookie.Logic
 import Internal.Prelude
 
 import Yesod.Core.Types (Header)
+import Yesod.Session.Cookie.SetCookie
 import Yesod.Session.Options
-import Yesod.Session.Persist.Cookie.SetCookie
 import Yesod.Session.SaveResult
 import Yesod.Session.SessionType
 

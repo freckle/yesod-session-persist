@@ -65,6 +65,9 @@ library internal
       Session.Freeze
       Session.KeyRotation
       Time
+      Yesod.Session.Cookie.Logic
+      Yesod.Session.Cookie.Reading
+      Yesod.Session.Cookie.SetCookie
       Yesod.Session.Embedding.Core
       Yesod.Session.Embedding.Map
       Yesod.Session.Freeze
@@ -75,9 +78,6 @@ library internal
       Yesod.Session.Manager.Save
       Yesod.Session.Options
       Yesod.Session.Options.TransportSecurity
-      Yesod.Session.Persist.Cookie.Logic
-      Yesod.Session.Persist.Cookie.Reading
-      Yesod.Session.Persist.Cookie.SetCookie
       Yesod.Session.Persist.Storage
       Yesod.Session.Persist.Yesod
       Yesod.Session.SaveResult

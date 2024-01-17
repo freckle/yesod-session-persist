@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Cookie.Reading
+module Yesod.Session.Cookie.Reading
   ( findSessionKey
   )
 where
