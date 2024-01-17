@@ -9,6 +9,8 @@ module Yesod.Session.Persist.Load
 
 import Yesod.Session.Persist.Prelude
 
+import Control.Monad.Trans.Maybe (MaybeT (MaybeT), runMaybeT)
+import Data.Map.Strict qualified as Map
 import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.Options
 import Yesod.Session.Persist.Session
@@ -18,8 +20,6 @@ import Yesod.Session.Persist.Storage.Operation
 import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Math
 import Yesod.Session.Persist.Timing.Options
-
-import Data.Map.Strict qualified as Map
 
 data Load a = Load
   { got :: Maybe a

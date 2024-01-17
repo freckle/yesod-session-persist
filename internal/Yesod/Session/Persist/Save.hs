@@ -6,6 +6,7 @@ module Yesod.Session.Persist.Save
 import Yesod.Session.Persist.Prelude
 
 import Control.Monad.State qualified as State
+import Control.Monad.Trans.Maybe (MaybeT (MaybeT), runMaybeT)
 import Data.Map.Strict qualified as Map
 import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.Comparison

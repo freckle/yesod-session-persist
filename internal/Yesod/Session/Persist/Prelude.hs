@@ -28,13 +28,6 @@ import Control.Monad.IO.Class as X (MonadIO (liftIO))
 import Control.Monad.Reader as X (ReaderT)
 import Control.Monad.Trans as X (MonadTrans (lift))
 import Control.Monad.Trans.Identity as X (IdentityT (..))
-import Control.Monad.Trans.Maybe as X
-  ( MaybeT (MaybeT)
-  , exceptToMaybeT
-  , mapMaybeT
-  , maybeToExceptT
-  , runMaybeT
-  )
 import Data.Bifunctor as X (bimap)
 import Data.Bool as X
 import Data.ByteString as X (ByteString)
