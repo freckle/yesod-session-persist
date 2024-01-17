@@ -5,9 +5,9 @@ module Yesod.Session.Freeze
 
 import Internal.Prelude
 
+import Embedding
 import Session.Freeze
 import Yesod.Core (HandlerSite, MonadHandler (liftHandler), getYesod)
-import Yesod.Session.Embedding.Core
 import Yesod.Session.Options
 
 -- | Indicate whether the session should be frozen for the handling

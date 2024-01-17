@@ -1,4 +1,4 @@
-module Yesod.Session.Embedding.Core
+module Embedding
   ( Embedding (..)
   , embed
   , extract

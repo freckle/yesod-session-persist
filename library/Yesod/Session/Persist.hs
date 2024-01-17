@@ -60,10 +60,10 @@ module Yesod.Session.Persist
   ) where
 
 import Comparison
+import Embedding
 import Randomization
 import Session.Freeze
 import Session.KeyRotation
-import Yesod.Session.Embedding.Core
 import Yesod.Session.Embedding.Map
 import Yesod.Session.Freeze
 import Yesod.Session.Key

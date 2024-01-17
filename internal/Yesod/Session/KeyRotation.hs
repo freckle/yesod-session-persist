@@ -5,9 +5,9 @@ module Yesod.Session.KeyRotation
 
 import Internal.Prelude
 
+import Embedding
 import Session.KeyRotation
 import Yesod.Core (HandlerSite, MonadHandler (liftHandler), getYesod)
-import Yesod.Session.Embedding.Core
 import Yesod.Session.Options
 
 -- | Indicate whether the current session key should be rotated

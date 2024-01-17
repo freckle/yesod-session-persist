@@ -8,8 +8,8 @@ import Control.Concurrent.STM.TVar (readTVarIO)
 import Control.Monad.State (execState)
 import Data.Map.Strict qualified as Map
 import Data.Sequence qualified as Seq
+import Embedding
 import Yesod.Core (SessionMap)
-import Yesod.Session.Embedding.Core
 
 spec :: Spec
 spec = context "saveSession" $ do

@@ -12,8 +12,8 @@ import Control.Monad.State qualified as State
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
 import Data.Text.Encoding (decodeUtf8', encodeUtf8)
+import Embedding
 import Yesod.Core (HandlerFor, deleteSession, lookupSessionBS, setSessionBS)
-import Yesod.Session.Embedding.Core
 
 -- | Specifies how we represent some value within a 'SessionMap'
 --

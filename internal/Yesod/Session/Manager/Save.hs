@@ -4,16 +4,16 @@ module Yesod.Session.Manager.Save
 
 import Internal.Prelude
 
-import Yesod.Session.SaveResult
 import Comparison
 import Control.Monad.State qualified as State
+import Embedding
 import Session.Freeze
 import Session.KeyRotation
 import Yesod.Core (SessionMap)
-import Yesod.Session.Embedding.Core
 import Yesod.Session.Manager
-import Yesod.Session.Options
 import Yesod.Session.Manager.Load
+import Yesod.Session.Options
+import Yesod.Session.SaveResult
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Operation
 import Yesod.Session.Storage.Save qualified as Storage

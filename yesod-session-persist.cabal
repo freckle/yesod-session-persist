@@ -60,6 +60,7 @@ library
 library internal
   exposed-modules:
       Comparison
+      Embedding
       Internal.Prelude
       Randomization
       Session.Freeze
@@ -68,7 +69,6 @@ library internal
       Yesod.Session.Cookie.Logic
       Yesod.Session.Cookie.Reading
       Yesod.Session.Cookie.SetCookie
-      Yesod.Session.Embedding.Core
       Yesod.Session.Embedding.Map
       Yesod.Session.Freeze
       Yesod.Session.Key
