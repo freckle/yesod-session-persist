@@ -59,11 +59,12 @@ module Yesod.Session.Persist
   , differsOn
   ) where
 
+import Yesod.Session.Persist.Embedding.Core
+import Yesod.Session.Persist.Embedding.Map
 import Yesod.Session.Persist.Freeze.Action
 import Yesod.Session.Persist.Freeze.Type
 import Yesod.Session.Persist.KeyRotation.Action
 import Yesod.Session.Persist.KeyRotation.Type
-import Yesod.Session.Persist.MapEmbedding
 import Yesod.Session.Persist.Options
 import Yesod.Session.Persist.Prelude
 import Yesod.Session.Persist.Session

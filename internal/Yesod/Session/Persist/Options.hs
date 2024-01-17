@@ -9,9 +9,9 @@ module Yesod.Session.Persist.Options
 import Yesod.Session.Persist.Prelude
 
 import Data.Time qualified as Time
+import Yesod.Session.Persist.Embedding.Map
 import Yesod.Session.Persist.Freeze.Type
 import Yesod.Session.Persist.KeyRotation.Type
-import Yesod.Session.Persist.MapEmbedding
 import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Options
 import Yesod.Session.Persist.TransportSecurity

@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.MapEmbedding
+module Yesod.Session.Persist.Embedding.Map
   ( SessionMapEmbedding
   , MapOperations (..)
   , bsKeyEmbedding
@@ -11,6 +11,7 @@ import Control.Monad.State qualified as State
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
 import Yesod.Core (deleteSession, lookupSessionBS, setSessionBS)
+import Yesod.Session.Persist.Embedding.Core
 
 -- | Specifies how we represent some value within a 'SessionMap'
 --

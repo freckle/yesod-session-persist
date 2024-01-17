@@ -62,16 +62,16 @@ library internal
       Yesod.Session.Persist.Cookie.Logic
       Yesod.Session.Persist.Cookie.Reading
       Yesod.Session.Persist.Cookie.SetCookie
+      Yesod.Session.Persist.Embedding.Core
+      Yesod.Session.Persist.Embedding.Map
       Yesod.Session.Persist.Freeze.Action
       Yesod.Session.Persist.Freeze.Type
       Yesod.Session.Persist.KeyRotation.Action
       Yesod.Session.Persist.KeyRotation.Type
       Yesod.Session.Persist.Load
-      Yesod.Session.Persist.MapEmbedding
       Yesod.Session.Persist.Options
       Yesod.Session.Persist.Prelude
       Yesod.Session.Persist.Prelude.Comparison
-      Yesod.Session.Persist.Prelude.Embedding
       Yesod.Session.Persist.Prelude.Randomization
       Yesod.Session.Persist.Prelude.Reexports
       Yesod.Session.Persist.Save

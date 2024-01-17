@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Prelude.Embedding
+module Yesod.Session.Persist.Embedding.Core
   ( Embedding (..)
   , embed
   , extract
@@ -6,7 +6,7 @@ module Yesod.Session.Persist.Prelude.Embedding
   , dimapEmbedding
   ) where
 
-import Yesod.Session.Persist.Prelude.Reexports
+import Yesod.Session.Persist.Prelude
 
 -- | Targets a value that is optionally present in some stateful monadic context
 data Embedding (con :: (Type -> Type) -> Constraint) e a = Embedding
