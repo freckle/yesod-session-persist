@@ -3,7 +3,7 @@ module Yesod.Session.Persist.Cookie.Reading
   )
 where
 
-import Yesod.Session.Persist.Prelude
+import Internal.Prelude
 
 import Network.HTTP.Types.Header
 import Network.Wai

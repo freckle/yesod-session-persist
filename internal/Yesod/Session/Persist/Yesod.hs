@@ -14,19 +14,19 @@ module Yesod.Session.Persist.Yesod
   , SessionBackend
   ) where
 
-import Yesod.Session.Persist.Prelude
+import Internal.Prelude
 
 import Data.Text.Encoding (encodeUtf8)
 import Yesod.Core.Types (SessionBackend (..))
+import Yesod.Session.Key
+import Yesod.Session.Manager
+import Yesod.Session.Options
 import Yesod.Session.Persist.Cookie.Logic
 import Yesod.Session.Persist.Cookie.Reading
 import Yesod.Session.Persist.Load
-import Yesod.Session.Persist.Options
 import Yesod.Session.Persist.Save
-import Yesod.Session.Persist.SessionKey
-import Yesod.Session.Persist.SessionManager
-import Yesod.Session.Persist.Storage.Operation
-import Yesod.Session.Persist.Storage.Persistent
+import Yesod.Session.Persist.Storage
+import Yesod.Session.Storage.Operation
 
 data SessionConfiguration persistentBackend persistentRecord = SessionConfiguration
   { persistence :: SessionPersistence persistentBackend persistentRecord IO

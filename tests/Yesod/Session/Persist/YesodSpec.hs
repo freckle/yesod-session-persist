@@ -2,7 +2,7 @@ module Yesod.Session.Persist.YesodSpec
   ( spec
   ) where
 
-import Yesod.Session.Persist.Test.Prelude
+import Test.Prelude
 
 import Control.Concurrent.STM.TVar (readTVarIO)
 import Data.Aeson (encode, object)
@@ -11,8 +11,8 @@ import Data.Sequence qualified as Seq
 import Data.Text.Encoding (encodeUtf8)
 import Network.Wai (Middleware)
 import Network.Wai.Test (simpleHeaders)
+import Time
 import Web.Cookie (SetCookie (..), def, parseSetCookie)
-import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.YesodApp (App (..), Route (..), newApp)
 import Yesod.Test
   ( YesodExample

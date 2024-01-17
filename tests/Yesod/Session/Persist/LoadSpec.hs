@@ -2,7 +2,7 @@ module Yesod.Session.Persist.LoadSpec
   ( spec
   ) where
 
-import Yesod.Session.Persist.Test.Prelude
+import Test.Prelude
 
 import Data.Sequence qualified as Seq
 

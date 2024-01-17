@@ -3,25 +3,25 @@ module Yesod.Session.Persist.Save
   , Save (..)
   ) where
 
-import Yesod.Session.Persist.Prelude
+import Internal.Prelude
 
+import Comparison
 import Control.Monad.State qualified as State
 import Control.Monad.Trans.Maybe (MaybeT (MaybeT), runMaybeT)
 import Data.Map.Strict qualified as Map
+import Session.Freeze
+import Session.KeyRotation
+import Time
 import Yesod.Core (SessionMap)
-import Yesod.Session.Persist.Comparison
-import Yesod.Session.Persist.Embedding.Core
-import Yesod.Session.Persist.Freeze.Type
-import Yesod.Session.Persist.KeyRotation.Type
+import Yesod.Session.Embedding.Core
+import Yesod.Session.Key
+import Yesod.Session.Manager
+import Yesod.Session.Options
 import Yesod.Session.Persist.Load
-import Yesod.Session.Persist.Options
-import Yesod.Session.Persist.Session
-import Yesod.Session.Persist.SessionKey
-import Yesod.Session.Persist.SessionManager
-import Yesod.Session.Persist.Storage.Operation
-import Yesod.Session.Persist.Time
-import Yesod.Session.Persist.Timing.Options
-import Yesod.Session.Persist.Timing.Time
+import Yesod.Session.SessionType
+import Yesod.Session.Storage.Operation
+import Yesod.Session.Timing.Options
+import Yesod.Session.Timing.Time
 
 data Save a
   = -- | Nothing was done because a session freeze was requested

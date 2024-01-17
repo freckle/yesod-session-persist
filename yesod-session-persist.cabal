@@ -59,34 +59,34 @@ library
 
 library internal
   exposed-modules:
-      Yesod.Session.Persist.Comparison
+      Comparison
+      Internal.Prelude
+      Randomization
+      Session.Freeze
+      Session.KeyRotation
+      Time
+      Yesod.Session.Embedding.Core
+      Yesod.Session.Embedding.Map
+      Yesod.Session.Freeze
+      Yesod.Session.Key
+      Yesod.Session.KeyRotation
+      Yesod.Session.Manager
+      Yesod.Session.Options
+      Yesod.Session.Options.TransportSecurity
       Yesod.Session.Persist.Cookie.Logic
       Yesod.Session.Persist.Cookie.Reading
       Yesod.Session.Persist.Cookie.SetCookie
-      Yesod.Session.Persist.Embedding.Core
-      Yesod.Session.Persist.Embedding.Map
-      Yesod.Session.Persist.Freeze.Action
-      Yesod.Session.Persist.Freeze.Type
-      Yesod.Session.Persist.KeyRotation.Action
-      Yesod.Session.Persist.KeyRotation.Type
       Yesod.Session.Persist.Load
-      Yesod.Session.Persist.Options
-      Yesod.Session.Persist.Prelude
-      Yesod.Session.Persist.Randomization
       Yesod.Session.Persist.Save
-      Yesod.Session.Persist.Session
-      Yesod.Session.Persist.SessionKey
-      Yesod.Session.Persist.SessionManager
-      Yesod.Session.Persist.Storage.Exceptions
-      Yesod.Session.Persist.Storage.Operation
-      Yesod.Session.Persist.Storage.Persistent
-      Yesod.Session.Persist.Time
-      Yesod.Session.Persist.Timing.Math
-      Yesod.Session.Persist.Timing.Options
-      Yesod.Session.Persist.Timing.Time
-      Yesod.Session.Persist.Timing.Timeout
-      Yesod.Session.Persist.TransportSecurity
+      Yesod.Session.Persist.Storage
       Yesod.Session.Persist.Yesod
+      Yesod.Session.SessionType
+      Yesod.Session.Storage.Exceptions
+      Yesod.Session.Storage.Operation
+      Yesod.Session.Timing.Math
+      Yesod.Session.Timing.Options
+      Yesod.Session.Timing.Time
+      Yesod.Session.Timing.Timeout
   other-modules:
       Paths_yesod_session_persist
   autogen-modules:
@@ -134,16 +134,16 @@ test-suite spec
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Test.Gen.General
+      Test.Gen.Mock
+      Test.Gen.Session
+      Test.Mock
+      Test.MockStorage
+      Test.Prelude
+      Test.Randomization
+      Yesod.Session.KeySpec
       Yesod.Session.Persist.LoadSpec
       Yesod.Session.Persist.SaveSpec
-      Yesod.Session.Persist.SessionKeySpec
-      Yesod.Session.Persist.Test.Gen.General
-      Yesod.Session.Persist.Test.Gen.Mock
-      Yesod.Session.Persist.Test.Gen.Session
-      Yesod.Session.Persist.Test.Mock
-      Yesod.Session.Persist.Test.MockStorage
-      Yesod.Session.Persist.Test.Prelude
-      Yesod.Session.Persist.Test.Randomization
       Yesod.Session.Persist.YesodApp
       Yesod.Session.Persist.YesodSpec
       Paths_yesod_session_persist

@@ -3,13 +3,13 @@ module Yesod.Session.Persist.Cookie.Logic
   , CookieContext (..)
   ) where
 
-import Yesod.Session.Persist.Prelude
+import Internal.Prelude
 
 import Yesod.Core.Types (Header)
+import Yesod.Session.Options
 import Yesod.Session.Persist.Cookie.SetCookie
-import Yesod.Session.Persist.Options
 import Yesod.Session.Persist.Save
-import Yesod.Session.Persist.Session
+import Yesod.Session.SessionType
 
 data CookieContext = CookieContext
   { cookie :: Maybe ByteString

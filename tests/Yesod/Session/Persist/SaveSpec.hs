@@ -2,14 +2,14 @@ module Yesod.Session.Persist.SaveSpec
   ( spec
   ) where
 
-import Yesod.Session.Persist.Test.Prelude
+import Test.Prelude
 
 import Control.Concurrent.STM.TVar (readTVarIO)
 import Control.Monad.State (execState)
 import Data.Map.Strict qualified as Map
 import Data.Sequence qualified as Seq
 import Yesod.Core (SessionMap)
-import Yesod.Session.Persist.Embedding.Core
+import Yesod.Session.Embedding.Core
 
 spec :: Spec
 spec = context "saveSession" $ do

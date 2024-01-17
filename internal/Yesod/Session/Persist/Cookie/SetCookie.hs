@@ -2,19 +2,19 @@ module Yesod.Session.Persist.Cookie.SetCookie
   ( makeSetCookieHeaders
   ) where
 
-import Yesod.Session.Persist.Prelude
+import Internal.Prelude
 
 import Data.Text.Encoding (encodeUtf8)
+import Time
 import Web.Cookie qualified as C
 import Yesod.Core.Types (Header (AddCookie))
-import Yesod.Session.Persist.Options
-import Yesod.Session.Persist.SessionKey
-import Yesod.Session.Persist.Time
-import Yesod.Session.Persist.Timing.Math
-import Yesod.Session.Persist.Timing.Options
-import Yesod.Session.Persist.Timing.Time
-import Yesod.Session.Persist.Timing.Timeout
-import Yesod.Session.Persist.TransportSecurity qualified as TransportSecurity
+import Yesod.Session.Key
+import Yesod.Session.Options
+import Yesod.Session.Options.TransportSecurity qualified as TransportSecurity
+import Yesod.Session.Timing.Math
+import Yesod.Session.Timing.Options
+import Yesod.Session.Timing.Time
+import Yesod.Session.Timing.Timeout
 
 makeSetCookieHeaders
   :: Options tx m -> Maybe (SessionKey, Time UTCTime) -> [Header]

@@ -3,5 +3,5 @@ roots = [
   "^Main.main$",
   "^Paths_",
   "^Yesod.Session.Persist.Yesod.makeSessionBackend$",
-  "^Yesod.Session.Persist.Options.hoistOptions$",
+  "^Yesod.Session.Options.hoistOptions$",
 ]
