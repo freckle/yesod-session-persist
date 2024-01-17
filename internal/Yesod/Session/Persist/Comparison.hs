@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Prelude.Comparison
+module Yesod.Session.Persist.Comparison
   ( Comparison (..)
   , differsOn
   ) where

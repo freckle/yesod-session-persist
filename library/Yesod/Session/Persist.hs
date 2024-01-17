@@ -59,6 +59,7 @@ module Yesod.Session.Persist
   , differsOn
   ) where
 
+import Yesod.Session.Persist.Comparison
 import Yesod.Session.Persist.Embedding.Core
 import Yesod.Session.Persist.Embedding.Map
 import Yesod.Session.Persist.Freeze.Action

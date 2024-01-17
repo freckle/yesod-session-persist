@@ -59,6 +59,7 @@ library
 
 library internal
   exposed-modules:
+      Yesod.Session.Persist.Comparison
       Yesod.Session.Persist.Cookie.Logic
       Yesod.Session.Persist.Cookie.Reading
       Yesod.Session.Persist.Cookie.SetCookie
@@ -71,7 +72,6 @@ library internal
       Yesod.Session.Persist.Load
       Yesod.Session.Persist.Options
       Yesod.Session.Persist.Prelude
-      Yesod.Session.Persist.Prelude.Comparison
       Yesod.Session.Persist.Prelude.Randomization
       Yesod.Session.Persist.Prelude.Reexports
       Yesod.Session.Persist.Save
