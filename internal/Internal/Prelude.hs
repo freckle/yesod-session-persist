@@ -58,7 +58,7 @@ import Data.String as X (String)
 import Data.Text as X (Text)
 import Data.Traversable as X (for)
 import Data.Tuple as X (fst, snd, swap)
-import Data.Type.Equality as X (type (~))
+import Data.Type.Equality as X
 import GHC.Stack as X (HasCallStack)
 import Numeric.Natural as X (Natural)
 import System.IO as X (IO)
