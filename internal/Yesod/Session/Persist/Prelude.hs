@@ -38,13 +38,6 @@ import Data.Fixed as X (Fixed (MkFixed))
 import Data.Foldable as X (all, foldMap, for_, toList, traverse_)
 import Data.Function as X (const, flip, id, ($), (&), (.))
 import Data.Functor as X (Functor, fmap, void, ($>), (<$>), (<&>))
-import Data.IORef as X
-  ( IORef
-  , atomicModifyIORef'
-  , newIORef
-  , readIORef
-  , writeIORef
-  )
 import Data.Kind as X (Constraint, Type)
 import Data.List as X (concat, concatMap, filter)
 import Data.List.NonEmpty as X (nonEmpty)

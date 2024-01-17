@@ -9,6 +9,7 @@ module Yesod.Session.Persist.Randomization
 import Yesod.Session.Persist.Prelude
 
 import Crypto.Random (ChaChaDRG, DRG (randomBytesGenerate), drgNew)
+import Data.IORef (atomicModifyIORef', newIORef)
 
 -- | General means of obtaining randomness
 newtype Randomization m = Randomization
