@@ -5,10 +5,10 @@ where
 
 import Internal.Prelude
 
+import Session.Timing.Time
 import Time
 import Yesod.Core (SessionMap)
 import Yesod.Session.Key
-import Yesod.Session.Timing.Time
 
 -- | What a saved session looks like in the database
 data Session = Session

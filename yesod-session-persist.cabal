@@ -65,6 +65,10 @@ library internal
       Randomization
       Session.Freeze
       Session.KeyRotation
+      Session.Timing.Math
+      Session.Timing.Options
+      Session.Timing.Time
+      Session.Timing.Timeout
       Time
       Yesod.Session.Cookie.Logic
       Yesod.Session.Cookie.Reading
@@ -85,10 +89,6 @@ library internal
       Yesod.Session.Storage.Exceptions
       Yesod.Session.Storage.Operation
       Yesod.Session.Storage.Save
-      Yesod.Session.Timing.Math
-      Yesod.Session.Timing.Options
-      Yesod.Session.Timing.Time
-      Yesod.Session.Timing.Timeout
   other-modules:
       Paths_yesod_session_persist
   autogen-modules:

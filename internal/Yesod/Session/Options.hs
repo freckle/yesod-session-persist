@@ -13,11 +13,11 @@ import Data.Time qualified as Time
 import Randomization
 import Session.Freeze
 import Session.KeyRotation
+import Session.Timing.Options
 import Time
 import Yesod.Core (SessionMap)
 import Yesod.Session.Embedding.Map
 import Yesod.Session.Options.TransportSecurity
-import Yesod.Session.Timing.Options
 
 -- | Settings that have defaults
 --

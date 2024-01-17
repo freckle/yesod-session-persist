@@ -1,4 +1,4 @@
-module Yesod.Session.Timing.Time
+module Session.Timing.Time
   ( Time (..)
   ) where
 

@@ -1,13 +1,13 @@
-module Yesod.Session.Timing.Math
+module Session.Timing.Math
   ( nextExpires
   , isExpired
   ) where
 
 import Internal.Prelude
 
+import Session.Timing.Time
+import Session.Timing.Timeout
 import Time
-import Yesod.Session.Timing.Time
-import Yesod.Session.Timing.Timeout
 
 -- | Calculate the next point in time where the given session
 --   will expire assuming that it sees no activity until then

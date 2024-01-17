@@ -1,12 +1,12 @@
-module Yesod.Session.Timing.Options
+module Session.Timing.Options
   ( TimingOptions (..)
   , defaultTimingOptions
   ) where
 
 import Internal.Prelude
 
+import Session.Timing.Timeout
 import Time
-import Yesod.Session.Timing.Timeout
 
 -- | Time duration settings
 --

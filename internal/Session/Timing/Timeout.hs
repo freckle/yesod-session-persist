@@ -1,4 +1,4 @@
-module Yesod.Session.Timing.Timeout
+module Session.Timing.Timeout
   ( Timeout (..)
   , defaultTimeout
   ) where

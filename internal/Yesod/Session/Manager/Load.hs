@@ -11,6 +11,8 @@ import Internal.Prelude
 
 import Control.Monad.Trans.Maybe (MaybeT (MaybeT), runMaybeT)
 import Data.Map.Strict qualified as Map
+import Session.Timing.Math
+import Session.Timing.Options
 import Time
 import Yesod.Core (SessionMap)
 import Yesod.Session.Key
@@ -18,8 +20,6 @@ import Yesod.Session.Manager
 import Yesod.Session.Options
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Operation
-import Yesod.Session.Timing.Math
-import Yesod.Session.Timing.Options
 
 data Load a = Load
   { got :: Maybe a
