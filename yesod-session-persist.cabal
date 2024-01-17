@@ -177,6 +177,7 @@ test-suite spec
     , cookie
     , hspec
     , internal
+    , mtl
     , random
     , stm
     , text

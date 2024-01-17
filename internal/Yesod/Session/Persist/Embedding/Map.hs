@@ -7,6 +7,7 @@ module Yesod.Session.Persist.Embedding.Map
 
 import Yesod.Session.Persist.Prelude
 
+import Control.Monad.State (StateT (..))
 import Control.Monad.State qualified as State
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T

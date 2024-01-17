@@ -89,6 +89,7 @@ tests:
       - cookie
       - hspec
       - internal
+      - mtl
       - QuickCheck
       - random
       - stm
