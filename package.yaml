@@ -63,7 +63,7 @@ internal-libraries:
     source-dirs: internal
     dependencies:
       - annotated-exception
-      - base64
+      - base64 < 1.0
       - bytestring
       - containers
       - cookie

@@ -117,7 +117,7 @@ library internal
   build-depends:
       annotated-exception
     , base <5
-    , base64
+    , base64 <1.0
     , bytestring
     , containers
     , cookie
