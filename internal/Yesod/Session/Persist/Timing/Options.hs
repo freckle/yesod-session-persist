@@ -32,5 +32,3 @@ defaultTimingOptions =
     { timeout = defaultTimeout
     , resolution = Just $ minutes 10
     }
- where
-  minutes = (*) 60

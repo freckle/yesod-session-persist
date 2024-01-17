@@ -58,8 +58,3 @@ cookieExpires :: Timeout NominalDiffTime -> Time UTCTime -> UTCTime
 cookieExpires timeout time =
   fromMaybe (addUTCTime (years 10) time.accessed)
     $ nextExpires timeout time
- where
-  years = (* 365.2) . days
-  days = (* 24) . hours
-  hours = (* 60) . minutes
-  minutes = (* 60)

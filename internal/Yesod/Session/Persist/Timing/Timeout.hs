@@ -39,7 +39,3 @@ defaultTimeout =
     { idle = Just $ hours 8
     , absolute = Just $ days 30
     }
- where
-  days = (* 24) . hours
-  hours = (* 60) . minutes
-  minutes = (* 60)
