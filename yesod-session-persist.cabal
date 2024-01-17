@@ -64,6 +64,7 @@ library internal
       Internal.Prelude
       Randomization
       Session.Freeze
+      Session.Key
       Session.KeyRotation
       Session.Timing.Math
       Session.Timing.Options
@@ -76,7 +77,6 @@ library internal
       Yesod.Session.Cookie.SetCookie
       Yesod.Session.Embedding.Map
       Yesod.Session.Freeze
-      Yesod.Session.Key
       Yesod.Session.KeyRotation
       Yesod.Session.Manager
       Yesod.Session.Manager.Load

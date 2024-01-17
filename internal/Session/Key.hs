@@ -1,4 +1,4 @@
-module Yesod.Session.Key
+module Session.Key
   ( SessionKey (..)
   , SessionKeyManager (..)
   , makeSessionKeyManager

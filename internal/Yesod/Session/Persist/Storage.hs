@@ -19,7 +19,7 @@ import Database.Persist.Class
   , SafeToInsert
   )
 import Database.Persist.Sql (ConnectionPool)
-import Yesod.Session.Key
+import Session.Key
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation

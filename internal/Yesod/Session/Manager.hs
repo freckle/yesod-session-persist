@@ -7,7 +7,7 @@ module Yesod.Session.Manager
 
 import Internal.Prelude
 
-import Yesod.Session.Key
+import Session.Key
 import Yesod.Session.Options
 import Yesod.Session.Storage.Operation
 

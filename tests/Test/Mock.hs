@@ -15,12 +15,12 @@ import Control.Concurrent.STM.TVar
   , readTVarIO
   )
 import Control.Monad.STM (STM, atomically)
+import Session.Key
 import Test.Gen.Mock
 import Test.Gen.Session
 import Test.MockStorage
 import Test.Randomization
 import Time
-import Yesod.Session.Key
 import Yesod.Session.Manager
 import Yesod.Session.Persist
 import Yesod.Session.Storage.Operation

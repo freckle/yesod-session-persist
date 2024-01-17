@@ -5,7 +5,7 @@ module Yesod.Session.Storage.Operation
 
 import Internal.Prelude
 
-import Yesod.Session.Key
+import Session.Key
 import Yesod.Session.SessionType
 
 data StorageOperation'

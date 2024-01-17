@@ -63,6 +63,7 @@ import Comparison
 import Embedding
 import Randomization
 import Session.Freeze
+import Session.Key
 import Session.KeyRotation
 import Session.Timing.Options
 import Session.Timing.Time
@@ -70,7 +71,6 @@ import Session.Timing.Timeout
 import Session.TransportSecurity
 import Yesod.Session.Embedding.Map
 import Yesod.Session.Freeze
-import Yesod.Session.Key
 import Yesod.Session.KeyRotation
 import Yesod.Session.Options
 import Yesod.Session.Persist.Storage

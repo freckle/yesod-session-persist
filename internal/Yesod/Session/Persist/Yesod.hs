@@ -17,10 +17,10 @@ module Yesod.Session.Persist.Yesod
 import Internal.Prelude
 
 import Data.Text.Encoding (encodeUtf8)
+import Session.Key
 import Yesod.Core.Types (SessionBackend (..))
 import Yesod.Session.Cookie.Logic
 import Yesod.Session.Cookie.Reading
-import Yesod.Session.Key
 import Yesod.Session.Manager
 import Yesod.Session.Manager.Load
 import Yesod.Session.Manager.Save

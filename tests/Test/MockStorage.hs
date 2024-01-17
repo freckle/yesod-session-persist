@@ -20,7 +20,7 @@ import Control.Monad.STM (STM, atomically)
 import Data.Map.Strict qualified as Map
 import Data.Sequence ((|>))
 import Data.Sequence qualified as Seq
-import Yesod.Session.Key
+import Session.Key
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation
