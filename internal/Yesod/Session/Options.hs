@@ -14,10 +14,10 @@ import Randomization
 import Session.Freeze
 import Session.KeyRotation
 import Session.Timing.Options
+import Session.TransportSecurity
 import Time
 import Yesod.Core (SessionMap)
 import Yesod.Session.Embedding.Map
-import Yesod.Session.Options.TransportSecurity
 
 -- | Settings that have defaults
 --

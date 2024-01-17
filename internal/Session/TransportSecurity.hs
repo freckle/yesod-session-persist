@@ -1,4 +1,4 @@
-module Yesod.Session.Options.TransportSecurity
+module Session.TransportSecurity
   ( TransportSecurity (..)
   , cookieSecure
   ) where

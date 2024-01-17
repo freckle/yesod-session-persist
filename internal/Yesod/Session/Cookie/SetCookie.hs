@@ -9,12 +9,12 @@ import Session.Timing.Math
 import Session.Timing.Options
 import Session.Timing.Time
 import Session.Timing.Timeout
+import Session.TransportSecurity qualified as TransportSecurity
 import Time
 import Web.Cookie qualified as C
 import Yesod.Core.Types (Header (AddCookie))
 import Yesod.Session.Key
 import Yesod.Session.Options
-import Yesod.Session.Options.TransportSecurity qualified as TransportSecurity
 
 makeSetCookieHeaders
   :: Options tx m -> Maybe (SessionKey, Time UTCTime) -> [Header]

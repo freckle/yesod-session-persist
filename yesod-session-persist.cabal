@@ -69,6 +69,7 @@ library internal
       Session.Timing.Options
       Session.Timing.Time
       Session.Timing.Timeout
+      Session.TransportSecurity
       Time
       Yesod.Session.Cookie.Logic
       Yesod.Session.Cookie.Reading
@@ -81,7 +82,6 @@ library internal
       Yesod.Session.Manager.Load
       Yesod.Session.Manager.Save
       Yesod.Session.Options
-      Yesod.Session.Options.TransportSecurity
       Yesod.Session.Persist.Storage
       Yesod.Session.Persist.Yesod
       Yesod.Session.SaveResult
