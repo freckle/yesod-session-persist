@@ -6,7 +6,7 @@ module Yesod.Session.Persist.Randomization
   , defaultRandomization
   ) where
 
-import Yesod.Session.Persist.Prelude.Reexports
+import Yesod.Session.Persist.Prelude
 
 import Crypto.Random (ChaChaDRG, DRG (randomBytesGenerate), drgNew)
 

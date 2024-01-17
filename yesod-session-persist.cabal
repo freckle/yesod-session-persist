@@ -72,7 +72,6 @@ library internal
       Yesod.Session.Persist.Load
       Yesod.Session.Persist.Options
       Yesod.Session.Persist.Prelude
-      Yesod.Session.Persist.Prelude.Reexports
       Yesod.Session.Persist.Randomization
       Yesod.Session.Persist.Save
       Yesod.Session.Persist.Session

@@ -3,7 +3,7 @@ module Yesod.Session.Persist.Comparison
   , differsOn
   ) where
 
-import Yesod.Session.Persist.Prelude.Reexports
+import Yesod.Session.Persist.Prelude
 
 data Comparison a = Comparison
   { old :: a
