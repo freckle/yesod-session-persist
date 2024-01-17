@@ -26,8 +26,9 @@ data Options tx m = Options
   , timing :: TimingOptions NominalDiffTime
   -- ^ Various time duration settings
   , transportSecurity :: TransportSecurity
-  , embedding :: SessionEmbeddings
   -- ^ Whether cookies require HTTPS
+  , embedding :: SessionEmbeddings
+  -- ^ How special session management indicators get smuggled through a 'SessionMap'
   , clock :: m UTCTime
   -- ^ How to determine the current time;
   --   you can change this to a fake for testing
@@ -41,11 +42,12 @@ data Options tx m = Options
 -- | Default options
 --
 --   - cookieName = @"session-key"@
---   - keyRotationEmbedding = @'showReadKeyEmbedding' "session-key-rotation"@
---   - freezeEmbedding = @'showReadKeyEmbedding' "session-freeze"@
 --   - timing = 'defaultTimingOptions'
 --   - transportSecurity = 'AllowPlaintextTranport' (change this in production)
+--   - embedding.keyRotation = @'showReadKeyEmbedding' "session-key-rotation"@
+--   - embedding.freeze = @'showReadKeyEmbedding' "session-freeze"@
 --   - clock = 'Time.getCurrentTime'
+--   - randomization = 'defaultRandomization'
 --   - keyRotationTrigger = 'const' 'Nothing'
 defaultOptions :: Options IO IO
 defaultOptions =

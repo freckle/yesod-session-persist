@@ -24,7 +24,8 @@ import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation
 
--- | Mapping between 'Session' and a Persistent entity of your choice
+-- | Mapping between 'Yesod.Session.Persist.Session' and
+--   a Persistent entity of your choice
 data SessionPersistence backend record m = ( PersistRecordBackend record backend
                                            , Persist.PersistStoreWrite backend
                                            , SafeToInsert record

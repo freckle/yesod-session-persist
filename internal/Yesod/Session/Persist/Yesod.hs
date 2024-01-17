@@ -30,7 +30,7 @@ import Yesod.Session.Storage.Operation
 
 data SessionConfiguration persistentBackend persistentRecord = SessionConfiguration
   { persistence :: SessionPersistence persistentBackend persistentRecord IO
-  -- ^ Mapping between 'Session' and your Persistent entity
+  -- ^ Mapping between 'Yesod.Session.Persist.Session' and your Persistent entity
   , options :: Options (ReaderT persistentBackend IO) IO
   -- ^ Various options that have defaults; see 'defaultOptions'
   }

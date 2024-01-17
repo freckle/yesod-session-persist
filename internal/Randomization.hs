@@ -38,6 +38,8 @@ newtype DeterministicRandomization = DeterministicRandomization
   --   'ByteString' of that length and a new deterministic generator.
   }
 
+-- | Cryptographically secure deterministic randomization seeded from
+--   system entropy using @ChaChaDRG@ from the @crypton@ package
 defaultRandomization :: IO (Randomization IO)
 defaultRandomization =
   deterministicallyRandom . makeDeterministicRandomization =<< liftIO drgNew
