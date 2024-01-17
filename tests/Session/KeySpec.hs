@@ -1,4 +1,4 @@
-module Yesod.Session.KeySpec
+module Session.KeySpec
   ( spec
   ) where
 
@@ -7,6 +7,8 @@ import Test.Prelude
 import Data.Set qualified as Set
 import Data.Text qualified as T
 import Data.Text.Encoding (encodeUtf8)
+import Session.Key
+import Yesod.Session.Manager
 
 spec :: Spec
 spec = context "SessionKeyManager" $ do

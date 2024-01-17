@@ -136,6 +136,7 @@ test-suite spec
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Session.KeySpec
       Test.Gen.General
       Test.Gen.Mock
       Test.Gen.Session
@@ -143,9 +144,8 @@ test-suite spec
       Test.MockStorage
       Test.Prelude
       Test.Randomization
-      Yesod.Session.KeySpec
-      Yesod.Session.Persist.LoadSpec
-      Yesod.Session.Persist.SaveSpec
+      Yesod.Session.Manager.LoadSpec
+      Yesod.Session.Manager.SaveSpec
       Yesod.Session.Persist.YesodApp
       Yesod.Session.Persist.YesodSpec
       Paths_yesod_session_persist

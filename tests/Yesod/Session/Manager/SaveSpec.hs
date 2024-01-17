@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.SaveSpec
+module Yesod.Session.Manager.SaveSpec
   ( spec
   ) where
 
@@ -9,7 +9,16 @@ import Control.Monad.State (execState)
 import Data.Map.Strict qualified as Map
 import Data.Sequence qualified as Seq
 import Embedding
+import Session.KeyRotation
+import Session.Timing.Time
 import Yesod.Core (SessionMap)
+import Yesod.Session.Manager
+import Yesod.Session.Manager.Load
+import Yesod.Session.Manager.Save
+import Yesod.Session.Options
+import Yesod.Session.SaveResult
+import Yesod.Session.SessionType
+import Yesod.Session.Storage.Operation
 
 spec :: Spec
 spec = context "saveSession" $ do

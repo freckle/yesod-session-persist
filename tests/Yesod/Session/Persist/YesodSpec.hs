@@ -13,7 +13,9 @@ import Network.Wai (Middleware)
 import Network.Wai.Test (simpleHeaders)
 import Time
 import Web.Cookie (SetCookie (..), def, parseSetCookie)
+import Yesod.Session.Persist
 import Yesod.Session.Persist.YesodApp (App (..), Route (..), newApp)
+import Yesod.Session.Storage.Operation
 import Yesod.Test
   ( YesodExample
   , bodyEquals

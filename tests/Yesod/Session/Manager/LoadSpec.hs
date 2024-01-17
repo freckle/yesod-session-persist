@@ -1,10 +1,13 @@
-module Yesod.Session.Persist.LoadSpec
+module Yesod.Session.Manager.LoadSpec
   ( spec
   ) where
 
 import Test.Prelude
 
 import Data.Sequence qualified as Seq
+import Yesod.Session.Manager
+import Yesod.Session.Manager.Load
+import Yesod.Session.SessionType
 
 spec :: Spec
 spec = context "Session loading" $ do
