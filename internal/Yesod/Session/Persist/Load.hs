@@ -9,6 +9,7 @@ module Yesod.Session.Persist.Load
 
 import Yesod.Session.Persist.Prelude
 
+import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.Options
 import Yesod.Session.Persist.Session
 import Yesod.Session.Persist.SessionKey

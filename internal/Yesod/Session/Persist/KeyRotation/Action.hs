@@ -5,7 +5,7 @@ module Yesod.Session.Persist.KeyRotation.Action
 
 import Yesod.Session.Persist.Prelude
 
-import Yesod.Core (MonadHandler (liftHandler), getYesod)
+import Yesod.Core (HandlerSite, MonadHandler (liftHandler), getYesod)
 import Yesod.Session.Persist.Embedding.Core
 import Yesod.Session.Persist.KeyRotation.Type
 import Yesod.Session.Persist.Options

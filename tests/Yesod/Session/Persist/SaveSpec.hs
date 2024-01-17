@@ -7,6 +7,7 @@ import Yesod.Session.Persist.Test.Prelude
 import Control.Concurrent.STM.TVar (readTVarIO)
 import Data.Map.Strict qualified as Map
 import Data.Sequence qualified as Seq
+import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.Embedding.Core
 
 spec :: Spec

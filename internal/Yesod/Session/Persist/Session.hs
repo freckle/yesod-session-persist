@@ -5,6 +5,7 @@ where
 
 import Yesod.Session.Persist.Prelude
 
+import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Time

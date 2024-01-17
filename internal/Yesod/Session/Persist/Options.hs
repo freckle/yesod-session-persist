@@ -9,6 +9,7 @@ module Yesod.Session.Persist.Options
 import Yesod.Session.Persist.Prelude
 
 import Data.Time qualified as Time
+import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.Comparison
 import Yesod.Session.Persist.Embedding.Map
 import Yesod.Session.Persist.Freeze.Type

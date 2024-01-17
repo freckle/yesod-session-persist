@@ -97,5 +97,6 @@ tests:
       - wai
       - wai-extra
       - yesod
+      - yesod-core
       - yesod-session-persist
       - yesod-test

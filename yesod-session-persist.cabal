@@ -184,6 +184,7 @@ test-suite spec
     , wai
     , wai-extra
     , yesod
+    , yesod-core
     , yesod-session-persist
     , yesod-test
   default-language: GHC2021

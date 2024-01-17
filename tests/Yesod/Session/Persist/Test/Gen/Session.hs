@@ -11,6 +11,7 @@ import Yesod.Session.Persist.Prelude
 import Data.Map.Strict qualified as Map
 import Test.QuickCheck (Gen)
 import Test.QuickCheck.Gen qualified as Gen
+import Yesod.Core (SessionMap)
 import Yesod.Session.Persist
 import Yesod.Session.Persist.Test.Gen.General
 import Yesod.Session.Persist.Test.Gen.Mock

@@ -24,6 +24,7 @@ import Yesod
   , setSession
   , whamlet
   )
+import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.Time
 
 newApp :: TimingOptions NominalDiffTime -> IO App

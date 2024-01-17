@@ -7,6 +7,7 @@ import Yesod.Session.Persist.Prelude
 
 import Control.Monad.State qualified as State
 import Data.Map.Strict qualified as Map
+import Yesod.Core (SessionMap)
 import Yesod.Session.Persist.Comparison
 import Yesod.Session.Persist.Embedding.Core
 import Yesod.Session.Persist.Freeze.Type

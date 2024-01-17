@@ -88,7 +88,6 @@ import Numeric.Natural as X (Natural)
 import System.IO as X (IO)
 import Text.Read as X (Read, readMaybe)
 import Text.Show as X (Show, show)
-import Yesod.Core as X (HandlerFor, HandlerSite, MonadHandler, SessionMap)
 import Prelude as X
   ( Bounded
   , Enum
