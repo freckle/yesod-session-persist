@@ -12,8 +12,9 @@ import Test.Mock as X
 import Test.MockStorage as X
 import Test.QuickCheck as X hiding (Fixed)
 import Yesod.Session.Manager as X
+import Yesod.Session.Manager.Load as X
+import Yesod.Session.Manager.Save as X
 import Yesod.Session.Persist as X
-import Yesod.Session.Persist.Load as X
-import Yesod.Session.Persist.Save as X
 import Yesod.Session.Persist.Yesod as X
+import Yesod.Session.SaveResult as X
 import Yesod.Session.Storage.Operation as X

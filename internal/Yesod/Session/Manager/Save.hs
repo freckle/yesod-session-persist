@@ -1,10 +1,10 @@
-module Yesod.Session.Persist.Save
+module Yesod.Session.Manager.Save
   ( saveSession
-  , Save (..)
   ) where
 
 import Internal.Prelude
 
+import Yesod.Session.SaveResult
 import Comparison
 import Control.Monad.State qualified as State
 import Session.Freeze
@@ -13,21 +13,10 @@ import Yesod.Core (SessionMap)
 import Yesod.Session.Embedding.Core
 import Yesod.Session.Manager
 import Yesod.Session.Options
-import Yesod.Session.Persist.Load
+import Yesod.Session.Manager.Load
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Operation
 import Yesod.Session.Storage.Save qualified as Storage
-
-data Save a
-  = -- | Nothing was done because a session freeze was requested
-    Frozen
-  | -- | There were no changes worth saving.
-    NoChange
-  | -- | A session was saved (either a new or existing session key).
-    Saved a
-  | -- | A session was deleted, and no new session was inserted.
-    Deleted
-  deriving stock (Eq, Ord, Show)
 
 -- | Save the session on the storage backend
 --
@@ -44,7 +33,7 @@ saveSession
   => SessionManager tx m
   -> Load Session
   -> SessionMap
-  -> m (Save Session)
+  -> m (SaveResult Session)
 saveSession SessionManager {options, storage, keyManager, runTransaction} load outputData =
   runTransaction
     $ case freeze of

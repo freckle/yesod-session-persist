@@ -118,7 +118,7 @@ setSessionKeyRotation
 setSessionKeyRotation options =
   execState . embed options.embedding.keyRotation
 
-assertSaved :: Show a => Save a -> IO a
+assertSaved :: Show a => SaveResult a -> IO a
 assertSaved = \case
   Saved x -> pure x
   x -> fail $ "Expected Saved, but got: " <> show x

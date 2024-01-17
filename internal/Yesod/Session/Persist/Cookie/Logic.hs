@@ -8,13 +8,13 @@ import Internal.Prelude
 import Yesod.Core.Types (Header)
 import Yesod.Session.Options
 import Yesod.Session.Persist.Cookie.SetCookie
-import Yesod.Session.Persist.Save
+import Yesod.Session.SaveResult
 import Yesod.Session.SessionType
 
 data CookieContext = CookieContext
   { cookie :: Maybe ByteString
   , load :: Maybe Session
-  , save :: Save Session
+  , save :: SaveResult Session
   }
 
 setCookie :: Options tx m -> CookieContext -> [Header]

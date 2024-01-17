@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Load
+module Yesod.Session.Manager.Load
   ( loadSessionMaybe
   , loadSession
   , loadNothing

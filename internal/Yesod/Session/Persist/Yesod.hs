@@ -20,11 +20,11 @@ import Data.Text.Encoding (encodeUtf8)
 import Yesod.Core.Types (SessionBackend (..))
 import Yesod.Session.Key
 import Yesod.Session.Manager
+import Yesod.Session.Manager.Load
+import Yesod.Session.Manager.Save
 import Yesod.Session.Options
 import Yesod.Session.Persist.Cookie.Logic
 import Yesod.Session.Persist.Cookie.Reading
-import Yesod.Session.Persist.Load
-import Yesod.Session.Persist.Save
 import Yesod.Session.Persist.Storage
 import Yesod.Session.Storage.Operation
 

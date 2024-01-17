@@ -71,15 +71,16 @@ library internal
       Yesod.Session.Key
       Yesod.Session.KeyRotation
       Yesod.Session.Manager
+      Yesod.Session.Manager.Load
+      Yesod.Session.Manager.Save
       Yesod.Session.Options
       Yesod.Session.Options.TransportSecurity
       Yesod.Session.Persist.Cookie.Logic
       Yesod.Session.Persist.Cookie.Reading
       Yesod.Session.Persist.Cookie.SetCookie
-      Yesod.Session.Persist.Load
-      Yesod.Session.Persist.Save
       Yesod.Session.Persist.Storage
       Yesod.Session.Persist.Yesod
+      Yesod.Session.SaveResult
       Yesod.Session.SessionType
       Yesod.Session.Storage.Exceptions
       Yesod.Session.Storage.Operation
