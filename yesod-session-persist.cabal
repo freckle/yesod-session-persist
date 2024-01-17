@@ -83,6 +83,7 @@ library internal
       Yesod.Session.SessionType
       Yesod.Session.Storage.Exceptions
       Yesod.Session.Storage.Operation
+      Yesod.Session.Storage.Save
       Yesod.Session.Timing.Math
       Yesod.Session.Timing.Options
       Yesod.Session.Timing.Time
