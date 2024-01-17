@@ -12,6 +12,7 @@ import Embedding
 import Session.KeyRotation
 import Session.Timing.Time
 import Yesod.Core (SessionMap)
+import Yesod.Session.Embedding.Options
 import Yesod.Session.Manager
 import Yesod.Session.Manager.Load
 import Yesod.Session.Manager.Save

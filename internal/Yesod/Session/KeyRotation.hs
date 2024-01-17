@@ -8,7 +8,7 @@ import Internal.Prelude
 import Embedding
 import Session.KeyRotation
 import Yesod.Core (HandlerSite, MonadHandler (liftHandler), getYesod)
-import Yesod.Session.Options
+import Yesod.Session.Embedding.Options
 
 -- | Indicate whether the current session key should be rotated
 --

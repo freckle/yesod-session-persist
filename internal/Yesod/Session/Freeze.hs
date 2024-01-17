@@ -8,7 +8,7 @@ import Internal.Prelude
 import Embedding
 import Session.Freeze
 import Yesod.Core (HandlerSite, MonadHandler (liftHandler), getYesod)
-import Yesod.Session.Options
+import Yesod.Session.Embedding.Options
 
 -- | Indicate whether the session should be frozen for the handling
 --   of the current request

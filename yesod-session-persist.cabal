@@ -76,6 +76,7 @@ library internal
       Yesod.Session.Cookie.Reading
       Yesod.Session.Cookie.SetCookie
       Yesod.Session.Embedding.Map
+      Yesod.Session.Embedding.Options
       Yesod.Session.Freeze
       Yesod.Session.KeyRotation
       Yesod.Session.Manager

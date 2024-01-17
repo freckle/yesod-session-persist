@@ -2,8 +2,6 @@ module Yesod.Session.Options
   ( Options (..)
   , defaultOptions
   , hoistOptions
-  , SessionEmbeddings (..)
-  , HasSessionEmbeddings (..)
   ) where
 
 import Internal.Prelude
@@ -11,13 +9,13 @@ import Internal.Prelude
 import Comparison
 import Data.Time qualified as Time
 import Randomization
-import Session.Freeze
 import Session.KeyRotation
 import Session.Timing.Options
 import Session.TransportSecurity
 import Time
 import Yesod.Core (SessionMap)
 import Yesod.Session.Embedding.Map
+import Yesod.Session.Embedding.Options
 
 -- | Settings that have defaults
 --
@@ -39,21 +37,6 @@ data Options tx m = Options
   -- ^ At the end of request handling, compare old session data to new
   --   session data to determine whether a key rotation should be performed
   }
-
-data SessionEmbeddings = SessionEmbeddings
-  { keyRotation :: SessionMapEmbedding KeyRotation
-  -- ^ How to represent a key rotation instruction in the session data;
-  --   see 'Yesod.Session.Persist.assignSessionKeyRotation'
-  , freeze :: SessionMapEmbedding SessionFreeze
-  -- ^ How to represent a freeze instruction in the session data;
-  --   see 'Yesod.Session.Persist.assignSessionFreeze'
-  }
-
-class HasSessionEmbeddings a where
-  getSessionEmbeddings :: a -> SessionEmbeddings
-
-instance HasSessionEmbeddings SessionEmbeddings where
-  getSessionEmbeddings = id
 
 -- | Default options
 --

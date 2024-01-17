@@ -10,6 +10,7 @@ import Embedding
 import Session.Freeze
 import Session.KeyRotation
 import Yesod.Core (SessionMap)
+import Yesod.Session.Embedding.Options
 import Yesod.Session.Manager
 import Yesod.Session.Manager.Load
 import Yesod.Session.Options

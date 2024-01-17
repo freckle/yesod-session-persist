@@ -70,6 +70,7 @@ import Session.Timing.Time
 import Session.Timing.Timeout
 import Session.TransportSecurity
 import Yesod.Session.Embedding.Map
+import Yesod.Session.Embedding.Options
 import Yesod.Session.Freeze
 import Yesod.Session.KeyRotation
 import Yesod.Session.Options
