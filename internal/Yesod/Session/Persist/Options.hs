@@ -13,6 +13,7 @@ import Yesod.Session.Persist.Comparison
 import Yesod.Session.Persist.Embedding.Map
 import Yesod.Session.Persist.Freeze.Type
 import Yesod.Session.Persist.KeyRotation.Type
+import Yesod.Session.Persist.Randomization
 import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Options
 import Yesod.Session.Persist.TransportSecurity

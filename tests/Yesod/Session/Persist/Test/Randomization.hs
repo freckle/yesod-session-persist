@@ -7,6 +7,7 @@ import Yesod.Session.Persist.Prelude
 import Control.Concurrent.STM.TVar (newTVar, readTVar, writeTVar)
 import Control.Monad.STM (STM)
 import System.Random qualified as Random
+import Yesod.Session.Persist.Randomization
 
 newRandomization :: Int -> STM (Randomization STM)
 newRandomization seed =

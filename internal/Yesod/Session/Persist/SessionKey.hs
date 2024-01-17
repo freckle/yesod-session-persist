@@ -12,6 +12,7 @@ import Yesod.Session.Persist.Prelude
 import Data.ByteString.Base64.URL qualified as B64URL
 import Data.ByteString.Char8 qualified as BS8
 import Data.Text qualified as T
+import Yesod.Session.Persist.Randomization
 
 data SessionKeyManager m = SessionKeyManager
   { new :: m SessionKey

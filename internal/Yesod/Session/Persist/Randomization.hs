@@ -1,4 +1,4 @@
-module Yesod.Session.Persist.Prelude.Randomization
+module Yesod.Session.Persist.Randomization
   ( Randomization (..)
   , deterministicallyRandom
   , DeterministicRandomization (..)

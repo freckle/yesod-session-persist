@@ -67,7 +67,7 @@ import Yesod.Session.Persist.Freeze.Type
 import Yesod.Session.Persist.KeyRotation.Action
 import Yesod.Session.Persist.KeyRotation.Type
 import Yesod.Session.Persist.Options
-import Yesod.Session.Persist.Prelude
+import Yesod.Session.Persist.Randomization
 import Yesod.Session.Persist.Session
 import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.Storage.Exceptions

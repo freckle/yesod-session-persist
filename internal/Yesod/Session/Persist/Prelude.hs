@@ -3,5 +3,4 @@ module Yesod.Session.Persist.Prelude
   )
 where
 
-import Yesod.Session.Persist.Prelude.Randomization as X
 import Yesod.Session.Persist.Prelude.Reexports as X
