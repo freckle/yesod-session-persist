@@ -16,6 +16,7 @@ module Yesod.Session.Persist.Yesod
 
 import Yesod.Session.Persist.Prelude
 
+import Data.Text.Encoding (encodeUtf8)
 import Yesod.Core.Types (SessionBackend (..))
 import Yesod.Session.Persist.Cookie.Logic
 import Yesod.Session.Persist.Cookie.Reading

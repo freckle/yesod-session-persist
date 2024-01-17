@@ -6,6 +6,7 @@ import Yesod.Session.Persist.Test.Prelude
 
 import Data.Set qualified as Set
 import Data.Text qualified as T
+import Data.Text.Encoding (encodeUtf8)
 
 spec :: Spec
 spec = context "SessionKeyManager" $ do

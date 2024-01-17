@@ -6,6 +6,9 @@ import Yesod.Session.Persist.Test.Prelude
 
 import Control.Concurrent.STM.TVar (readTVarIO)
 import Data.Aeson (encode, object)
+import Data.List qualified as List
+import Data.Sequence qualified as Seq
+import Data.Text.Encoding (encodeUtf8)
 import Network.Wai (Middleware)
 import Network.Wai.Test (simpleHeaders)
 import Web.Cookie (SetCookie (..), def, parseSetCookie)
@@ -21,9 +24,6 @@ import Yesod.Test
   , setUrl
   , withResponse
   )
-
-import Data.List qualified as List
-import Data.Sequence qualified as Seq
 
 spec :: Spec
 spec =

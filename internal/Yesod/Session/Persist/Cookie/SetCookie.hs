@@ -4,6 +4,7 @@ module Yesod.Session.Persist.Cookie.SetCookie
 
 import Yesod.Session.Persist.Prelude
 
+import Data.Text.Encoding (encodeUtf8)
 import Web.Cookie qualified as C
 import Yesod.Core.Types (Header (AddCookie))
 import Yesod.Session.Persist.Options
