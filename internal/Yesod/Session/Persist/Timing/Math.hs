@@ -5,6 +5,7 @@ module Yesod.Session.Persist.Timing.Math
 
 import Yesod.Session.Persist.Prelude
 
+import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Time
 import Yesod.Session.Persist.Timing.Timeout
 

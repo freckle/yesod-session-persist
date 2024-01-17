@@ -14,6 +14,7 @@ import Test.QuickCheck.Gen qualified as Gen
 import Yesod.Session.Persist
 import Yesod.Session.Persist.Test.Gen.General
 import Yesod.Session.Persist.Test.Gen.Mock
+import Yesod.Session.Persist.Time
 import Prelude (error)
 
 data SessionInit = SessionInit

@@ -23,6 +23,7 @@ import Yesod.Session.Persist.Test.Gen.Mock
 import Yesod.Session.Persist.Test.Gen.Session
 import Yesod.Session.Persist.Test.MockStorage
 import Yesod.Session.Persist.Test.Randomization
+import Yesod.Session.Persist.Time
 
 data Mock tx m = Mock
   { sessionManager :: SessionManager tx m

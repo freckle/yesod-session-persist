@@ -5,6 +5,8 @@ module Yesod.Session.Persist.Timing.Timeout
 
 import Yesod.Session.Persist.Prelude
 
+import Yesod.Session.Persist.Time
+
 -- | How long sessions are allowed to live
 --
 -- See 'defaultTimeout'.

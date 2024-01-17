@@ -6,6 +6,7 @@ where
 import Yesod.Session.Persist.Prelude
 
 import Yesod.Session.Persist.SessionKey
+import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Time
 
 -- | What a saved session looks like in the database

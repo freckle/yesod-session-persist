@@ -9,6 +9,7 @@ import Data.Aeson (encode, object)
 import Network.Wai (Middleware)
 import Network.Wai.Test (simpleHeaders)
 import Web.Cookie (SetCookie (..), def, parseSetCookie)
+import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.YesodApp (App (..), Route (..), newApp)
 import Yesod.Test
   ( YesodExample

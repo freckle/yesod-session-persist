@@ -13,6 +13,7 @@ import Test.QuickCheck (Arbitrary (arbitrary), Gen)
 import Test.QuickCheck.Gen qualified as Gen
 import Yesod.Session.Persist
 import Yesod.Session.Persist.Test.Gen.General
+import Yesod.Session.Persist.Time
 
 data MockInit = MockInit
   { randomSeed :: Int

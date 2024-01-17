@@ -10,6 +10,7 @@ import Yesod.Session.Persist.Prelude
 
 import Test.QuickCheck (Gen, choose)
 import Test.QuickCheck.Gen qualified as Gen
+import Yesod.Session.Persist.Time
 
 chooseNominalDiffTime
   :: (NominalDiffTime, NominalDiffTime) -> Gen NominalDiffTime

@@ -15,6 +15,7 @@ import Yesod.Session.Persist.Session
 import Yesod.Session.Persist.SessionKey
 import Yesod.Session.Persist.SessionManager
 import Yesod.Session.Persist.Storage.Operation
+import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Options
 import Yesod.Session.Persist.Timing.Time
 

@@ -5,6 +5,7 @@ module Yesod.Session.Persist.Timing.Options
 
 import Yesod.Session.Persist.Prelude
 
+import Yesod.Session.Persist.Time
 import Yesod.Session.Persist.Timing.Timeout
 
 -- | Time duration settings

@@ -74,7 +74,6 @@ library internal
       Yesod.Session.Persist.Prelude.Embedding
       Yesod.Session.Persist.Prelude.Randomization
       Yesod.Session.Persist.Prelude.Reexports
-      Yesod.Session.Persist.Prelude.Time
       Yesod.Session.Persist.Save
       Yesod.Session.Persist.Session
       Yesod.Session.Persist.SessionKey
@@ -82,6 +81,7 @@ library internal
       Yesod.Session.Persist.Storage.Exceptions
       Yesod.Session.Persist.Storage.Operation
       Yesod.Session.Persist.Storage.Persistent
+      Yesod.Session.Persist.Time
       Yesod.Session.Persist.Timing.Math
       Yesod.Session.Persist.Timing.Options
       Yesod.Session.Persist.Timing.Time

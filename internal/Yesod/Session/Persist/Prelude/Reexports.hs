@@ -81,18 +81,6 @@ import Data.Set as X (Set)
 import Data.String as X (String)
 import Data.Text as X (Text)
 import Data.Text.Encoding as X (decodeUtf8', encodeUtf8)
-import Data.Time as X
-  ( NominalDiffTime
-  , UTCTime (..)
-  , addUTCTime
-  , diffUTCTime
-  , nominalDay
-  , nominalDiffTimeToSeconds
-  , secondsToDiffTime
-  , secondsToNominalDiffTime
-  )
-import Data.Time.Calendar.OrdinalDate as X (fromOrdinalDate)
-import Data.Time.Clock.System as X (systemEpochDay)
 import Data.Traversable as X (for)
 import Data.Tuple as X (fst, snd, swap)
 import Data.Type.Equality as X
