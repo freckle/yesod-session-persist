@@ -91,6 +91,7 @@ library internal
       Yesod.Session.Storage.Exceptions
       Yesod.Session.Storage.Operation
       Yesod.Session.Storage.Save
+      Yesod.Session.Storage.Yesod
   other-modules:
       Paths_yesod_session_persist
   autogen-modules:

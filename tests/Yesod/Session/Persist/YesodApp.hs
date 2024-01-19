@@ -31,7 +31,7 @@ import Yesod
 import Yesod.Core (SessionMap)
 import Yesod.Session.Manager
 import Yesod.Session.Persist
-import Yesod.Session.Persist.Yesod
+import Yesod.Session.Storage.Yesod (makeSessionBackend'')
 
 newApp :: TimingOptions NominalDiffTime -> IO App
 newApp timing = do
