@@ -5,7 +5,7 @@ cabal-version: 2.0
 -- see: https://github.com/sol/hpack
 
 name:           yesod-session-persist
-version:        0.0.0.0
+version:        0.0.0.1
 synopsis:       SQL session backend for Yesod
 description:    Use Persistent to store Yesod sessions
 category:       Web
@@ -59,6 +59,7 @@ library
 
 library internal
   exposed-modules:
+      Base64
       Comparison
       Embedding
       Internal.Prelude
@@ -117,7 +118,7 @@ library internal
   build-depends:
       annotated-exception
     , base <5
-    , base64 <1.0
+    , base64
     , bytestring
     , containers
     , cookie

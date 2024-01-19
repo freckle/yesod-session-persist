@@ -9,7 +9,7 @@ where
 
 import Internal.Prelude
 
-import Data.ByteString.Base64.URL qualified as B64URL
+import Base64 (decodeBase64, encodeBase64)
 import Data.ByteString.Char8 qualified as BS8
 import Data.Text qualified as T
 import Data.Text.Encoding (decodeUtf8', encodeUtf8)
@@ -34,7 +34,10 @@ newtype SessionKey = SessionKey {text :: Text}
 makeSessionKeyManager :: Monad m => Randomization m -> SessionKeyManager m
 makeSessionKeyManager (Randomization generateRandomBytes) =
   let
-    new = SessionKey . B64URL.encodeBase64 <$> generateRandomBytes keyLengthInBytes
+    new =
+      SessionKey
+        . encodeBase64
+        <$> generateRandomBytes keyLengthInBytes
 
     check (SessionKey text) =
       T.length text
@@ -42,7 +45,7 @@ makeSessionKeyManager (Randomization generateRandomBytes) =
         && either
           (const False)
           ((== keyLengthInBytes) . BS8.length)
-          (B64URL.decodeBase64 $ encodeUtf8 text)
+          (decodeBase64 text)
   in
     SessionKeyManager {new, check}
 
