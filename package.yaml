@@ -1,5 +1,5 @@
 name: yesod-session-persist
-version: 0.0.0.0
+version: 0.0.0.1
 maintainer: Freckle Education
 category: Web
 github: freckle/yesod-session-persist
@@ -63,7 +63,7 @@ internal-libraries:
     source-dirs: internal
     dependencies:
       - annotated-exception
-      - base64 < 1.0
+      - base64
       - bytestring
       - containers
       - cookie
