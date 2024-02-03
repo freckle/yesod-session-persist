@@ -37,12 +37,12 @@ loadedData load =
   maybe Map.empty (.map) load.got
 
 loadSession :: Monad m => SessionManager tx m -> SessionKey -> m (Load Session)
-loadSession SessionManager {options, storage, runTransaction} sessionKey = do
+loadSession SessionManager {options, storage, runDB} sessionKey = do
   now <- options.clock
   got <-
     runMaybeT $ do
       session <-
-        MaybeT $ runTransaction $ storage $ GetSession sessionKey
+        MaybeT $ runDB $ storage $ GetSession sessionKey
       MaybeT $ pure $ guard $ not $ isExpired options.timing.timeout now session.time
       pure session
   pure Load {got, time = now}

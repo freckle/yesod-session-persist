@@ -34,7 +34,7 @@ data SessionPersistence backend record m = ( PersistRecordBackend record backend
   { databaseKey :: SessionKey -> Key record
   , toDatabase :: Session -> record
   , fromDatabase :: record -> Session
-  , runTransaction :: forall a. ReaderT backend IO a -> m a
+  , runDB :: forall a. ReaderT backend IO a -> m a
   }
 
 persistentStorage

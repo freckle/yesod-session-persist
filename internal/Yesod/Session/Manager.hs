@@ -18,7 +18,7 @@ data SessionManager tx m = SessionManager
   , storage :: forall a. StorageOperation a -> tx a
   -- ^ The storage backend
   , options :: Options tx m
-  , runTransaction :: forall a. tx a -> m a
+  , runDB :: forall a. tx a -> m a
   }
 
 sessionKeyAppearsReasonable :: SessionManager tx m -> SessionKey -> Bool
@@ -31,5 +31,5 @@ checkedSessionKeyFromCookieValue x =
     >=> (\v -> guard (sessionKeyAppearsReasonable x v) $> v)
 
 newSessionKey :: SessionManager tx m -> m SessionKey
-newSessionKey SessionManager {keyManager, runTransaction} =
-  runTransaction keyManager.new
+newSessionKey SessionManager {keyManager, runDB} =
+  runDB keyManager.new

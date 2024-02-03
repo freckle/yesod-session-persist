@@ -30,10 +30,10 @@ makeSessionBackend
 makeSessionBackend configuration =
   let SessionConfiguration {persistence, options} = configuration
   in  case persistence of
-        SessionPersistence {runTransaction} ->
+        SessionPersistence {runDB} ->
           makeSessionBackend'
             SessionConfiguration'
               { storage = persistentStorage persistence
               , options = options
-              , runTransaction
+              , runDB
               }

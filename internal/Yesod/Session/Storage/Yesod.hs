@@ -29,14 +29,14 @@ data SessionConfiguration' session = forall tx.
   SessionConfiguration'
   { storage :: forall a. StorageOperation a -> tx a
   , options :: Options tx IO
-  , runTransaction :: forall a. tx a -> IO a
+  , runDB :: forall a. tx a -> IO a
   }
 
 makeSessionBackend' :: SessionConfiguration' session -> IO SessionBackend
 makeSessionBackend' SessionConfiguration' {options = options :: Options tx m, ..} = do
   keyManager :: SessionKeyManager tx <-
     makeSessionKeyManager <$> options.randomization
-  let sessionManager = SessionManager {keyManager, storage, options, runTransaction}
+  let sessionManager = SessionManager {keyManager, storage, options, runDB}
   pure $ makeSessionBackend'' sessionManager
 
 makeSessionBackend'' :: Monad tx => SessionManager tx IO -> SessionBackend
