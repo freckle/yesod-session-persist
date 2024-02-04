@@ -70,6 +70,7 @@ internal-libraries:
       - crypton
       - exceptions
       - http-types
+      - memcache
       - mtl
       - persistent
       - text

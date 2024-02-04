@@ -3,5 +3,6 @@ roots = [
   "^Main.main$",
   "^Paths_",
   "^Yesod.Session.Persist.Yesod.makeSessionBackend$",
+  "^Yesod.Session.Memcache.Yesod.makeSessionBackend$",
   "^Yesod.Session.Options.hoistOptions$",
 ]

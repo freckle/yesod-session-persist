@@ -3,6 +3,7 @@ module Internal.Prelude
   )
 where
 
+import Internal.Utils as X (fstOf3)
 import Control.Applicative as X (Applicative (..), empty, (<|>))
 import Control.Category as X ((>>>))
 import Control.Exception as X (Exception, SomeException (..))

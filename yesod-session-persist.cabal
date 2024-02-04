@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      Yesod.Session.Memcache
       Yesod.Session.Persist
   other-modules:
       Paths_yesod_session_persist
@@ -63,6 +64,7 @@ library internal
       Comparison
       Embedding
       Internal.Prelude
+      Internal.Utils
       Randomization
       Session.Freeze
       Session.Key
@@ -83,6 +85,9 @@ library internal
       Yesod.Session.Manager
       Yesod.Session.Manager.Load
       Yesod.Session.Manager.Save
+      Yesod.Session.Memcache.Class
+      Yesod.Session.Memcache.Storage
+      Yesod.Session.Memcache.Yesod
       Yesod.Session.Options
       Yesod.Session.Persist.Storage
       Yesod.Session.Persist.Yesod
@@ -126,6 +131,7 @@ library internal
     , crypton
     , exceptions
     , http-types
+    , memcache
     , mtl
     , persistent
     , text
