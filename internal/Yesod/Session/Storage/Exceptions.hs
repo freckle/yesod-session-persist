@@ -4,8 +4,8 @@ module Yesod.Session.Storage.Exceptions
 
 import Internal.Prelude
 
-import Yesod.Session.SessionType (Session (..))
 import Session.Key (SessionKey)
+import Yesod.Session.SessionType (Session (..))
 
 -- | Common exceptions that may be thrown by any storage.
 data StorageException
@@ -28,6 +28,6 @@ data StorageException
     SessionDoesNotExist
       {newSession :: Session}
   | FailedToDeleteSession
-      {existingSessionKey:: SessionKey}
+      {existingSessionKey :: SessionKey}
   deriving stock (Eq, Show)
   deriving anyclass (Exception)

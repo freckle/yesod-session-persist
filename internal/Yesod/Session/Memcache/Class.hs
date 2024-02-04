@@ -1,5 +1,5 @@
 module Yesod.Session.Memcache.Class
-  (HasMemcacheClient (..)
+  ( HasMemcacheClient (..)
   )
 where
 

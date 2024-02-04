@@ -5,18 +5,17 @@ module Yesod.Session.Memcache.Storage
 
 import Internal.Prelude
 
+import Control.Monad.Reader (MonadReader, asks)
+import Database.Memcache.Client qualified as Memcache
+import Database.Memcache.Types qualified as Memcache
 import Session.Key
-import qualified Database.Memcache.Types as Memcache
-import qualified Database.Memcache.Client as Memcache
+import Yesod.Session.Memcache.Class (HasMemcacheClient (..))
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation
-import Yesod.Session.Memcache.Class (HasMemcacheClient (..))
-import Control.Monad.Reader (MonadReader, asks)
 
 -- | Mapping between 'Session' and Memcache representation.
-data SessionPersistence =
-  SessionPersistence
+data SessionPersistence = SessionPersistence
   { databaseKey :: SessionKey -> Memcache.Key
   , toDatabase :: Session -> Memcache.Value
   , fromDatabase :: Memcache.Value -> Session
@@ -24,38 +23,58 @@ data SessionPersistence =
   }
 
 memcacheStorage
-  :: forall env m result . (MonadReader env m, HasMemcacheClient env, MonadIO m)
+  :: forall env m result
+   . (MonadReader env m, HasMemcacheClient env, MonadIO m)
   => SessionPersistence
   -> StorageOperation result
   -> m result
 memcacheStorage sp@SessionPersistence {} = \case
   GetSession sessionKey ->
     let get = \client -> Memcache.get client (sp.databaseKey sessionKey)
-    in getClient
-        >>= liftIO . get
-        >>= pure . fmap (sp.fromDatabase . fstOf3)
+    in  getClient
+          >>= liftIO
+          . get
+          >>= pure
+          . fmap (sp.fromDatabase . fstOf3)
   DeleteSession sessionKey ->
     getClient
-      >>= \client -> liftIO $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
-      >>= \success -> when (not success) $ throwWithCallStack $ FailedToDeleteSession sessionKey
+      >>= \client ->
+        liftIO
+          $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
+          >>= \success -> when (not success) $ throwWithCallStack $ FailedToDeleteSession sessionKey
   InsertSession session ->
-    let key = sp.databaseKey session.key
-        value = sp.toDatabase session
-        sessionAlreadyExistsError = throwWithCallStack $ SessionAlreadyExistsSimple session
-    in getClient
-        >>= \client -> liftIO $ Memcache.add client key value defaultFlags defaultExpiration
-        >>= \case
-          Nothing -> sessionAlreadyExistsError
-          Just _ -> pure ()
+    let
+      key = sp.databaseKey session.key
+      value = sp.toDatabase session
+      sessionAlreadyExistsError = throwWithCallStack $ SessionAlreadyExistsSimple session
+    in
+      getClient
+        >>= \client ->
+          liftIO
+            $ Memcache.add client key value defaultFlags defaultExpiration
+            >>= \case
+              Nothing -> sessionAlreadyExistsError
+              Just _ -> pure ()
   ReplaceSession session ->
-    let key = sp.databaseKey session.key
-        sessionDoesNotExistError = throwWithCallStack $ SessionDoesNotExist session
-    in getClient
-        >>= \client -> liftIO $ Memcache.replace client key (sp.toDatabase session) defaultFlags defaultExpiration bypassCAS
-        >>= \case
-          Nothing -> sessionDoesNotExistError
-          Just _ -> pure ()
-  where getClient = (asks @env @m) getMemcacheClient
+    let
+      key = sp.databaseKey session.key
+      sessionDoesNotExistError = throwWithCallStack $ SessionDoesNotExist session
+    in
+      getClient
+        >>= \client ->
+          liftIO
+            $ Memcache.replace
+              client
+              key
+              (sp.toDatabase session)
+              defaultFlags
+              defaultExpiration
+              bypassCAS
+            >>= \case
+              Nothing -> sessionDoesNotExistError
+              Just _ -> pure ()
+ where
+  getClient = (asks @env @m) getMemcacheClient
 
 defaultExpiration :: Memcache.Expiration
 defaultExpiration = 0
@@ -73,6 +92,5 @@ defaultFlags = 0
 --
 -- But it applies at the level of the binary protocol itself. The /0/ 'Version'
 -- sentinel value means "do not do any CAS checking".
---
 bypassCAS :: Memcache.Version
 bypassCAS = 0

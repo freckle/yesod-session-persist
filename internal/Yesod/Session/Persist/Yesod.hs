@@ -9,7 +9,10 @@ import Internal.Prelude
 import Yesod.Core.Types (SessionBackend (..))
 import Yesod.Session.Options
 import Yesod.Session.Persist.Storage
-import Yesod.Session.Storage.Yesod (SessionConfiguration'(..), makeSessionBackend')
+import Yesod.Session.Storage.Yesod
+  ( SessionConfiguration' (..)
+  , makeSessionBackend'
+  )
 
 data SessionConfiguration persistentBackend persistentRecord = SessionConfiguration
   { persistence :: SessionPersistence persistentBackend persistentRecord IO
