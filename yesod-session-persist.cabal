@@ -29,6 +29,7 @@ library
   exposed-modules:
       Yesod.Session.Memcache
       Yesod.Session.Persist
+      Yesod.Session.Storage
   other-modules:
       Paths_yesod_session_persist
   autogen-modules:
