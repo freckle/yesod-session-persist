@@ -51,9 +51,9 @@ persistentStorage sp@SessionPersistence {} = \case
   InsertSession session ->
     persistentStorage sp (GetSession session.key) >>= \case
       Nothing -> void $ Persist.insert $ sp.toDatabase session
-      Just old -> throwWithCallStack $ SessionAlreadyExists old session
+      Just _ -> throwWithCallStack SessionAlreadyExists
   ReplaceSession session ->
     let key = sp.databaseKey session.key
     in  Persist.get key >>= \case
-          Nothing -> throwWithCallStack $ SessionDoesNotExist session
+          Nothing -> throwWithCallStack SessionDoesNotExist
           Just _old -> void $ Persist.replace key $ sp.toDatabase session

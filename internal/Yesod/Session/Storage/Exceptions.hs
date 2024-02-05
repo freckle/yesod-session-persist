@@ -4,30 +4,15 @@ module Yesod.Session.Storage.Exceptions
 
 import Internal.Prelude
 
-import Session.Key (SessionKey)
-import Yesod.Session.SessionType (Session (..))
-
 -- | Common exceptions that may be thrown by any storage.
 data StorageException
   = -- | Thrown when attempting to insert a new session and
     --   another session with the same key already exists
     SessionAlreadyExists
-      { existingSession :: Session
-      , newSession :: Session
-      }
-  | -- | Thrown when attempting to insert a new session
-    --   and another session with the same key already exists.
-    --
-    --   Use this when a storage backend has a primitive that fails if a key
-    --   already exists, and does not return the existing object.
-    SessionAlreadyExistsSimple
-      { newSession :: Session
-      }
   | -- | Thrown when attempting to replace an existing session
     --   but no session with the same key exists
     SessionDoesNotExist
-      {newSession :: Session}
-  | FailedToDeleteSession
-      {existingSessionKey :: SessionKey}
+  | -- | Thrown when attempting to delete a session, but the operation fails.
+    FailedToDeleteSession
   deriving stock (Eq, Show)
   deriving anyclass (Exception)

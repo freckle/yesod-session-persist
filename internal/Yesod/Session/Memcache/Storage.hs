@@ -36,38 +36,34 @@ memcacheStorage sp@SessionPersistence {} = \case
       >>= \client ->
         liftIO
           $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
-          >>= \success -> unless success $ throwWithCallStack $ FailedToDeleteSession sessionKey
+          >>= \success -> unless success $ throwWithCallStack FailedToDeleteSession
   InsertSession session ->
     let
       key = sp.databaseKey session.key
       value = sp.toDatabase session
-      sessionAlreadyExistsError = throwWithCallStack $ SessionAlreadyExistsSimple session
     in
       ask
         >>= \client ->
           liftIO
             $ Memcache.add client key value defaultFlags cacheForever
             >>= \case
-              Nothing -> sessionAlreadyExistsError
+              Nothing -> throwWithCallStack SessionAlreadyExists
               Just _ -> pure ()
   ReplaceSession session ->
-    let
-      key = sp.databaseKey session.key
-      sessionDoesNotExistError = throwWithCallStack $ SessionDoesNotExist session
-    in
-      ask
-        >>= \client ->
-          liftIO
-            $ Memcache.replace
-              client
-              key
-              (sp.toDatabase session)
-              defaultFlags
-              cacheForever
-              bypassCAS
-            >>= \case
-              Nothing -> sessionDoesNotExistError
-              Just _ -> pure ()
+    let key = sp.databaseKey session.key
+    in  ask
+          >>= \client ->
+            liftIO
+              $ Memcache.replace
+                client
+                key
+                (sp.toDatabase session)
+                defaultFlags
+                cacheForever
+                bypassCAS
+              >>= \case
+                Nothing -> throwWithCallStack SessionDoesNotExist
+                Just _ -> pure ()
 
 -- | Do not expire the session via Memcache expiration.
 --
