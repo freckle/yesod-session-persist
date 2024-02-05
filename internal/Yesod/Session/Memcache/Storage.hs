@@ -47,7 +47,7 @@ memcacheStorage sp@SessionPersistence {} = \case
       getClient
         >>= \client ->
           liftIO
-            $ Memcache.add client key value defaultFlags defaultExpiration
+            $ Memcache.add client key value defaultFlags cacheForever
             >>= \case
               Nothing -> sessionAlreadyExistsError
               Just _ -> pure ()
@@ -64,7 +64,7 @@ memcacheStorage sp@SessionPersistence {} = \case
               key
               (sp.toDatabase session)
               defaultFlags
-              defaultExpiration
+              cacheForever
               bypassCAS
             >>= \case
               Nothing -> sessionDoesNotExistError
@@ -72,8 +72,15 @@ memcacheStorage sp@SessionPersistence {} = \case
  where
   getClient = (asks @env @m) getMemcacheClient
 
-defaultExpiration :: Memcache.Expiration
-defaultExpiration = 0
+-- | Do not expire the session via Memcache expiration.
+--
+-- Not all storage backends support expiration of keys. Furthermore, we want to
+-- rely on /timing/ fields in the 'Options' data type to determine when a session expires.
+--
+-- N.B. No garbage collection of expired sessions is performed by this library.
+--
+cacheForever :: Memcache.Expiration
+cacheForever = 0
 
 defaultFlags :: Memcache.Flags
 defaultFlags = 0
