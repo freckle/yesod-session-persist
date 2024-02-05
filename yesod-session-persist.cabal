@@ -86,7 +86,6 @@ library internal
       Yesod.Session.Manager
       Yesod.Session.Manager.Load
       Yesod.Session.Manager.Save
-      Yesod.Session.Memcache.Class
       Yesod.Session.Memcache.Storage
       Yesod.Session.Memcache.Yesod
       Yesod.Session.Options
