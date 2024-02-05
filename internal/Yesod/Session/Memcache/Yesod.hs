@@ -5,8 +5,8 @@ module Yesod.Session.Memcache.Yesod
 
 import Internal.Prelude
 
+import Database.Memcache.Client qualified as Memcache
 import Yesod.Core.Types (SessionBackend (..))
-import Yesod.Session.Memcache.Class (HasMemcacheClient)
 import Yesod.Session.Memcache.Storage
 import Yesod.Session.Options
 import Yesod.Session.Storage.Yesod
@@ -24,8 +24,7 @@ data SessionConfiguration env = SessionConfiguration
 
 -- | Use this to implement 'Yesod.Core.makeSessionBackend'.
 makeSessionBackend
-  :: HasMemcacheClient env
-  => SessionConfiguration env
+  :: SessionConfiguration Memcache.Client
   -> IO SessionBackend
 makeSessionBackend configuration =
   let SessionConfiguration {persistence, options} = configuration

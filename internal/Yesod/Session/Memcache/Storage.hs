@@ -5,11 +5,10 @@ module Yesod.Session.Memcache.Storage
 
 import Internal.Prelude
 
-import Control.Monad.Reader (MonadReader, asks)
+import Control.Monad.Reader (MonadReader (ask))
 import Database.Memcache.Client qualified as Memcache
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
-import Yesod.Session.Memcache.Class (HasMemcacheClient (..))
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation
@@ -23,17 +22,17 @@ data SessionPersistence = SessionPersistence
   }
 
 memcacheStorage
-  :: forall env m result
-   . (MonadReader env m, HasMemcacheClient env, MonadIO m)
+  :: forall m result
+   . (MonadReader Memcache.Client m, MonadIO m)
   => SessionPersistence
   -> StorageOperation result
   -> m result
 memcacheStorage sp@SessionPersistence {} = \case
   GetSession sessionKey ->
     let get client = Memcache.get client (sp.databaseKey sessionKey)
-    in  (sp.fromDatabase . fstOf3) <$$> (getClient >>= liftIO . get)
+    in  (sp.fromDatabase . fstOf3) <$$> (ask >>= liftIO . get)
   DeleteSession sessionKey ->
-    getClient
+    ask
       >>= \client ->
         liftIO
           $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
@@ -44,7 +43,7 @@ memcacheStorage sp@SessionPersistence {} = \case
       value = sp.toDatabase session
       sessionAlreadyExistsError = throwWithCallStack $ SessionAlreadyExistsSimple session
     in
-      getClient
+      ask
         >>= \client ->
           liftIO
             $ Memcache.add client key value defaultFlags cacheForever
@@ -56,7 +55,7 @@ memcacheStorage sp@SessionPersistence {} = \case
       key = sp.databaseKey session.key
       sessionDoesNotExistError = throwWithCallStack $ SessionDoesNotExist session
     in
-      getClient
+      ask
         >>= \client ->
           liftIO
             $ Memcache.replace
@@ -69,8 +68,6 @@ memcacheStorage sp@SessionPersistence {} = \case
             >>= \case
               Nothing -> sessionDoesNotExistError
               Just _ -> pure ()
- where
-  getClient = (asks @env @m) getMemcacheClient
 
 -- | Do not expire the session via Memcache expiration.
 --
