@@ -5,7 +5,7 @@ module Yesod.Session.Memcache.Storage
 
 import Internal.Prelude
 
-import Control.Monad.Reader (MonadReader(ask))
+import Control.Monad.Reader (MonadReader (ask))
 import Database.Memcache.Client qualified as Memcache
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
