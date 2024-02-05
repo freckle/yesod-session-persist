@@ -78,7 +78,6 @@ memcacheStorage sp@SessionPersistence {} = \case
 -- rely on /timing/ fields in the 'Options' data type to determine when a session expires.
 --
 -- N.B. No garbage collection of expired sessions is performed by this library.
---
 cacheForever :: Memcache.Expiration
 cacheForever = 0
 
