@@ -6,6 +6,7 @@ module Yesod.Session.Memcache.Yesod
 import Internal.Prelude
 
 import Database.Memcache.Client qualified as Memcache
+import Control.Monad.Reader (runReaderT)
 import Yesod.Core.Types (SessionBackend (..))
 import Yesod.Session.Memcache.Storage
 import Yesod.Session.Options
@@ -29,10 +30,10 @@ makeSessionBackend
 makeSessionBackend configuration =
   let SessionConfiguration {persistence, options} = configuration
   in  case persistence of
-        SessionPersistence {runDB} ->
+        SessionPersistence {client} ->
           makeSessionBackend'
             SessionConfiguration'
               { storage = memcacheStorage persistence
               , options = options
-              , runDB
+              , runDB = flip runReaderT client
               }

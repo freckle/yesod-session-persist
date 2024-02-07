@@ -65,7 +65,6 @@ library internal
       Comparison
       Embedding
       Internal.Prelude
-      Internal.Utils
       Randomization
       Session.Freeze
       Session.Key

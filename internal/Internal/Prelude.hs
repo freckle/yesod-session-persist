@@ -61,7 +61,6 @@ import Data.Traversable as X (for)
 import Data.Tuple as X (fst, snd, swap)
 import Data.Type.Equality as X
 import GHC.Stack as X (HasCallStack)
-import Internal.Utils as X (fstOf3, (<$$>))
 import Numeric.Natural as X (Natural)
 import System.IO as X (IO)
 import Text.Read as X (Read, readMaybe)

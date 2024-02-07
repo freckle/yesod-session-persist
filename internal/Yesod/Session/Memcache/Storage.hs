@@ -18,52 +18,37 @@ data SessionPersistence = SessionPersistence
   { databaseKey :: SessionKey -> Memcache.Key
   , toDatabase :: Session -> Memcache.Value
   , fromDatabase :: Memcache.Value -> Session
-  , runDB :: forall a b m. ReaderT b IO a -> m a
+  , client :: Memcache.Client
   }
 
 memcacheStorage
   :: forall m result
-   . (MonadReader Memcache.Client m, MonadIO m)
+   . (MonadThrow m, MonadReader Memcache.Client m, MonadIO m)
   => SessionPersistence
   -> StorageOperation result
   -> m result
 memcacheStorage sp@SessionPersistence {} = \case
-  GetSession sessionKey ->
-    let get client = Memcache.get client (sp.databaseKey sessionKey)
-    in  (sp.fromDatabase . fstOf3) <$$> (ask >>= liftIO . get)
-  DeleteSession sessionKey ->
-    ask
-      >>= \client ->
-        liftIO
-          $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
-          >>= \success -> unless success $ throwWithCallStack FailedToDeleteSession
-  InsertSession session ->
+  GetSession sessionKey -> do
+    client <- ask
+    result <- liftIO $ Memcache.get client (sp.databaseKey sessionKey)
+    pure $ result <&> \(value, _flags, _version) -> sp.fromDatabase value
+  DeleteSession sessionKey -> do
+    client <- ask
+    void $ liftIO $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
+  InsertSession session -> do
     let
       key = sp.databaseKey session.key
       value = sp.toDatabase session
-    in
-      ask
-        >>= \client ->
-          liftIO
-            $ Memcache.add client key value defaultFlags cacheForever
-            >>= \case
-              Nothing -> throwWithCallStack SessionAlreadyExists
-              Just _ -> pure ()
-  ReplaceSession session ->
+
+    client <- ask
+    mVersion <- liftIO $ Memcache.add client key value defaultFlags cacheForever
+    throwOnNothing SessionAlreadyExists mVersion
+  ReplaceSession session -> do
     let key = sp.databaseKey session.key
-    in  ask
-          >>= \client ->
-            liftIO
-              $ Memcache.replace
-                client
-                key
-                (sp.toDatabase session)
-                defaultFlags
-                cacheForever
-                bypassCAS
-              >>= \case
-                Nothing -> throwWithCallStack SessionDoesNotExist
-                Just _ -> pure ()
+    client <- ask
+    mVersion <- liftIO $ Memcache.replace client key (sp.toDatabase session) defaultFlags cacheForever bypassCAS
+    throwOnNothing SessionDoesNotExist mVersion
+  where throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
 
 -- | Do not expire the session via Memcache expiration.
 --
