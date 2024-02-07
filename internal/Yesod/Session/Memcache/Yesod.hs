@@ -5,8 +5,8 @@ module Yesod.Session.Memcache.Yesod
 
 import Internal.Prelude
 
-import Database.Memcache.Client qualified as Memcache
 import Control.Monad.Reader (runReaderT)
+import Database.Memcache.Client qualified as Memcache
 import Yesod.Core.Types (SessionBackend (..))
 import Yesod.Session.Memcache.Storage
 import Yesod.Session.Options

@@ -46,9 +46,18 @@ memcacheStorage sp@SessionPersistence {} = \case
   ReplaceSession session -> do
     let key = sp.databaseKey session.key
     client <- ask
-    mVersion <- liftIO $ Memcache.replace client key (sp.toDatabase session) defaultFlags cacheForever bypassCAS
+    mVersion <-
+      liftIO
+        $ Memcache.replace
+          client
+          key
+          (sp.toDatabase session)
+          defaultFlags
+          cacheForever
+          bypassCAS
     throwOnNothing SessionDoesNotExist mVersion
-  where throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
+ where
+  throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
 
 -- | Do not expire the session via Memcache expiration.
 --
