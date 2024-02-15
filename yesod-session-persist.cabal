@@ -85,6 +85,7 @@ library internal
       Yesod.Session.Manager
       Yesod.Session.Manager.Load
       Yesod.Session.Manager.Save
+      Yesod.Session.Memcache.Expiration
       Yesod.Session.Memcache.Storage
       Yesod.Session.Memcache.Yesod
       Yesod.Session.Options

@@ -20,6 +20,7 @@ import Data.Time as X
   , secondsToNominalDiffTime
   )
 import Data.Time.Calendar.OrdinalDate as X (fromOrdinalDate)
+import Data.Time.Clock.POSIX as X (getPOSIXTime)
 import Data.Time.Clock.System as X (systemEpochDay)
 
 subtractUTCTime :: NominalDiffTime -> UTCTime -> UTCTime

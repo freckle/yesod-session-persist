@@ -33,7 +33,7 @@ makeSessionBackend configuration =
         SessionPersistence {client} ->
           makeSessionBackend'
             SessionConfiguration'
-              { storage = memcacheStorage persistence
+              { storage = memcacheStorage persistence options
               , options = options
               , runDB = flip runReaderT client
               }

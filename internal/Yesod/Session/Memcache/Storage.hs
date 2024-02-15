@@ -9,6 +9,13 @@ import Control.Monad.Reader (MonadReader (ask))
 import Database.Memcache.Client qualified as Memcache
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
+import Session.Timing.Options (TimingOptions (timeout))
+import Yesod.Session.Memcache.Expiration
+  ( MemcacheExpiration
+  , getCacheExpiration
+  , noExpiration
+  )
+import Yesod.Session.Options (Options (timing))
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation
@@ -19,15 +26,17 @@ data SessionPersistence = SessionPersistence
   , toDatabase :: Session -> Memcache.Value
   , fromDatabase :: Memcache.Value -> Session
   , client :: Memcache.Client
+  , expiration :: MemcacheExpiration
   }
 
 memcacheStorage
-  :: forall m result
+  :: forall m result env
    . (MonadThrow m, MonadReader Memcache.Client m, MonadIO m)
   => SessionPersistence
+  -> Options (ReaderT env IO) IO
   -> StorageOperation result
   -> m result
-memcacheStorage sp@SessionPersistence {} = \case
+memcacheStorage sp opt = \case
   GetSession sessionKey -> do
     client <- ask
     result <- liftIO $ Memcache.get client (sp.databaseKey sessionKey)
@@ -41,7 +50,10 @@ memcacheStorage sp@SessionPersistence {} = \case
       value = sp.toDatabase session
 
     client <- ask
-    mVersion <- liftIO $ Memcache.add client key value defaultFlags cacheForever
+
+    mVersion <- do
+      expiration <- getCacheExpiration sp.expiration opt.timing.timeout
+      liftIO $ Memcache.add client key value defaultFlags expiration
     throwOnNothing SessionAlreadyExists mVersion
   ReplaceSession session -> do
     let key = sp.databaseKey session.key
@@ -53,20 +65,11 @@ memcacheStorage sp@SessionPersistence {} = \case
           key
           (sp.toDatabase session)
           defaultFlags
-          cacheForever
+          noExpiration
           bypassCAS
     throwOnNothing SessionDoesNotExist mVersion
  where
   throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
-
--- | Do not expire the session via Memcache expiration.
---
--- Not all storage backends support expiration of keys. Furthermore, we want to
--- rely on /timing/ fields in the 'Options' data type to determine when a session expires.
---
--- N.B. No garbage collection of expired sessions is performed by this library.
-cacheForever :: Memcache.Expiration
-cacheForever = 0
 
 defaultFlags :: Memcache.Flags
 defaultFlags = 0

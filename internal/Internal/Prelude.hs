@@ -52,7 +52,7 @@ import Data.Maybe as X
   , maybe
   )
 import Data.Ord as X (Ord (..))
-import Data.Semigroup as X ((<>))
+import Data.Semigroup as X (Min (..), (<>))
 import Data.Sequence as X (Seq)
 import Data.Set as X (Set)
 import Data.String as X (String)
@@ -66,15 +66,18 @@ import System.IO as X (IO)
 import Text.Read as X (Read, readMaybe)
 import Text.Show as X (Show, show)
 import Prelude as X
-  ( Bounded
+  ( Bounded (..)
   , Enum
   , Int
   , Integral
+  , RealFrac (floor)
+  , fromInteger
   , fromIntegral
   , minimum
   , negate
   , pred
   , succ
+  , toInteger
   , truncate
   , ($!)
   , (*)
