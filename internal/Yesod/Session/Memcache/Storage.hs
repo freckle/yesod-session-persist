@@ -10,6 +10,9 @@ import Database.Memcache.Client qualified as Memcache
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
 import Session.Timing.Options (TimingOptions (timeout))
+import Session.Timing.Time (Time (..))
+import Time (UTCTime)
+import Yesod.Core (SessionMap)
 import Yesod.Session.Memcache.Expiration
   ( MemcacheExpiration
   , getCacheExpiration
@@ -23,8 +26,8 @@ import Yesod.Session.Storage.Operation
 -- | Mapping between 'Session' and Memcache representation.
 data SessionPersistence = SessionPersistence
   { databaseKey :: SessionKey -> Memcache.Key
-  , toDatabase :: Session -> Memcache.Value
-  , fromDatabase :: Memcache.Value -> Session
+  , toDatabase :: (SessionMap, Time UTCTime) -> Memcache.Value
+  , fromDatabase :: Memcache.Value -> (SessionMap, Time UTCTime)
   , client :: Memcache.Client
   , expiration :: MemcacheExpiration
   }
@@ -40,14 +43,16 @@ memcacheStorage sp opt = \case
   GetSession sessionKey -> do
     client <- ask
     result <- liftIO $ Memcache.get client (sp.databaseKey sessionKey)
-    pure $ result <&> \(value, _flags, _version) -> sp.fromDatabase value
+    pure $ result <&> \(value, _flags, _version) ->
+      let (map, time) = sp.fromDatabase value
+      in  Session sessionKey map time
   DeleteSession sessionKey -> do
     client <- ask
     void $ liftIO $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
   InsertSession session -> do
     let
       key = sp.databaseKey session.key
-      value = sp.toDatabase session
+      value = sp.toDatabase (session.map, session.time)
 
     client <- ask
 
@@ -64,7 +69,7 @@ memcacheStorage sp opt = \case
         $ Memcache.replace
           client
           key
-          (sp.toDatabase session)
+          (sp.toDatabase (session.map, session.time))
           defaultFlags
           noExpiration
           bypassCAS
