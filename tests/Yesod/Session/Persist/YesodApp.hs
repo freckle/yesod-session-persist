@@ -11,7 +11,6 @@ import Comparison
 import Control.Monad.STM (STM)
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
-import Data.Time qualified as Time
 import Session.KeyRotation
 import Session.Timing.Options
 import Time

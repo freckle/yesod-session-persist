@@ -60,15 +60,24 @@ import Data.Text as X (Text)
 import Data.Traversable as X (for)
 import Data.Tuple as X (fst, snd, swap)
 import Data.Type.Equality as X
+import Data.Word as X (Word32)
+import GHC.Generics as X (Generic)
 import GHC.Stack as X (HasCallStack)
 import Numeric.Natural as X (Natural)
 import System.IO as X (IO)
+import Test.QuickCheck as X (Arbitrary (arbitrary, shrink))
+import Test.QuickCheck.Arbitrary.Generic as X
+  ( GenericArbitrary
+  , genericArbitrary
+  , genericShrink
+  )
 import Text.Read as X (Read, readMaybe)
 import Text.Show as X (Show, show)
 import Prelude as X
   ( Bounded (..)
   , Enum
   , Int
+  , Integer
   , Integral
   , RealFrac (floor)
   , fromInteger

@@ -2,13 +2,14 @@ module Yesod.Session.Memcache.Expiration
   ( MemcacheExpiration (..)
   , getCacheExpiration
   , noExpiration
+  , minDiffTime
   ) where
 
 import Internal.Prelude
 
 import Database.Memcache.Types qualified as Memcache
 import Session.Timing.Timeout (Timeout (..))
-import Time (NominalDiffTime, getPOSIXTime)
+import Time (NominalDiffTime, UTCTime, utcTimeToPOSIXSeconds)
 
 newtype Exceptions = InvalidExpiration NominalDiffTime
   deriving stock (Eq, Show)
@@ -29,18 +30,22 @@ data MemcacheExpiration
 getCacheExpiration
   :: (MonadIO m, MonadThrow m)
   => MemcacheExpiration
+  -> m UTCTime
   -> Timeout NominalDiffTime
   -> m Memcache.Expiration
-getCacheExpiration NoMemcacheExpiration _timeout = pure noExpiration
-getCacheExpiration UseMemcacheExpiration timeout =
+getCacheExpiration NoMemcacheExpiration _clock _timeout = pure noExpiration
+getCacheExpiration UseMemcacheExpiration clock timeout =
   case getMinimumTimeout timeout of
     Nothing -> pure noExpiration
     Just duration -> do
-      now <- liftIO getPOSIXTime
-      let timeStamp = now + duration
-      when (expirationOutOfBounds timeStamp)
+      now <- clock
+
+      let timeStamp = utcTimeToPOSIXSeconds now + duration
+
+      unless (expirationWithinBounds timeStamp)
         $ throwWithCallStack
         $ InvalidExpiration timeStamp
+
       pure $ floor timeStamp
 
 -- | Do not expire the session via Memcache's expiration mechanism.
@@ -66,15 +71,17 @@ getMinimumTimeout (Timeout idle absolute) = fmap getMin $ idleMin <> absoluteMin
 --
 --  * If the value is greater than or equal to 'minDiffTime', it is a timestamp
 --
---  See the module description for 'Database.Memcache.client':
---    https://hackage.haskell.org/package/memcache-0.3.0.1/docs/Database-Memcache-Client.html
---
 --  We bar values lower than the 'minDiffTime' in order to avoid this dual
 --  interpretation.
 --
 --  The 'maxDiffTime' check is there to ensure we do not overflow 'Memcache.Expiration'.
-expirationOutOfBounds :: NominalDiffTime -> Bool
-expirationOutOfBounds expiration = expiration <= minDiffTime || expiration > maxDiffTime
+expirationWithinBounds :: NominalDiffTime -> Bool
+expirationWithinBounds expiration = expiration >= fromInteger minDiffTime && expiration <= maxDiffTime
  where
-  minDiffTime = 2592000
   maxDiffTime = fromInteger $ toInteger $ maxBound @Memcache.Expiration
+
+-- | Minimum timestamp that will be interpreted as a timestamp by Memcache.
+--
+-- See: https://github.com/dterei/memcache-hs/blob/83957ee9c4983f87447b0e7476a9a9155474dc80/Database/Memcache/Client.hs#L49-L59
+minDiffTime :: Integer
+minDiffTime = 2592000 + 1

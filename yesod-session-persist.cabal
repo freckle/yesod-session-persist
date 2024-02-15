@@ -122,7 +122,8 @@ library internal
       UndecidableInstances
   ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-missed-specialisations -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-kind-signatures -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-partial-fields -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -fwrite-ide-info
   build-depends:
-      annotated-exception
+      QuickCheck
+    , annotated-exception
     , base <5
     , base64
     , bytestring
@@ -130,6 +131,7 @@ library internal
     , cookie
     , crypton
     , exceptions
+    , generic-arbitrary
     , http-types
     , memcache
     , mtl
@@ -155,6 +157,7 @@ test-suite spec
       Test.Randomization
       Yesod.Session.Manager.LoadSpec
       Yesod.Session.Manager.SaveSpec
+      Yesod.Session.Memcache.ExpirationSpec
       Yesod.Session.Persist.YesodApp
       Yesod.Session.Persist.YesodSpec
       Paths_yesod_session_persist
@@ -192,7 +195,6 @@ test-suite spec
     , random
     , stm
     , text
-    , time
     , wai
     , wai-extra
     , yesod

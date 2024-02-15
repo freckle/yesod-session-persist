@@ -2,7 +2,6 @@ module Test.Prelude
   ( module X
   ) where
 
-import GHC.Generics as X (Generic)
 import Internal.Prelude as X
 import Test.Gen.General as X
 import Test.Gen.Mock as X

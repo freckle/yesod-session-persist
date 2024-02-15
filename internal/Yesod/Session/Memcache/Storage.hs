@@ -15,7 +15,7 @@ import Yesod.Session.Memcache.Expiration
   , getCacheExpiration
   , noExpiration
   )
-import Yesod.Session.Options (Options (timing))
+import Yesod.Session.Options (Options (clock, timing))
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation
@@ -52,7 +52,8 @@ memcacheStorage sp opt = \case
     client <- ask
 
     mVersion <- do
-      expiration <- getCacheExpiration sp.expiration opt.timing.timeout
+      expiration <-
+        liftIO $ getCacheExpiration sp.expiration opt.clock opt.timing.timeout
       liftIO $ Memcache.add client key value defaultFlags expiration
     throwOnNothing SessionAlreadyExists mVersion
   ReplaceSession session -> do

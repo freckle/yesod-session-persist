@@ -12,7 +12,7 @@ import Randomization
 import Session.KeyRotation
 import Session.Timing.Options
 import Session.TransportSecurity
-import Time
+import Time (NominalDiffTime, UTCTime)
 import Yesod.Core (SessionMap)
 import Yesod.Session.Embedding.Map
 import Yesod.Session.Embedding.Options

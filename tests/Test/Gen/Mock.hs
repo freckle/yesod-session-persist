@@ -10,7 +10,7 @@ where
 import Internal.Prelude
 
 import Test.Gen.General
-import Test.QuickCheck (Arbitrary (arbitrary), Gen)
+import Test.QuickCheck (Gen)
 import Test.QuickCheck.Gen qualified as Gen
 import Time
 import Yesod.Session.Persist
