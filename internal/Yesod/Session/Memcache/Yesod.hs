@@ -35,4 +35,5 @@ makeSessionBackend configuration =
           , options = options
           , runDB = id
           }
-  where SessionConfiguration {persistence, options} = configuration
+ where
+  SessionConfiguration {persistence, options} = configuration

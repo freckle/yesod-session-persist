@@ -26,7 +26,9 @@ import Yesod.Session.Storage.Operation
 data SessionPersistence = SessionPersistence
   { databaseKey :: SessionKey -> Memcache.Key
   , toDatabase :: (SessionMap, Time UTCTime) -> Memcache.Value
-  , fromDatabase :: Memcache.Value -> Either SomeException (SessionMap, Time UTCTime)
+  , fromDatabase
+      :: Memcache.Value
+      -> Either SomeException (SessionMap, Time UTCTime)
   , client :: Memcache.Client
   , expiration :: MemcacheExpiration
   }
@@ -40,7 +42,8 @@ memcacheStorage
   -> m result
 memcacheStorage sp opt = \case
   GetSession sessionKey -> do
-    mValue <- liftIO $ (fmap fstOf3) <$> Memcache.get sp.client (sp.databaseKey sessionKey)
+    mValue <-
+      liftIO $ (fmap fstOf3) <$> Memcache.get sp.client (sp.databaseKey sessionKey)
 
     case mValue of
       Nothing -> pure Nothing
