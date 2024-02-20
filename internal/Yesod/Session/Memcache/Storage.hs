@@ -6,6 +6,7 @@ module Yesod.Session.Memcache.Storage
 import Internal.Prelude
 
 import Database.Memcache.Client qualified as Memcache
+import Session.Timing.Math (nextExpires)
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
 import Session.Timing.Options (TimingOptions (timeout))
@@ -14,10 +15,10 @@ import Time (UTCTime)
 import Yesod.Core (SessionMap)
 import Yesod.Session.Memcache.Expiration
   ( MemcacheExpiration
-  , getCacheExpiration
   , noExpiration
+  , fromUTC
   )
-import Yesod.Session.Options (Options (clock, timing))
+import Yesod.Session.Options (Options (timing))
 import Yesod.Session.SessionType
 import Yesod.Session.Storage.Exceptions
 import Yesod.Session.Storage.Operation
@@ -43,7 +44,7 @@ memcacheStorage
 memcacheStorage sp opt = \case
   GetSession sessionKey -> do
     mValue <-
-      liftIO $ (fmap fstOf3) <$> Memcache.get sp.client (sp.databaseKey sessionKey)
+      liftIO $ fmap fstOf3 <$> Memcache.get sp.client (sp.databaseKey sessionKey)
 
     case mValue of
       Nothing -> pure Nothing
@@ -58,9 +59,7 @@ memcacheStorage sp opt = \case
       key = sp.databaseKey session.key
       value = sp.toDatabase (session.map, session.time)
 
-    mVersion <- liftIO $ do
-      expiration <- getCacheExpiration sp.expiration opt.clock opt.timing.timeout
-      Memcache.add sp.client key value defaultFlags expiration
+    mVersion <- liftIO $ Memcache.add sp.client key value defaultFlags $ getNextExpires opt.timing.timeout session.time
     throwOnNothing SessionAlreadyExists mVersion
   ReplaceSession session -> do
     let key = sp.databaseKey session.key
@@ -71,12 +70,13 @@ memcacheStorage sp opt = \case
           key
           (sp.toDatabase (session.map, session.time))
           defaultFlags
-          noExpiration
+          (getNextExpires opt.timing.timeout session.time)
           bypassCAS
     throwOnNothing SessionDoesNotExist mVersion
  where
   throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
   fstOf3 (a, _, _) = a
+  getNextExpires timeout time = fromMaybe noExpiration $ nextExpires timeout time >>= fromUTC
 
 defaultFlags :: Memcache.Flags
 defaultFlags = 0
