@@ -22,6 +22,7 @@ spec =
           getCacheExpiration NoMemcacheExpiration getCurrentTime
             $ fmap fromInteger timeout
         actual `shouldBe` noExpiration
+
     context "when UseMemcacheExpiration " $ do
       it "does not allow a 'Timeout' that would be interpreted as a duration" $ forAll tooSmallRange $ \seconds -> do
         let

@@ -5,7 +5,6 @@ module Yesod.Session.Memcache.Storage
 
 import Internal.Prelude
 
-import Control.Monad.Reader (MonadReader (ask))
 import Database.Memcache.Client qualified as Memcache
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
@@ -27,47 +26,45 @@ import Yesod.Session.Storage.Operation
 data SessionPersistence = SessionPersistence
   { databaseKey :: SessionKey -> Memcache.Key
   , toDatabase :: (SessionMap, Time UTCTime) -> Memcache.Value
-  , fromDatabase :: Memcache.Value -> (SessionMap, Time UTCTime)
+  , fromDatabase :: Memcache.Value -> Either SomeException (SessionMap, Time UTCTime)
   , client :: Memcache.Client
   , expiration :: MemcacheExpiration
   }
 
 memcacheStorage
-  :: forall m result env
-   . (MonadThrow m, MonadReader Memcache.Client m, MonadIO m)
+  :: forall m result
+   . (MonadThrow m, MonadIO m)
   => SessionPersistence
-  -> Options (ReaderT env IO) IO
+  -> Options IO IO
   -> StorageOperation result
   -> m result
 memcacheStorage sp opt = \case
   GetSession sessionKey -> do
-    client <- ask
-    result <- liftIO $ Memcache.get client (sp.databaseKey sessionKey)
-    pure $ result <&> \(value, _flags, _version) ->
-      let (map, time) = sp.fromDatabase value
-      in  Session sessionKey map time
+    mValue <- liftIO $ (fmap fstOf3) <$> Memcache.get sp.client (sp.databaseKey sessionKey)
+
+    case mValue of
+      Nothing -> pure Nothing
+      Just value -> do
+        let mkSession = uncurry $ Session sessionKey
+
+        either throwM (pure . pure . mkSession) $ sp.fromDatabase value
   DeleteSession sessionKey -> do
-    client <- ask
-    void $ liftIO $ Memcache.delete client (sp.databaseKey sessionKey) bypassCAS
+    void $ liftIO $ Memcache.delete sp.client (sp.databaseKey sessionKey) bypassCAS
   InsertSession session -> do
     let
       key = sp.databaseKey session.key
       value = sp.toDatabase (session.map, session.time)
 
-    client <- ask
-
-    mVersion <- do
-      expiration <-
-        liftIO $ getCacheExpiration sp.expiration opt.clock opt.timing.timeout
-      liftIO $ Memcache.add client key value defaultFlags expiration
+    mVersion <- liftIO $ do
+      expiration <- getCacheExpiration sp.expiration opt.clock opt.timing.timeout
+      Memcache.add sp.client key value defaultFlags expiration
     throwOnNothing SessionAlreadyExists mVersion
   ReplaceSession session -> do
     let key = sp.databaseKey session.key
-    client <- ask
     mVersion <-
       liftIO
         $ Memcache.replace
-          client
+          sp.client
           key
           (sp.toDatabase (session.map, session.time))
           defaultFlags
@@ -76,6 +73,7 @@ memcacheStorage sp opt = \case
     throwOnNothing SessionDoesNotExist mVersion
  where
   throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
+  fstOf3 (a, _, _) = a
 
 defaultFlags :: Memcache.Flags
 defaultFlags = 0

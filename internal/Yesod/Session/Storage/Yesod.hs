@@ -21,8 +21,6 @@ import Yesod.Session.Manager
 import Yesod.Session.Manager.Load
 import Yesod.Session.Manager.Save
 import Yesod.Session.Options
-
--- import Yesod.Session.Persist.Storage
 import Yesod.Session.Storage.Operation
 
 data SessionConfiguration' session = forall tx.

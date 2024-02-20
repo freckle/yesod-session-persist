@@ -93,6 +93,7 @@ import Prelude as X
   , (+)
   , (-)
   , (/)
+  , uncurry
   )
 
 {-# ANN module ("HLint: ignore Avoid restricted alias" :: String) #-}
