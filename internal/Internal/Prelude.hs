@@ -88,12 +88,12 @@ import Prelude as X
   , succ
   , toInteger
   , truncate
+  , uncurry
   , ($!)
   , (*)
   , (+)
   , (-)
   , (/)
-  , uncurry
   )
 
 {-# ANN module ("HLint: ignore Avoid restricted alias" :: String) #-}
