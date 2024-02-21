@@ -6,9 +6,9 @@ module Yesod.Session.Memcache.Expiration
 
 import Internal.Prelude
 
-import Database.Memcache.Types qualified as Memcache
-import Time (UTCTime, utcTimeToPOSIXSeconds, nominalDiffTimeToSeconds)
 import Data.Fixed (Pico)
+import Database.Memcache.Types qualified as Memcache
+import Time (UTCTime, nominalDiffTimeToSeconds, utcTimeToPOSIXSeconds)
 
 newtype Exceptions = InvalidExpiration Pico
   deriving stock (Eq, Show)
@@ -33,13 +33,15 @@ noExpiration = 0
 -- would be too big or too small.
 --
 -- See 'maxWord32' and 'minWord32' for definitions of too 'big / small'.
-fromUTC :: (MonadThrow m) => UTCTime -> m Word32
+fromUTC :: MonadThrow m => UTCTime -> m Word32
 fromUTC utcTime = do
   when (tooLarge || tooSmall) $ throwWithCallStack $ InvalidExpiration seconds
   pure $ ceiling seconds
-  where seconds = nominalDiffTimeToSeconds $ utcTimeToPOSIXSeconds utcTime
-        tooLarge = seconds > fromInteger (toInteger maxWord32)
-        tooSmall = seconds < fromInteger (toInteger minWord32)
+ where
+  seconds = nominalDiffTimeToSeconds $ utcTimeToPOSIXSeconds utcTime
+  tooLarge = seconds > fromInteger (toInteger maxWord32)
+  tooSmall = seconds < fromInteger (toInteger minWord32)
+
 -- | Minimum value that will be interpreted as a timestamp by Memcache
 --
 -- Values lower than this are considered to be "number of seconds" in the future

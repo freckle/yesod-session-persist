@@ -6,17 +6,17 @@ module Yesod.Session.Memcache.Storage
 import Internal.Prelude
 
 import Database.Memcache.Client qualified as Memcache
-import Session.Timing.Math (nextExpires)
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
+import Session.Timing.Math (nextExpires)
 import Session.Timing.Options (TimingOptions (timeout))
 import Session.Timing.Time (Time (..))
 import Time (UTCTime)
 import Yesod.Core (SessionMap)
 import Yesod.Session.Memcache.Expiration
   ( MemcacheExpiration
-  , noExpiration
   , fromUTC
+  , noExpiration
   )
 import Yesod.Session.Options (Options (timing))
 import Yesod.Session.SessionType
@@ -59,7 +59,10 @@ memcacheStorage sp opt = \case
       key = sp.databaseKey session.key
       value = sp.toDatabase (session.map, session.time)
 
-    mVersion <- liftIO $ Memcache.add sp.client key value defaultFlags $ getNextExpires opt.timing.timeout session.time
+    mVersion <-
+      liftIO
+        $ Memcache.add sp.client key value defaultFlags
+        $ getNextExpires opt.timing.timeout session.time
     throwOnNothing SessionAlreadyExists mVersion
   ReplaceSession session -> do
     let key = sp.databaseKey session.key
