@@ -79,7 +79,7 @@ import Prelude as X
   , Int
   , Integer
   , Integral
-  , RealFrac (floor, ceiling)
+  , RealFrac (ceiling, floor)
   , fromInteger
   , fromIntegral
   , minimum
