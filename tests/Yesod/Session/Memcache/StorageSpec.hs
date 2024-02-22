@@ -10,7 +10,6 @@ import Session.Timing.Time (Time(..))
 import Session.Timing.Timeout (defaultTimeout, Timeout(Timeout, idle, absolute))
 import Yesod.Session.Memcache.Expiration (MemcacheExpiration(NoMemcacheExpiration, UseMemcacheExpiration), maxTimestamp, minTimestamp)
 import Yesod.Session.Memcache.Expiration (noExpiration)
---
 
 spec :: Spec
 spec =
@@ -32,13 +31,13 @@ spec =
       describe "it does NOT catch failures from 'fromUTC'" $ do
         it "fails when 'fromUTC' fails on 'tooLarge'" $ do
           let time = Time unixEpoch unixEpoch
-              tooBig = succ maxTimestamp
+              tooBig = maxTimestamp + 1
               timeout = Timeout { idle = Nothing, absolute = (Just tooBig) }
           getMemcacheExpiration useMemcacheOption timeout time `shouldBe` Nothing
 
         it "fails when 'fromUTC' fails on 'tooSmall'" $ do
           let time = Time unixEpoch unixEpoch
-              tooSmall = pred minTimestamp
+              tooSmall = minTimestamp - 1
               timeout = Timeout { idle = Nothing, absolute = (Just tooSmall) }
           getMemcacheExpiration useMemcacheOption timeout time `shouldBe` Nothing
 
@@ -54,8 +53,8 @@ spec =
 
         it "accepts something between 'minTimestamp' and 'maxTimestamp'" $ do
           let time = Time unixEpoch unixEpoch
-              timeout = Timeout { idle = Nothing, absolute = (Just (pred maxTimestamp) ) }
-          getMemcacheExpiration useMemcacheOption timeout time `shouldBe` Just (pred maxTimestamp)
+              timeout = Timeout { idle = Nothing, absolute = (Just (maxTimestamp - 1) ) }
+          getMemcacheExpiration useMemcacheOption timeout time `shouldBe` Just (maxTimestamp - 1)
 
 
 -- The Unix Epoc: 1970-01-01 00:00:00 UTC
