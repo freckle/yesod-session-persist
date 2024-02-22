@@ -10,14 +10,13 @@ import Database.Memcache.Client qualified as Memcache
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
 import Session.Timing.Math (nextExpires)
-import Time (NominalDiffTime)
 import Session.Timing.Options (TimingOptions (timeout))
 import Session.Timing.Time (Time (..))
-import Time (UTCTime)
-import Session.Timing.Timeout (Timeout(..))
+import Session.Timing.Timeout (Timeout (..))
+import Time (NominalDiffTime, UTCTime)
 import Yesod.Core (SessionMap)
 import Yesod.Session.Memcache.Expiration
-  ( MemcacheExpiration (UseMemcacheExpiration, NoMemcacheExpiration)
+  ( MemcacheExpiration (NoMemcacheExpiration, UseMemcacheExpiration)
   , fromUTC
   , noExpiration
   )
@@ -61,14 +60,16 @@ memcacheStorage sp opt = \case
       key = sp.databaseKey session.key
       value = sp.toDatabase (session.map, session.time)
 
-    expiration <- getMemcacheExpiration sp.expiration opt.timing.timeout session.time
+    expiration <-
+      getMemcacheExpiration sp.expiration opt.timing.timeout session.time
 
     mVersion <- liftIO $ Memcache.add sp.client key value defaultFlags expiration
     throwOnNothing SessionAlreadyExists mVersion
   ReplaceSession session -> do
     let key = sp.databaseKey session.key
 
-    expiration <- getMemcacheExpiration sp.expiration opt.timing.timeout session.time
+    expiration <-
+      getMemcacheExpiration sp.expiration opt.timing.timeout session.time
 
     mVersion <-
       liftIO
@@ -84,12 +85,15 @@ memcacheStorage sp opt = \case
   throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
   fstOf3 (a, _, _) = a
 
-
 -- | Determine what 'Memcache.Expiration' value to use.
-getMemcacheExpiration :: MonadThrow m => MemcacheExpiration -> Timeout NominalDiffTime -> Time UTCTime -> m Memcache.Expiration
+getMemcacheExpiration
+  :: MonadThrow m
+  => MemcacheExpiration
+  -> Timeout NominalDiffTime
+  -> Time UTCTime
+  -> m Memcache.Expiration
 getMemcacheExpiration UseMemcacheExpiration timeout time = maybe (pure noExpiration) fromUTC $ nextExpires timeout time
 getMemcacheExpiration NoMemcacheExpiration _timeout _time = pure noExpiration
-
 
 defaultFlags :: Memcache.Flags
 defaultFlags = 0
