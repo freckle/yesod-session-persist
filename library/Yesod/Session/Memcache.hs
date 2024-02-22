@@ -33,6 +33,7 @@ module Yesod.Session.Memcache
     -- * Storage
   , SessionPersistence (..)
   , StorageException (..)
+  , MemcacheExpiration (..)
 
     -- * Key rotation
   , rotateSessionKey
@@ -62,3 +63,4 @@ module Yesod.Session.Memcache
 import Yesod.Session.Memcache.Storage
 import Yesod.Session.Memcache.Yesod
 import Yesod.Session.Storage
+import Yesod.Session.Memcache.Expiration
