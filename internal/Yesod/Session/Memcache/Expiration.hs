@@ -2,6 +2,8 @@ module Yesod.Session.Memcache.Expiration
   ( MemcacheExpiration (..)
   , noExpiration
   , fromUTC
+  , maxTimestamp
+  , minTimestamp
   ) where
 
 import Internal.Prelude
@@ -32,15 +34,15 @@ noExpiration = 0
 -- This function guards against UTCTime values that, converted to a timestamp,
 -- would be too big or too small.
 --
--- See 'maxWord32' and 'minWord32' for definitions of too 'big / small'.
+-- See 'maxTimestamp' and 'minTimestamp' for definitions of too 'big / small'.
 fromUTC :: MonadThrow m => UTCTime -> m Word32
 fromUTC utcTime = do
   when (tooLarge || tooSmall) $ throwWithCallStack $ InvalidExpiration seconds
   pure $ ceiling seconds
  where
   seconds = nominalDiffTimeToSeconds $ utcTimeToPOSIXSeconds utcTime
-  tooLarge = seconds > fromInteger (toInteger maxWord32)
-  tooSmall = seconds < fromInteger (toInteger minWord32)
+  tooLarge = seconds > maxTimestamp
+  tooSmall = seconds < minTimestamp
 
 -- | Minimum value that will be interpreted as a timestamp by Memcache
 --
@@ -50,11 +52,11 @@ fromUTC utcTime = do
 -- See: https://github.com/dterei/memcache-hs/blob/83957ee9c4983f87447b0e7476a9a9155474dc80/Database/Memcache/Client.hs#L49-L59
 --
 -- This value is ~1960.
-minWord32 :: Word32
-minWord32 = 2592000 + 1 -- Values lower than this
+minTimestamp :: Num a => a
+minTimestamp = 2592000 + 1 -- Values lower than this
 
 -- | Check to make sure we don't overflow.
 --
 -- 4_294_967_295 is ~2096
-maxWord32 :: Word32
-maxWord32 = maxBound
+maxTimestamp :: Num a => a
+maxTimestamp = fromIntegral $ maxBound @Word32

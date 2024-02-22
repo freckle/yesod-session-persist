@@ -157,6 +157,7 @@ test-suite spec
       Test.Randomization
       Yesod.Session.Manager.LoadSpec
       Yesod.Session.Manager.SaveSpec
+      Yesod.Session.Memcache.StorageSpec
       Yesod.Session.Persist.YesodApp
       Yesod.Session.Persist.YesodSpec
       Paths_yesod_session_persist

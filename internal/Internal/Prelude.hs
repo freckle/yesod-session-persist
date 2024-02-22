@@ -79,6 +79,7 @@ import Prelude as X
   , Int
   , Integer
   , Integral
+  , Num
   , RealFrac (ceiling, floor)
   , fromInteger
   , fromIntegral
