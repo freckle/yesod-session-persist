@@ -14,7 +14,7 @@ import Yesod.Session.Storage.Yesod
   , makeSessionBackend'
   )
 
-data SessionConfiguration env = SessionConfiguration
+data SessionConfiguration = SessionConfiguration
   { persistence :: SessionPersistence
   -- ^ Mapping between 'Yesod.Session.Persist.Session' and Memcache
   --   representation
