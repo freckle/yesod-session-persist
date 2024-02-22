@@ -5,9 +5,17 @@ module Yesod.Session.Memcache.StorageSpec
 import Test.Prelude
 
 import Session.Timing.Time (Time (..))
-import Session.Timing.Timeout (Timeout (Timeout, absolute, idle), defaultTimeout)
+import Session.Timing.Timeout
+  ( Timeout (Timeout, absolute, idle)
+  , defaultTimeout
+  )
 import Time (UTCTime, posixSecondsToUTCTime)
-import Yesod.Session.Memcache.Expiration (MemcacheExpiration (NoMemcacheExpiration, UseMemcacheExpiration), maxTimestamp, minTimestamp, noExpiration)
+import Yesod.Session.Memcache.Expiration
+  ( MemcacheExpiration (NoMemcacheExpiration, UseMemcacheExpiration)
+  , maxTimestamp
+  , minTimestamp
+  , noExpiration
+  )
 import Yesod.Session.Memcache.Storage (getMemcacheExpiration)
 
 spec :: Spec
