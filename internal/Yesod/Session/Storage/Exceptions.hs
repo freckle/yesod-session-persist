@@ -12,7 +12,5 @@ data StorageException
   | -- | Thrown when attempting to replace an existing session
     --   but no session with the same key exists
     SessionDoesNotExist
-  | -- | Thrown when attempting to delete a session, but the operation fails.
-    FailedToDeleteSession
   deriving stock (Eq, Show)
   deriving anyclass (Exception)
