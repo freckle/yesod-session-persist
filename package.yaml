@@ -70,6 +70,7 @@ internal-libraries:
       - crypton
       - exceptions
       - http-types
+      - memcache
       - mtl
       - persistent
       - text
@@ -77,6 +78,8 @@ internal-libraries:
       - transformers
       - wai
       - yesod-core
+      - QuickCheck
+      - generic-arbitrary
 
 tests:
   spec:
@@ -94,7 +97,6 @@ tests:
       - random
       - stm
       - text
-      - time
       - wai
       - wai-extra
       - yesod

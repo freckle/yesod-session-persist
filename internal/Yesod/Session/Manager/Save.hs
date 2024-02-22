@@ -35,8 +35,8 @@ saveSession
   -> Load Session
   -> SessionMap
   -> m (SaveResult Session)
-saveSession SessionManager {options, storage, keyManager, runTransaction} load outputData =
-  runTransaction
+saveSession SessionManager {options, storage, keyManager, runDB} load outputData =
+  runDB
     $ case freeze of
       Just FreezeSessionForCurrentRequest -> pure Frozen
       Nothing ->

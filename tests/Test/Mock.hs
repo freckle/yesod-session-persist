@@ -41,14 +41,14 @@ newMock opt MockInit {randomSeed, time, timing} = do
   let options = opt defaultOptions {timing, clock, randomization}
   keyManager <- makeSessionKeyManager <$> randomization
   let sessionManager =
-        SessionManager {keyManager, storage, options, runTransaction = atomically}
+        SessionManager {keyManager, storage, options, runDB = atomically}
   pure Mock {sessionManager, currentTime, mockStorage}
 
 createArbitrarySession :: Mock STM IO -> SessionInit -> IO SessionKey
 createArbitrarySession mock sessionInit =
   let
     Mock {mockStorage, sessionManager} = mock
-    SessionManager {storage, runTransaction} = sessionManager
+    SessionManager {storage, runDB} = sessionManager
   in
     offTheRecordIO mockStorage
       $ do
@@ -59,7 +59,7 @@ createArbitrarySession mock sessionInit =
                 , map = sessionInit.map
                 , time = sessionInit.time
                 }
-        runTransaction $ storage $ InsertSession session
+        runDB $ storage $ InsertSession session
         pure session.key
 
 advanceTime :: MonadIO m => NominalDiffTime -> Mock STM IO -> m ()

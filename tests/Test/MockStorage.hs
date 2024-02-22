@@ -82,16 +82,14 @@ handleOp ref = \case
       $ Map.alterF
         ( maybe
             (pure $ Just newSession)
-            ( \existingSession ->
-                throwWithCallStack SessionAlreadyExists {existingSession, newSession}
-            )
+            (const $ throwWithCallStack SessionAlreadyExists)
         )
         newSession.key
   ReplaceSession newSession ->
     modifyTVarSTM ref
       $ Map.alterF
         ( maybe
-            (throwWithCallStack SessionDoesNotExist {newSession})
+            (throwWithCallStack SessionDoesNotExist)
             (const $ pure $ Just newSession)
         )
         newSession.key

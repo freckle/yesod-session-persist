@@ -16,6 +16,7 @@ import Control.Monad as X
   , join
   , replicateM
   , replicateM_
+  , unless
   , when
   , (<=<)
   , (=<<)
@@ -51,7 +52,7 @@ import Data.Maybe as X
   , maybe
   )
 import Data.Ord as X (Ord (..))
-import Data.Semigroup as X ((<>))
+import Data.Semigroup as X (Min (..), (<>))
 import Data.Sequence as X (Seq)
 import Data.Set as X (Set)
 import Data.String as X (String)
@@ -59,22 +60,36 @@ import Data.Text as X (Text)
 import Data.Traversable as X (for)
 import Data.Tuple as X (fst, snd, swap)
 import Data.Type.Equality as X
+import Data.Word as X (Word32)
+import GHC.Generics as X (Generic)
 import GHC.Stack as X (HasCallStack)
 import Numeric.Natural as X (Natural)
 import System.IO as X (IO)
+import Test.QuickCheck as X (Arbitrary (arbitrary, shrink))
+import Test.QuickCheck.Arbitrary.Generic as X
+  ( GenericArbitrary
+  , genericArbitrary
+  , genericShrink
+  )
 import Text.Read as X (Read, readMaybe)
 import Text.Show as X (Show, show)
 import Prelude as X
-  ( Bounded
+  ( Bounded (..)
   , Enum
   , Int
+  , Integer
   , Integral
+  , Num
+  , RealFrac (ceiling, floor)
+  , fromInteger
   , fromIntegral
   , minimum
   , negate
   , pred
   , succ
+  , toInteger
   , truncate
+  , uncurry
   , ($!)
   , (*)
   , (+)

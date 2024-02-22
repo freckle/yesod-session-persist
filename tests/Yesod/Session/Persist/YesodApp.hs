@@ -11,7 +11,6 @@ import Comparison
 import Control.Monad.STM (STM)
 import Data.Map.Strict qualified as Map
 import Data.Text qualified as T
-import Data.Time qualified as Time
 import Session.KeyRotation
 import Session.Timing.Options
 import Time
@@ -31,7 +30,7 @@ import Yesod
 import Yesod.Core (SessionMap)
 import Yesod.Session.Manager
 import Yesod.Session.Persist
-import Yesod.Session.Persist.Yesod
+import Yesod.Session.Storage.Yesod (makeSessionBackend'')
 
 newApp :: TimingOptions NominalDiffTime -> IO App
 newApp timing = do

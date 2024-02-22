@@ -1,4 +1,4 @@
-module Yesod.Session.Persist
+module Yesod.Session.Memcache
   ( -- * Setup
     makeSessionBackend
   , SessionConfiguration (..)
@@ -59,6 +59,6 @@ module Yesod.Session.Persist
   , differsOn
   ) where
 
-import Yesod.Session.Persist.Storage
-import Yesod.Session.Persist.Yesod
+import Yesod.Session.Memcache.Storage
+import Yesod.Session.Memcache.Yesod
 import Yesod.Session.Storage

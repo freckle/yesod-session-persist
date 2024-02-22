@@ -27,7 +27,11 @@ data Timeout a = Timeout
   --
   -- Setting to 'Nothing' removes the absolute timeout.
   }
-  deriving stock (Eq, Show)
+  deriving stock (Eq, Show, Generic, Functor)
+
+instance Arbitrary a => Arbitrary (Timeout a) where
+  arbitrary = genericArbitrary
+  shrink = genericShrink
 
 -- | Default timeouts
 --

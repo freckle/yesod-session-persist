@@ -12,7 +12,8 @@ import Time
 -- | Calculate the next point in time where the given session
 --   will expire assuming that it sees no activity until then
 --
--- Returns 'Nothing' iff the settings do not specify any timeout limits.
+--  Returns 'Nothing' if and only if the settings do not specify any timeout
+--  limits.
 nextExpires
   :: Timeout NominalDiffTime
   -> Time UTCTime

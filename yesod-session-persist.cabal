@@ -27,7 +27,9 @@ source-repository head
 
 library
   exposed-modules:
+      Yesod.Session.Memcache
       Yesod.Session.Persist
+      Yesod.Session.Storage
   other-modules:
       Paths_yesod_session_persist
   autogen-modules:
@@ -83,6 +85,9 @@ library internal
       Yesod.Session.Manager
       Yesod.Session.Manager.Load
       Yesod.Session.Manager.Save
+      Yesod.Session.Memcache.Expiration
+      Yesod.Session.Memcache.Storage
+      Yesod.Session.Memcache.Yesod
       Yesod.Session.Options
       Yesod.Session.Persist.Storage
       Yesod.Session.Persist.Yesod
@@ -91,6 +96,7 @@ library internal
       Yesod.Session.Storage.Exceptions
       Yesod.Session.Storage.Operation
       Yesod.Session.Storage.Save
+      Yesod.Session.Storage.Yesod
   other-modules:
       Paths_yesod_session_persist
   autogen-modules:
@@ -116,7 +122,8 @@ library internal
       UndecidableInstances
   ghc-options: -Weverything -Wno-all-missed-specialisations -Wno-missed-specialisations -Wno-missing-exported-signatures -Wno-missing-import-lists -Wno-missing-kind-signatures -Wno-missing-local-signatures -Wno-missing-safe-haskell-mode -Wno-monomorphism-restriction -Wno-partial-fields -Wno-prepositive-qualified-module -Wno-safe -Wno-unsafe -fwrite-ide-info
   build-depends:
-      annotated-exception
+      QuickCheck
+    , annotated-exception
     , base <5
     , base64
     , bytestring
@@ -124,7 +131,9 @@ library internal
     , cookie
     , crypton
     , exceptions
+    , generic-arbitrary
     , http-types
+    , memcache
     , mtl
     , persistent
     , text
@@ -148,6 +157,7 @@ test-suite spec
       Test.Randomization
       Yesod.Session.Manager.LoadSpec
       Yesod.Session.Manager.SaveSpec
+      Yesod.Session.Memcache.StorageSpec
       Yesod.Session.Persist.YesodApp
       Yesod.Session.Persist.YesodSpec
       Paths_yesod_session_persist
@@ -185,7 +195,6 @@ test-suite spec
     , random
     , stm
     , text
-    , time
     , wai
     , wai-extra
     , yesod
