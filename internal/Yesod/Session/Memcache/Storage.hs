@@ -52,9 +52,8 @@ memcacheStorage sp opt = \case
     case mValue of
       Nothing -> pure Nothing
       Just value -> do
-        let mkSession = uncurry $ Session sessionKey
-
-        either throwM (pure . pure . mkSession) $ sp.fromDatabase value
+        (map, time) <- either throwM pure $ sp.fromDatabase value
+        pure $ Just Session {key = sessionKey, map, time}
   DeleteSession sessionKey -> do
     void $ liftIO $ Memcache.delete sp.client (sp.databaseKey sessionKey) bypassCAS
   InsertSession session -> do
