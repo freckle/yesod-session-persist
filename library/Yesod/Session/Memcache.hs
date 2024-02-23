@@ -62,8 +62,8 @@ module Yesod.Session.Memcache
   , differsOn
   ) where
 
+import Time
+import Yesod.Session.Memcache.Expiration
 import Yesod.Session.Memcache.Storage
 import Yesod.Session.Memcache.Yesod
 import Yesod.Session.Storage
-import Yesod.Session.Memcache.Expiration
-import Time
