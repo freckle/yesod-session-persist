@@ -11,6 +11,7 @@ module Yesod.Session.Memcache
     -- * Timing
   , TimingOptions (..)
   , defaultTimingOptions
+  , minutes
 
     -- * Timeout
   , Timeout (..)
@@ -23,6 +24,7 @@ module Yesod.Session.Memcache
   , Session (..)
   , SessionKey (..)
   , Time (..)
+  , sessionKeyToCookieValue
 
     -- * Randomization
   , Randomization (..)
@@ -33,6 +35,7 @@ module Yesod.Session.Memcache
     -- * Storage
   , SessionPersistence (..)
   , StorageException (..)
+  , MemcacheExpiration (..)
 
     -- * Key rotation
   , rotateSessionKey
@@ -59,6 +62,8 @@ module Yesod.Session.Memcache
   , differsOn
   ) where
 
+import Time
+import Yesod.Session.Memcache.Expiration
 import Yesod.Session.Memcache.Storage
 import Yesod.Session.Memcache.Yesod
 import Yesod.Session.Storage

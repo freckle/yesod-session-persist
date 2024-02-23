@@ -19,6 +19,7 @@ module Yesod.Session.Storage
   , Session (..)
   , SessionKey (..)
   , Time (..)
+  , sessionKeyToCookieValue
 
     -- * Randomization
   , Randomization (..)
