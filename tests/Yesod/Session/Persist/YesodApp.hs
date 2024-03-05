@@ -72,7 +72,7 @@ instance HasSessionEmbeddings App where
       SessionManager {options} = sessionManager
       Options {embedding} = options
     in
-      embedding
+      pure embedding
 
 instance Yesod App where
   makeSessionBackend App {mock} = do

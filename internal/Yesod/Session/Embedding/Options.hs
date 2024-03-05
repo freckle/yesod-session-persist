@@ -19,7 +19,7 @@ data SessionEmbeddings = SessionEmbeddings
   }
 
 class HasSessionEmbeddings a where
-  getSessionEmbeddings :: a -> SessionEmbeddings
+  getSessionEmbeddings :: a -> Maybe SessionEmbeddings
 
 instance HasSessionEmbeddings SessionEmbeddings where
-  getSessionEmbeddings = id
+  getSessionEmbeddings x = pure x

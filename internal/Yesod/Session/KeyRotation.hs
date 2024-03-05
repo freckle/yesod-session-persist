@@ -30,8 +30,10 @@ assignSessionKeyRotation
   --   request for rotation and restore the default behavior
   -> m ()
 assignSessionKeyRotation kr = do
-  embedding <- getSessionEmbeddings <$> getYesod
-  liftHandler $ embed embedding.keyRotation kr
+  mEmbedding <- getSessionEmbeddings <$> getYesod
+  case mEmbedding of
+    Nothing -> pure ()
+    Just embedding -> liftHandler $ embed embedding.keyRotation kr
 
 rotateSessionKey
   :: (MonadHandler m, HasSessionEmbeddings (HandlerSite m)) => m ()
