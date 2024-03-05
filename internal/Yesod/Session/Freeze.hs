@@ -22,8 +22,10 @@ assignSessionFreeze
   --   request for session freezing and restore the default behavior
   -> m ()
 assignSessionFreeze f = do
-  embedding <- getSessionEmbeddings <$> getYesod
-  liftHandler $ embed embedding.freeze f
+  mEmbedding <- getSessionEmbeddings <$> getYesod
+  case mEmbedding of
+    Nothing -> pure ()
+    Just embedding -> liftHandler $ embed embedding.freeze f
 
 disableSessionManagement
   :: (MonadHandler m, HasSessionEmbeddings (HandlerSite m)) => m ()
