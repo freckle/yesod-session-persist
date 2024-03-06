@@ -4,7 +4,7 @@
 [![CI](https://github.com/freckle/yesod-session-persist/actions/workflows/ci.yml/badge.svg)](https://github.com/freckle/yesod-session-persist/actions/workflows/ci.yml)
 
 Use this package to construct a Yesod session backend for which sessions are
-stored in a database table. You provide a Persistent entity.
+stored in a backend data store.
 
 ## Features
 
@@ -54,8 +54,9 @@ The definition of "a short duration" is configurable; we call it the _timeout re
 
 ### Garbage collection
 
-This library does not proactively seek out expired sessions for deletion from the database.
-Thus, in the absence of some other intervention, your session table will grow without bound.
+Garbage collection is supported when using `memcache` as the data store. Please see 'Yesod.Session.Memcache.Storage.SessionPersistence'.
+
+The `Yesod.Session.Persist` module _does not_ does not proactively seek out expired sessions for deletion. Thus, in the absence of some other intervention, your session table will grow without bound.
 
 ## Prior art
 
