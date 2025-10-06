@@ -7,6 +7,7 @@ module Yesod.Session.Memcache.Storage
 import Internal.Prelude
 
 import Database.Memcache.Client qualified as Memcache
+import System.IO (hPutStrLn, stderr)
 import Database.Memcache.Types qualified as Memcache
 import Session.Key
 import Session.Timing.Math (nextExpires)
@@ -80,7 +81,11 @@ memcacheStorage sp opt = \case
           defaultFlags
           expiration
           bypassCAS
-    throwOnNothing SessionDoesNotExist mVersion
+    case mVersion of
+      Nothing -> do
+        liftIO $ hPutStrLn stderr $ "Warning: Attempted to replace session but session does not exist, key: " <> show key
+        void $ liftIO $ Memcache.set sp.client key (sp.toDatabase (session.map, session.time)) defaultFlags expiration
+      Just _ -> pure ()
  where
   throwOnNothing exception maybeValue = maybe (throwWithCallStack exception) (const $ pure ()) maybeValue
   fstOf3 (a, _, _) = a
